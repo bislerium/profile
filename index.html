@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior Engineer Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #2d3436;
+            --accent: #0984e3;
+            --icon-size: 30px;
+            --font-base: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --icon-opacity: 0.12;
+        }
+
+        .dark-theme {
+            --bg-color: #1a1a1a;
+            --text-color: #f8f9fa;
+            --icon-opacity: 0.08;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-base);
+            line-height: 1.6;
+            transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                        color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .theme-toggler {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+        }
+
+        .theme-toggler:hover {
+            background: rgba(0, 0, 0, 0.15);
+            transform: scale(1.1);
+        }
+
+        .theme-toggler i {
+            position: absolute;
+            transition: opacity 0.3s ease;
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .sun { opacity: 1; }
+        .moon { opacity: 0; }
+
+        .dark-theme .sun { opacity: 0; }
+        .dark-theme .moon { opacity: 1; }
+
+        .emoji-bg {
+            position: absolute;
+            font-size: var(--icon-size);
+            opacity: var(--icon-opacity);
+            pointer-events: none;
+            user-select: none;
+            transition: opacity 0.3s;
+            transform: translate(-50%, -50%);
+        }
+
+        .card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 1.5rem;
+            text-align: center;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px) saturate(160%);
+            -webkit-backdrop-filter: blur(12px) saturate(160%);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.125);
+            max-width: 340px;
+            width: 90%;
+            color: var(--text-color);
+            animation: cardEntrance 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+        }
+
+        @supports (backdrop-filter: blur()) {
+            .card {
+                background: rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        @keyframes cardEntrance {
+            0% { opacity: 0; transform: translate(-50%, -40%); }
+            100% { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        .dark-theme .card {
+            background: rgba(25, 25, 25, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.075);
+        }
+
+        .profile-emoji {
+            font-size: 3rem;
+            margin: 0 0 1rem;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            margin: 0 0 0.5rem;
+            font-weight: 600;
+            color: var(--accent);
+            opacity: 0;
+            animation: textFadeIn 0.8s 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        p {
+            font-size: 0.9rem;
+            opacity: 0;
+            margin: 0 0 1.5rem;
+            animation: textFadeIn 0.8s 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes textFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 0.9; transform: translateY(0); }
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            opacity: 0;
+            animation: socialFadeIn 0.8s 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes socialFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .social-links a {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            opacity: 0.7;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .social-links a:hover {
+            opacity: 1;
+            transform: translateY(-3px) scale(1.15);
+        }
+
+        @media (max-width: 600px) {
+            :root {
+                --icon-size: 25px;
+            }
+
+            .card {
+                padding: 1rem;
+                max-width: 280px;
+            }
+
+            .profile-emoji {
+                font-size: 2.5rem;
+            }
+
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            p {
+                font-size: 0.85rem;
+            }
+
+            .theme-toggler {
+                top: 10px;
+                right: 10px;
+                width: 36px;
+                height: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggler" aria-label="Toggle theme">
+        <i class="fas fa-sun sun"></i>
+        <i class="fas fa-moon moon"></i>
+    </button>
+
+    <div class="card">
+        <div class="profile-emoji">👨💻</div>
+        <h1>Senior Software Engineer</h1>
+        <p>C# .NET Specialist & Technical Educator</p>
+        <div class="social-links">
+            <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="mailto:example@email.com"><i class="fas fa-envelope"></i></a>
+        </div>
+    </div>
+
+    <script>
+        class Emoji {
+            constructor(element, radius) {
+                this.element = element;
+                this.radius = radius;
+                this.x = Math.random() * window.innerWidth;
+                this.y = Math.random() * window.innerHeight;
+                this.dx = (Math.random() - 0.5) * 2;
+                this.dy = (Math.random() - 0.5) * 2;
+            }
+
+            update() {
+                this.x += this.dx;
+                this.y += this.dy;
+                
+                // Boundary collision
+                if (this.x < this.radius || this.x > window.innerWidth - this.radius) this.dx *= -1;
+                if (this.y < this.radius || this.y > window.innerHeight - this.radius) this.dy *= -1;
+                
+                this.element.style.left = `${this.x}px`;
+                this.element.style.top = `${this.y}px`;
+            }
+        }
+
+        function checkCollisions(emojis) {
+            for (let i = 0; i < emojis.length; i++) {
+                for (let j = i + 1; j < emojis.length; j++) {
+                    const a = emojis[i];
+                    const b = emojis[j];
+                    
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const minDistance = a.radius + b.radius;
+
+                    if (distance < minDistance) {
+                        // Collision detected
+                        const angle = Math.atan2(dy, dx);
+                        const ax = (minDistance - distance) * Math.cos(angle);
+                        const ay = (minDistance - distance) * Math.sin(angle);
+
+                        a.x += ax * 0.5;
+                        a.y += ay * 0.5;
+                        b.x -= ax * 0.5;
+                        b.y -= ay * 0.5;
+
+                        // Bounce effect
+                        const aVel = Math.sqrt(a.dx * a.dx + a.dy * a.dy);
+                        const bVel = Math.sqrt(b.dx * b.dx + b.dy * b.dy);
+                        
+                        const aAngle = Math.atan2(a.dy, a.dx);
+                        const bAngle = Math.atan2(b.dy, b.dx);
+                        
+                        a.dx = Math.cos(angle) * aVel;
+                        a.dy = Math.sin(angle) * aVel;
+                        b.dx = Math.cos(angle + Math.PI) * bVel;
+                        b.dy = Math.sin(angle + Math.PI) * bVel;
+                    }
+                }
+            }
+        }
+
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme) {
+                document.body.classList.toggle('dark-theme', savedTheme === 'dark');
+            } else {
+                document.body.classList.toggle('dark-theme', systemDark);
+            }
+        }
+
+        document.querySelector('.theme-toggler').addEventListener('click', () => {
+            const isDark = document.body.classList.toggle('dark-theme');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        const emojis = [
+            '💻', '🖥️', '⌨️', '🚀', '⚡', '🔧', '🛠️', '🌐', '🤖', '🧠',
+            '📱', '🔌', '💾', '💡', '🧩', '⚙️', '🔨', '🧪', '🔬', '📡',
+            '📟', '🎮', '🕹️', '🧮', '📊', '📈', '📚', '🎓', '💎', '⛓️',
+            '🌍', '🔑', '🗝️', '⏳', '🕸️', '🎯', '🛡️', '⚠️', '✅', '❌'
+        ];
+
+        const emojiInstances = [];
+        const baseRadius = 25;
+        
+        function createEmojis() {
+            emojis.forEach(emoji => {
+                const element = document.createElement('div');
+                element.className = 'emoji-bg';
+                element.textContent = emoji;
+                document.body.appendChild(element);
+                
+                const radius = baseRadius + Math.random() * 10;
+                const instance = new Emoji(element, radius);
+                
+                // Initial position check
+                let collision = false;
+                do {
+                    collision = false;
+                    instance.x = Math.random() * (window.innerWidth - radius * 2) + radius;
+                    instance.y = Math.random() * (window.innerHeight - radius * 2) + radius;
+                    
+                    for (const other of emojiInstances) {
+                        const dx = instance.x - other.x;
+                        const dy = instance.y - other.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < instance.radius + other.radius) {
+                            collision = true;
+                            break;
+                        }
+                    }
+                } while (collision);
+                
+                emojiInstances.push(instance);
+            });
+        }
+
+        function animate() {
+            emojiInstances.forEach(emoji => emoji.update());
+            checkCollisions(emojiInstances);
+            requestAnimationFrame(animate);
+        }
+
+        function handleResize() {
+            emojiInstances.forEach(emoji => {
+                emoji.x = Math.random() * (window.innerWidth - emoji.radius * 2) + emoji.radius;
+                emoji.y = Math.random() * (window.innerHeight - emoji.radius * 2) + emoji.radius;
+            });
+        }
+
+        initializeTheme();
+        createEmojis();
+        animate();
+
+        window.addEventListener('resize', handleResize);
+    </script>
+</body>
+</html>
