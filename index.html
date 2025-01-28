@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>👨‍💻 Bishal GC</title>
+    <title>Bishal GC</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text x=%224%22 y=%2224%22 font-size=%2224%22>❓</text></svg>">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -29,8 +33,8 @@
             color: var(--text-color);
             font-family: var(--font-base);
             line-height: 1.6;
-            transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-                        color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .theme-toggler {
@@ -62,11 +66,21 @@
             color: var(--text-color);
         }
 
-        .sun { opacity: 1; }
-        .moon { opacity: 0; }
+        .sun {
+            opacity: 1;
+        }
 
-        .dark-theme .sun { opacity: 0; }
-        .dark-theme .moon { opacity: 1; }
+        .moon {
+            opacity: 0;
+        }
+
+        .dark-theme .sun {
+            opacity: 0;
+        }
+
+        .dark-theme .moon {
+            opacity: 1;
+        }
 
         .emoji-bg {
             position: absolute;
@@ -104,8 +118,15 @@
         }
 
         @keyframes cardEntrance {
-            0% { opacity: 0; transform: translate(-50%, -40%); }
-            100% { opacity: 1; transform: translate(-50%, -50%); }
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
         }
 
         .dark-theme .card {
@@ -113,12 +134,23 @@
             border: 1px solid rgba(255, 255, 255, 0.075);
         }
 
+        @keyframes smoothFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(3deg);
+            }
+        }
+
         .profile-emoji {
             font-size: 2.8rem;
             margin: 0 0 1rem;
             animation: smoothFloat 6s ease-in-out infinite;
         }
-        
 
         h1 {
             font-size: 1.3rem;
@@ -137,13 +169,27 @@
         }
 
         @keyframes textFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 0.9; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 0.9;
+                transform: translateY(0);
+            }
         }
 
         @keyframes socialFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
 
@@ -172,15 +218,18 @@
         }
 
         .social-links a[aria-label="LinkedIn"]:hover {
-            background: #0077b5; /* LinkedIn brand color */
+            background: #0077b5;
+            /* LinkedIn brand color */
         }
 
         .social-links a[aria-label="GitHub"]:hover {
-            background: #333; /* GitHub brand color */
+            background: #333;
+            /* GitHub brand color */
         }
 
         .social-links a[aria-label="Email"]:hover {
-            background: #d44638; /* Gmail brand color */
+            background: #d44638;
+            /* Gmail brand color */
         }
 
         .social-links i {
@@ -218,6 +267,7 @@
         }
     </style>
 </head>
+
 <body>
     <button class="theme-toggler" aria-label="Toggle theme">
         <i class="fas fa-sun sun"></i>
@@ -229,42 +279,69 @@
         <h1>Bishal Gharti Chhetri</h1>
         <p>C#.NET | Lecturer | SE</p>
         <div class="social-links">
-            <a href="https://linkedin.com/in/bishalgc" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://linkedin.com/in/bishalgc" target="_blank" aria-label="LinkedIn"><i
+                    class="fab fa-linkedin"></i></a>
             <a href="https://github.com/bislerium" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
             <a href="mailto:hello.bishalgc@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
         </div>
     </div>
 
     <script>
+        // Add speed multiplier variables
+        let currentSpeedMultiplier = getSpeedMultiplier();
+
+        function getSpeedMultiplier() {
+            return Math.min(window.outerWidth / 1000);
+        }
+
         class Emoji {
             constructor(element, radius) {
                 this.element = element;
                 this.radius = radius;
                 this.x = Math.random() * window.innerWidth;
                 this.y = Math.random() * window.innerHeight;
-                this.dx = (Math.random() - 0.5) * 0.8;
-                this.dy = (Math.random() - 0.5) * 0.8;
+
+                // Use speed multiplier for initial velocity
+                this.dx = (Math.random() - 0.5) * 0.8 * currentSpeedMultiplier;
+                this.dy = (Math.random() - 0.5) * 0.8 * currentSpeedMultiplier;
             }
 
             update() {
                 this.x += this.dx;
                 this.y += this.dy;
-                
-                // Boundary collision
+
                 if (this.x < this.radius || this.x > window.innerWidth - this.radius) this.dx *= -1;
                 if (this.y < this.radius || this.y > window.innerHeight - this.radius) this.dy *= -1;
-                
+
                 this.element.style.left = `${this.x}px`;
                 this.element.style.top = `${this.y}px`;
             }
         }
+
+        // Modified resize handler
+        function handleResize() {
+            const newSpeedMultiplier = getSpeedMultiplier();
+            const ratio = newSpeedMultiplier / currentSpeedMultiplier;
+            currentSpeedMultiplier = newSpeedMultiplier;
+
+            emojiInstances.forEach(emoji => {
+                // Adjust velocity while maintaining direction
+                emoji.dx *= ratio;
+                emoji.dy *= ratio;
+
+                // Keep emojis within new boundaries
+                emoji.x = Math.max(emoji.radius, Math.min(emoji.x, window.innerWidth - emoji.radius));
+                emoji.y = Math.max(emoji.radius, Math.min(emoji.y, window.innerHeight - emoji.radius));
+            });
+        }
+
 
         function checkCollisions(emojis) {
             for (let i = 0; i < emojis.length; i++) {
                 for (let j = i + 1; j < emojis.length; j++) {
                     const a = emojis[i];
                     const b = emojis[j];
-                    
+
                     const dx = a.x - b.x;
                     const dy = a.y - b.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -284,10 +361,10 @@
                         // Bounce effect
                         const aVel = Math.sqrt(a.dx * a.dx + a.dy * a.dy);
                         const bVel = Math.sqrt(b.dx * b.dx + b.dy * b.dy);
-                        
+
                         const aAngle = Math.atan2(a.dy, a.dx);
                         const bAngle = Math.atan2(b.dy, b.dx);
-                        
+
                         a.dx = Math.cos(angle) * aVel;
                         a.dy = Math.sin(angle) * aVel;
                         b.dx = Math.cos(angle + Math.PI) * bVel;
@@ -300,7 +377,7 @@
         function initializeTheme() {
             const savedTheme = localStorage.getItem('theme');
             const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            
+
             if (savedTheme) {
                 document.body.classList.toggle('dark-theme', savedTheme === 'dark');
             } else {
@@ -322,24 +399,24 @@
 
         const emojiInstances = [];
         const baseRadius = 25;
-        
+
         function createEmojis() {
             emojis.forEach(emoji => {
                 const element = document.createElement('div');
                 element.className = 'emoji-bg';
                 element.textContent = emoji;
                 document.body.appendChild(element);
-                
+
                 const radius = baseRadius + Math.random() * 10;
                 const instance = new Emoji(element, radius);
-                
+
                 // Initial position check
                 let collision = false;
                 do {
                     collision = false;
                     instance.x = Math.random() * (window.innerWidth - radius * 2) + radius;
                     instance.y = Math.random() * (window.innerHeight - radius * 2) + radius;
-                    
+
                     for (const other of emojiInstances) {
                         const dx = instance.x - other.x;
                         const dy = instance.y - other.y;
@@ -350,7 +427,7 @@
                         }
                     }
                 } while (collision);
-                
+
                 emojiInstances.push(instance);
             });
         }
@@ -361,12 +438,7 @@
             requestAnimationFrame(animate);
         }
 
-        function handleResize() {
-            emojiInstances.forEach(emoji => {
-                emoji.x = Math.random() * (window.innerWidth - emoji.radius * 2) + emoji.radius;
-                emoji.y = Math.random() * (window.innerHeight - emoji.radius * 2) + emoji.radius;
-            });
-        }
+
 
         initializeTheme();
         createEmojis();
@@ -375,4 +447,5 @@
         window.addEventListener('resize', handleResize);
     </script>
 </body>
+
 </html>
