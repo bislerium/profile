@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senior Engineer Profile</title>
+    <title>👨‍💻 Bishal GC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -72,7 +72,6 @@
             font-size: var(--icon-size);
             opacity: var(--icon-opacity);
             pointer-events: none;
-            user-select: none;
             transition: opacity 0.3s;
             transform: translate(-50%, -50%);
         }
@@ -86,8 +85,8 @@
             text-align: center;
             z-index: 1000;
             background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(12px) saturate(160%);
-            -webkit-backdrop-filter: blur(12px) saturate(160%);
+            -webkit-backdrop-filter: blur(12px) saturate(300%);
+            backdrop-filter: blur(12px) saturate(300%);
             border-radius: 16px;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.125);
@@ -114,10 +113,11 @@
         }
 
         .profile-emoji {
-            font-size: 3rem;
+            font-size: 2.8rem;
             margin: 0 0 1rem;
-            animation: float 6s ease-in-out infinite;
+            animation: smoothFloat 6s ease-in-out infinite;
         }
+        
 
         h1 {
             font-size: 1.3rem;
@@ -140,29 +140,50 @@
             to { opacity: 0.9; transform: translateY(0); }
         }
 
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            opacity: 0;
-            animation: socialFadeIn 0.8s 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-
         @keyframes socialFadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
         .social-links a {
-            color: var(--text-color);
-            font-size: 1.2rem;
-            opacity: 0.7;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(0, 0, 0, 0.04);
+            color: var(--text-color);
+            text-decoration: none;
         }
 
         .social-links a:hover {
-            opacity: 1;
-            transform: translateY(-3px) scale(1.15);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .social-links a[aria-label="LinkedIn"]:hover {
+            background: #0077b5; /* LinkedIn brand color */
+        }
+
+        .social-links a[aria-label="GitHub"]:hover {
+            background: #333; /* GitHub brand color */
+        }
+
+        .social-links a[aria-label="Email"]:hover {
+            background: #d44638; /* Gmail brand color */
+        }
+
+        .social-links i {
+            font-size: 1.1rem;
         }
 
         @media (max-width: 600px) {
@@ -204,12 +225,12 @@
 
     <div class="card">
         <div class="profile-emoji">👨💻</div>
-        <h1>Senior Software Engineer</h1>
-        <p>C# .NET Specialist & Technical Educator</p>
+        <h1>Bishal Gharti Chhetri</h1>
+        <p>C#.NET | Lecturer | SE</p>
         <div class="social-links">
-            <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
-            <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
-            <a href="mailto:example@email.com"><i class="fas fa-envelope"></i></a>
+            <a href="https://linkedin.com/in/bishalgc" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/bislerium" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="mailto:hello.bishalgc@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
         </div>
     </div>
 
@@ -220,8 +241,8 @@
                 this.radius = radius;
                 this.x = Math.random() * window.innerWidth;
                 this.y = Math.random() * window.innerHeight;
-                this.dx = (Math.random() - 0.5) * 2;
-                this.dy = (Math.random() - 0.5) * 2;
+                this.dx = (Math.random() - 0.5) * 0.5;
+                this.dy = (Math.random() - 0.5) * 0.5;
             }
 
             update() {
