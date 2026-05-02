@@ -1,30 +1,665 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bishal GC</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text x=%224%22 y=%2224%22 font-size=%2224%22>❓</text></svg>">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bishal GC</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text x=%224%22 y=%2224%22 font-size=%2224%22>❓</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A0A0A;
+            --fg: #D4D4D4;
+            --muted: #555555;
+            --accent: #A78BFA;
+            --accent-rgb: 167, 139, 250;
+            --grid-line: #131313;
+            --rocket-w: clamp(20px, 4.5vw, 34px);
+            --rocket-h: clamp(35px, 7.8vw, 60px);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; cursor: none; touch-action: manipulation; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        a, button { cursor: none; touch-action: manipulation; }
+
+        /* ── Custom cursor (hover-only devices) ── */
+        .cursor-dot {
+            position: fixed; width: 6px; height: 6px;
+            background: var(--accent); border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.5), 0 0 14px rgba(var(--accent-rgb), 0.2);
+            transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease;
+        }
+        .cursor-ring {
+            position: fixed; width: 36px; height: 36px;
+            border: 1px solid rgba(var(--accent-rgb), 0.35); border-radius: 50%;
+            pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cursor-ring.hovering {
+            width: 56px; height: 56px;
+            border-color: rgba(var(--accent-rgb), 0.6);
+            background: rgba(var(--accent-rgb), 0.04);
+            box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.08), inset 0 0 10px rgba(var(--accent-rgb), 0.03);
+        }
+        .cursor-dot.hovering { opacity: 0.5; width: 4px; height: 4px; }
+        .cursor-crosshair { position: fixed; pointer-events: none; z-index: 9997; transform: translate(-50%, -50%); transition: opacity 0.3s ease; }
+        .cursor-crosshair .ch-h, .cursor-crosshair .ch-v { position: absolute; background: rgba(var(--accent-rgb), 0.12); }
+        .cursor-crosshair .ch-h { width: 14px; height: 1px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .cursor-crosshair .ch-v { width: 1px; height: 14px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .cursor-crosshair.hovering { opacity: 0; }
+
+        /* Touch: restore native cursor, hide custom cursor only */
+        @media (hover: none) {
+            .cursor-dot, .cursor-ring, .cursor-crosshair { display: none !important; }
+            html, body, a, button { cursor: auto !important; }
+        }
+
+        /* ── Grid ── */
+        .grid-layer {
+            position: fixed; inset: 0;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none; z-index: 0;
+            animation: gridShift 20s linear infinite;
+        }
+        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 48px 48px; } }
+
+        /* ── Orbs ── */
+        .orb { position: fixed; border-radius: 50%; pointer-events: none; filter: blur(100px); z-index: 0; will-change: transform; }
+        .orb-1 { width: clamp(250px, 40vw, 500px); height: clamp(250px, 40vw, 500px); background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08) 0%, transparent 70%); top: -10%; left: -5%; animation: orbFloat1 18s ease-in-out infinite; }
+        .orb-2 { width: clamp(200px, 32vw, 400px); height: clamp(200px, 32vw, 400px); background: radial-gradient(circle, rgba(var(--accent-rgb), 0.05) 0%, transparent 70%); bottom: -15%; right: -8%; animation: orbFloat2 22s ease-in-out infinite; }
+        .orb-3 { width: clamp(150px, 24vw, 300px); height: clamp(150px, 24vw, 300px); background: radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, transparent 70%); top: 50%; left: 60%; animation: orbFloat3 15s ease-in-out infinite; }
+
+        @keyframes orbFloat1 { 0%, 100% { transform: translate(0, 0) scale(1); } 25% { transform: translate(120px, 80px) scale(1.1); } 50% { transform: translate(60px, 160px) scale(0.95); } 75% { transform: translate(-40px, 100px) scale(1.05); } }
+        @keyframes orbFloat2 { 0%, 100% { transform: translate(0, 0) scale(1); } 25% { transform: translate(-100px, -60px) scale(1.08); } 50% { transform: translate(-50px, -130px) scale(0.9); } 75% { transform: translate(60px, -80px) scale(1.05); } }
+        @keyframes orbFloat3 { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(-80px, -100px) scale(1.15); } 66% { transform: translate(50px, 60px) scale(0.85); } }
+
+        @media (max-width: 600px) {
+            .orb { filter: blur(60px); }
+        }
+
+        /* ── Pulse rings ── */
+        .pulse-ring {
+            position: fixed; top: 50%; left: 50%; width: 10px; height: 10px;
+            border-radius: 50%; border: 1px solid rgba(var(--accent-rgb), 0.15);
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: none; z-index: 0;
+            animation: pulseExpand 6s ease-out infinite;
+        }
+        .pulse-ring:nth-child(2) { animation-delay: 2s; }
+        .pulse-ring:nth-child(3) { animation-delay: 4s; }
+        @keyframes pulseExpand {
+            0% { width: 10px; height: 10px; opacity: 0.6; border-color: rgba(var(--accent-rgb), 0.2); }
+            100% { width: 900px; height: 900px; opacity: 0; border-color: rgba(var(--accent-rgb), 0); }
+        }
+
+        #particles { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+        #thrustTrail { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+        .scanlines {
+            position: fixed; inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.04) 2px, rgba(0, 0, 0, 0.04) 4px);
+            pointer-events: none; z-index: 100;
+        }
+
+        /* ── Rocket ── */
+        .free-rocket {
+            position: fixed;
+            width: var(--rocket-w); height: var(--rocket-h);
+            pointer-events: none; z-index: 3;
+            opacity: 0.5;
+            filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.15));
+            transition: opacity 0.5s ease, filter 0.5s ease;
+        }
+        .free-rocket.cruising { opacity: 0.65; filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.25)); }
+        .free-rocket.boosting { opacity: 1; filter: drop-shadow(0 0 14px rgba(var(--accent-rgb), 0.5)) drop-shadow(0 0 40px rgba(var(--accent-rgb), 0.15)); }
+        .free-rocket svg { width: 100%; height: 100%; }
+
+        .flame-outer, .flame-mid, .flame-inner { transform-box: fill-box; transform-origin: top center; }
+        .flame-outer { animation: flameWave1 0.18s ease-in-out infinite alternate; }
+        .flame-mid   { animation: flameWave2 0.14s ease-in-out infinite alternate; }
+        .flame-inner { animation: flameWave3 0.1s ease-in-out infinite alternate; }
+        @keyframes flameWave1 { 0% { transform: scaleY(0.85) scaleX(0.9); } 100% { transform: scaleY(1.15) scaleX(1.1); } }
+        @keyframes flameWave2 { 0% { transform: scaleY(0.8) scaleX(0.85); } 100% { transform: scaleY(1.2) scaleX(1.15); } }
+        @keyframes flameWave3 { 0% { transform: scaleY(0.75) scaleX(0.8); } 100% { transform: scaleY(1.25) scaleX(1.2); } }
+        .free-rocket.boosting .flame-outer { animation-duration: 0.08s; }
+        .free-rocket.boosting .flame-mid   { animation-duration: 0.06s; }
+        .free-rocket.boosting .flame-inner { animation-duration: 0.04s; }
+
+        /* ── Tooltip ── */
+        .rocket-tooltip {
+            position: fixed; z-index: 4; pointer-events: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.45rem, 1.2vw, 0.55rem);
+            line-height: 1.6; letter-spacing: 0.03em; white-space: nowrap;
+            padding: clamp(4px, 0.8vw, 6px) clamp(6px, 1.2vw, 10px);
+            background: rgba(10, 10, 10, 0.85);
+            border: 1px solid rgba(var(--accent-rgb), 0.12);
+            opacity: 0; transform: translateY(4px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+        }
+        .rocket-tooltip.visible { opacity: 1; transform: translateY(0); }
+        .rocket-tooltip.dim { opacity: 0.2; transform: translateY(2px); }
+        .tt-label { color: #444; font-weight: 300; }
+        .tt-val { color: var(--muted); font-weight: 400; }
+        .tt-val.active { color: var(--accent); text-shadow: 0 0 6px rgba(var(--accent-rgb), 0.3); }
+        .tt-bar-track {
+            display: inline-block; width: clamp(32px, 6vw, 48px); height: 3px;
+            background: #1a1a1a; vertical-align: middle; margin-left: 4px;
+            border-radius: 1px; overflow: hidden; position: relative; top: -1px;
+        }
+        .tt-bar-fill { height: 100%; background: var(--accent); border-radius: 1px; box-shadow: 0 0 4px rgba(var(--accent-rgb), 0.3); transition: width 0.15s ease; }
+
+        @media (max-width: 480px) { .rocket-tooltip { display: none; } }
+
+        /* ── Terminal ── */
+        .terminal { position: relative; z-index: 10; text-align: center; opacity: 0; animation: fadeIn 0.8s ease 0.2s forwards; padding: 0 20px; }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .command-line {
+            font-size: clamp(1.1rem, 5.5vw, 2.2rem); font-weight: 500; color: var(--fg);
+            display: inline-flex; align-items: center; letter-spacing: -0.02em; white-space: nowrap;
+        }
+        .prompt-symbol { color: var(--accent); margin-right: clamp(2px, 0.5vw, 4px); user-select: none; text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3); }
+        .cursor-blink {
+            display: inline-block; width: clamp(6px, 1.5vw, 10px); height: 1.15em;
+            background-color: var(--accent); margin-left: 2px; vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+            box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5), 0 0 20px rgba(var(--accent-rgb), 0.15);
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .title {
+            margin-top: clamp(10px, 2vw, 16px);
+            font-size: clamp(0.55rem, 2vw, 0.88rem);
+            color: var(--muted); font-weight: 300; letter-spacing: 0.18em;
+            text-transform: uppercase; opacity: 0; transform: translateY(6px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .title.visible { opacity: 1; transform: translateY(0); }
+
+        .cta {
+            display: inline-block;
+            margin-top: clamp(28px, 5vw, 44px);
+            padding: clamp(9px, 1.8vw, 11px) clamp(16px, 3.5vw, 28px);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.6rem, 1.8vw, 0.82rem); font-weight: 400;
+            color: var(--muted); text-decoration: none; border: 1px solid #222;
+            letter-spacing: 0.06em; cursor: none;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.7s ease, transform 0.7s ease,
+                        color 0.3s ease, border-color 0.3s ease,
+                        box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .cta.visible { opacity: 1; transform: translateY(0); }
+        .cta:hover {
+            color: var(--accent); border-color: rgba(var(--accent-rgb), 0.5);
+            box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.1), 0 0 45px rgba(var(--accent-rgb), 0.05), inset 0 0 14px rgba(var(--accent-rgb), 0.03);
+            background-color: rgba(var(--accent-rgb), 0.03); text-shadow: 0 0 8px rgba(var(--accent-rgb), 0.3);
+        }
+        .cta:active { transform: scale(0.97); }
+
+        .click-ripple {
+            position: fixed; width: 10px; height: 10px; border-radius: 50%;
+            border: 1px solid rgba(var(--accent-rgb), 0.5);
+            pointer-events: none; z-index: 5;
+            transform: translate(-50%, -50%) scale(1);
+            animation: rippleOut 0.7s ease-out forwards;
+        }
+        @keyframes rippleOut { 0% { width: 10px; height: 10px; opacity: 0.7; } 100% { width: 120px; height: 120px; opacity: 0; } }
+
+        .version { position: fixed; bottom: clamp(10px, 2vw, 20px); right: clamp(12px, 2vw, 24px); font-size: 0.55rem; color: #222; z-index: 1; letter-spacing: 0.05em; user-select: none; }
+        .hint {
+            position: fixed; bottom: clamp(10px, 2vw, 20px); left: clamp(12px, 2vw, 24px);
+            font-size: clamp(0.4rem, 1.2vw, 0.55rem); color: #1a1a1a; z-index: 1;
+            letter-spacing: 0.04em; user-select: none;
+            font-family: 'JetBrains Mono', monospace;
+            opacity: 0; animation: hintFade 4s ease 3s forwards;
+        }
+        @keyframes hintFade { 0% { opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; } }
+
+        /* Hide hint on touch-only since tapping is intuitive */
+        @media (hover: none) { .hint { display: none; } }
+
+        /* Safe area insets for notched devices */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .version { bottom: calc(clamp(10px, 2vw, 20px) + env(safe-area-inset-bottom)); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .orb, .pulse-ring, .grid-layer, .flame-outer, .flame-mid, .flame-inner { animation: none !important; }
+            #particles, #thrustTrail { display: none; }
+            .free-rocket { display: none; }
+            .rocket-tooltip { display: none; }
+        }
+    </style>
 </head>
 <body>
-  <button class="theme-toggler" aria-label="Toggle theme">
-    <i class="fas fa-sun sun"></i>
-    <i class="fas fa-moon moon"></i>
-  </button>
 
-  <div class="card">
-    <div class="profile-emoji">👨💻</div>
-    <h1>Bishal Gharti Chhetri</h1>
-    <p>C#.NET | Lecturer | SE</p>
-    <div class="social-links">
-      <a href="https://linkedin.com/in/bishalgc" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-      <a href="https://github.com/bislerium" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-      <a href="mailto:hello.bishalgc@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+    <div class="cursor-crosshair" id="cursorCross">
+        <span class="ch-h"></span>
+        <span class="ch-v"></span>
     </div>
-  </div>
-  
-  <script src="js/script.js"></script>
+
+    <div class="grid-layer"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="pulse-ring"></div>
+    <div class="pulse-ring"></div>
+    <div class="pulse-ring"></div>
+    <canvas id="particles"></canvas>
+    <canvas id="thrustTrail"></canvas>
+
+    <div class="free-rocket" id="freeRocket">
+        <svg viewBox="0 0 40 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 4 C20 4, 8 28, 8 50 L32 50 C32 28, 20 4, 20 4Z" stroke="#A78BFA" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+            <path d="M20 8 C20 8, 14 26, 14 42" stroke="rgba(167,139,250,0.2)" stroke-width="0.6" fill="none"/>
+            <circle cx="20" cy="30" r="4" stroke="#A78BFA" stroke-width="1" fill="rgba(167,139,250,0.06)"/>
+            <circle cx="18.5" cy="28.5" r="1" fill="rgba(167,139,250,0.3)"/>
+            <path d="M8 46 L2 58 L8 54Z" stroke="#A78BFA" stroke-width="1" fill="rgba(167,139,250,0.04)" stroke-linejoin="round"/>
+            <path d="M32 46 L38 58 L32 54Z" stroke="#A78BFA" stroke-width="1" fill="rgba(167,139,250,0.04)" stroke-linejoin="round"/>
+            <line x1="8" y1="50" x2="32" y2="50" stroke="#A78BFA" stroke-width="0.8" opacity="0.4"/>
+            <path class="flame-outer" d="M12 50 Q14 68, 20 76 Q26 68, 28 50" fill="rgba(167,139,250,0.12)" stroke="none"/>
+            <path class="flame-mid" d="M15 50 Q17 64, 20 70 Q23 64, 25 50" fill="rgba(167,139,250,0.25)" stroke="none"/>
+            <path class="flame-inner" d="M17.5 50 Q19 59, 20 64 Q21 59, 22.5 50" fill="rgba(196,181,253,0.45)" stroke="none"/>
+        </svg>
+    </div>
+
+    <div class="rocket-tooltip" id="rocketTooltip">
+        <div><span class="tt-label">SPD </span><span class="tt-val" id="ttSpeed">0.00</span></div>
+        <div><span class="tt-label">THR </span><span class="tt-val" id="ttThrust">IDLE</span><span class="tt-bar-track"><span class="tt-bar-fill" id="ttBar" style="width:0%"></span></span></div>
+    </div>
+
+    <div class="scanlines"></div>
+
+    <div class="terminal">
+        <div class="command-line">
+            <span class="prompt-symbol">&gt;</span><span id="typed-text"></span><span class="cursor-blink"></span>
+        </div>
+        <div class="title" id="title">Software Engineer | Optimizing Code and Architecture</div>
+        <a href="https://www.linkedin.com/in/bishalgc/" target="_blank" rel="noopener noreferrer" class="cta" id="cta">[ INITIALIZE_LINKEDIN ]</a>
+    </div>
+
+    <div class="version">v1.0.0</div>
+    <div class="hint">// click anywhere to boost</div>
+
+    <script>
+        /* ── Device detection ── */
+        let isTouchDevice = false;
+        document.addEventListener('touchstart', () => { isTouchDevice = true; }, { once: true, passive: true });
+
+        function getResponsiveConfig() {
+            const w = window.innerWidth;
+            if (w < 500)  return { particles: 15, connectDist: 0, maxTrail: 80,  rocketPad: 40, wanderMargin: 40,  proxRange: 0 };
+            if (w < 768)  return { particles: 25, connectDist: 0, maxTrail: 100, rocketPad: 50, wanderMargin: 60,  proxRange: 0 };
+            if (w < 1024) return { particles: 35, connectDist: 110, maxTrail: 140, rocketPad: 60, wanderMargin: 80,  proxRange: 130 };
+            return                  { particles: 55, connectDist: 140, maxTrail: 200, rocketPad: 70, wanderMargin: 100, proxRange: 130 };
+        }
+
+        let cfg = getResponsiveConfig();
+        window.addEventListener('resize', () => { cfg = getResponsiveConfig(); resizeAll(); });
+
+        /* ── Cursor (desktop only) ── */
+        const dot   = document.getElementById('cursorDot');
+        const ring  = document.getElementById('cursorRing');
+        const cross = document.getElementById('cursorCross');
+        let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+        let ringX = mouseX, ringY = mouseY;
+        let crossX = mouseX, crossY = mouseY;
+        let mouseActive = false;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseActive = true;
+            mouseX = e.clientX; mouseY = e.clientY;
+            dot.style.left = mouseX + 'px';
+            dot.style.top  = mouseY + 'px';
+        });
+
+        document.addEventListener('mouseleave', () => { dot.style.opacity = ring.style.opacity = cross.style.opacity = '0'; });
+        document.addEventListener('mouseenter', () => { dot.style.opacity = ring.style.opacity = cross.style.opacity = '1'; });
+
+        (function animCursor() {
+            ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
+            crossX += (mouseX - crossX) * 0.25; crossY += (mouseY - crossY) * 0.25;
+            ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
+            cross.style.left = crossX + 'px'; cross.style.top = crossY + 'px';
+            requestAnimationFrame(animCursor);
+        })();
+
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => { dot.classList.add('hovering'); ring.classList.add('hovering'); cross.classList.add('hovering'); });
+            el.addEventListener('mouseleave', () => { dot.classList.remove('hovering'); ring.classList.remove('hovering'); cross.classList.remove('hovering'); });
+        });
+
+        /* ── Typing ── */
+        const typedEl = document.getElementById('typed-text');
+        const titleEl = document.getElementById('title');
+        const ctaEl   = document.getElementById('cta');
+        let ci = 0;
+        const name = 'Bishal Gharti Chhetri';
+
+        function typeNext() {
+            if (ci < name.length) { typedEl.textContent += name.charAt(ci++); setTimeout(typeNext, 75 + Math.random() * 50); }
+            else { setTimeout(() => titleEl.classList.add('visible'), 350); setTimeout(() => ctaEl.classList.add('visible'), 750); }
+        }
+        setTimeout(typeNext, 800);
+
+        /* ── Scramble ── */
+        const orig = '[ INITIALIZE_LINKEDIN ]';
+        const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?';
+        ctaEl.addEventListener('mouseenter', function () {
+            let r = 0;
+            const iv = setInterval(() => {
+                ctaEl.textContent = orig.split('').map((c, i) => i < r ? orig[i] : glyphs[Math.floor(Math.random() * glyphs.length)]).join('');
+                if (++r > orig.length) { clearInterval(iv); ctaEl.textContent = orig; }
+            }, 38);
+        });
+
+        /* ── Click/tap to boost ── */
+        function handleBoost(x, y) {
+            if (cfg.proxRange === 0 && !isTouchDevice) return; /* skip on desktop if no proximity */
+            rocket.boostFuel = 1.0;
+            rocket.boostX = x;
+            rocket.boostY = y;
+
+            for (let i = 0; i < 8; i++) {
+                const a = Math.random() * Math.PI * 2;
+                trail.push({ x, y, vx: Math.cos(a) * (1 + Math.random() * 2), vy: Math.sin(a) * (1 + Math.random() * 2), life: 1, decay: 0.025 + Math.random() * 0.02, size: 1.5 + Math.random() * 2 });
+            }
+
+            const rip = document.createElement('div');
+            rip.className = 'click-ripple';
+            rip.style.left = x + 'px'; rip.style.top = y + 'px';
+            document.body.appendChild(rip);
+            setTimeout(() => rip.remove(), 700);
+        }
+
+        document.addEventListener('click', (e) => { if (!e.target.closest('.cta')) handleBoost(e.clientX, e.clientY); });
+        document.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.cta')) return;
+            const t = e.touches[0];
+            handleBoost(t.clientX, t.clientY);
+        }, { passive: true });
+
+        /* ── Canvases ── */
+        const tCanvas = document.getElementById('thrustTrail');
+        const tCtx    = tCanvas.getContext('2d');
+        const bgC     = document.getElementById('particles');
+        const bgX     = bgC.getContext('2d');
+        let tW, tH, bW, bH;
+
+        function resizeAll() {
+            tW = tCanvas.width  = window.innerWidth; tH = tCanvas.height = window.innerHeight;
+            bW = bgC.width  = window.innerWidth;     bH = bgC.height = window.innerHeight;
+        }
+        resizeAll();
+
+        /* ── Rocket physics ── */
+        const rocketEl  = document.getElementById('freeRocket');
+        const tooltipEl = document.getElementById('rocketTooltip');
+        const ttSpeed   = document.getElementById('ttSpeed');
+        const ttThrust  = document.getElementById('ttThrust');
+        const ttBar     = document.getElementById('ttBar');
+
+        const rocket = {
+            x: window.innerWidth * 0.7, y: window.innerHeight * 0.35,
+            vx: 0, vy: 0, angle: 0,
+            wanderX: window.innerWidth * 0.5, wanderY: window.innerHeight * 0.4,
+            boostFuel: 0, boostX: 0, boostY: 0,
+            speed: 0, trailTick: 0
+        };
+
+        function pickWander() {
+            const m = cfg.wanderMargin;
+            rocket.wanderX = m + Math.random() * (window.innerWidth - m * 2);
+            rocket.wanderY = m + Math.random() * (window.innerHeight - m * 2);
+        }
+        pickWander();
+
+        let lastWander = performance.now();
+
+        function shortAngle(from, to) { return ((to - from) % 360 + 540) % 360 - 180; }
+
+        /* Get rendered rocket dimensions for accurate flame offset */
+        function getRocketExitOffset() {
+            const rect = rocketEl.getBoundingClientRect();
+            return rect.height / 2;
+        }
+
+        function updateRocket(now) {
+            if (now - lastWander > 4000 + Math.random() * 3000) { pickWander(); lastWander = now; }
+
+            let tx, ty, accel;
+
+            if (rocket.boostFuel > 0) {
+                tx = rocket.boostX; ty = rocket.boostY;
+                accel = 0.06 + rocket.boostFuel * 0.04;
+                rocket.boostFuel -= 0.012;
+                if (rocket.boostFuel <= 0) rocket.boostFuel = 0;
+            } else {
+                const mInf = 0.35;
+                tx = rocket.wanderX * (1 - mInf) + mouseX * mInf;
+                ty = rocket.wanderY * (1 - mInf) + mouseY * mInf;
+                accel = 0.01;
+
+                if (cfg.proxRange > 0 && mouseActive) {
+                    const dx = rocket.x - mouseX, dy = rocket.y - mouseY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < cfg.proxRange) {
+                        const prox = 1 - dist / cfg.proxRange;
+                        tx = tx * (1 - prox * 0.6) + mouseX * (prox * 0.6);
+                        ty = ty * (1 - prox * 0.6) + mouseY * (prox * 0.6);
+                        accel += prox * 0.025;
+                    }
+                }
+            }
+
+            const dx = tx - rocket.x, dy = ty - rocket.y;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+            rocket.vx += (dx / dist) * accel;
+            rocket.vy += (dy / dist) * accel;
+
+            const damp = rocket.boostFuel > 0 ? 0.975 : 0.985;
+            rocket.vx *= damp; rocket.vy *= damp;
+
+            rocket.speed = Math.sqrt(rocket.vx * rocket.vx + rocket.vy * rocket.vy);
+            const maxSpd = rocket.boostFuel > 0 ? 5 : 1.6;
+            if (rocket.speed > maxSpd) {
+                rocket.vx = (rocket.vx / rocket.speed) * maxSpd;
+                rocket.vy = (rocket.vy / rocket.speed) * maxSpd;
+                rocket.speed = maxSpd;
+            }
+
+            rocket.x += rocket.vx; rocket.y += rocket.vy;
+
+            const pad = cfg.rocketPad;
+            if (rocket.x < -pad) rocket.x = window.innerWidth + pad;
+            if (rocket.x > window.innerWidth + pad) rocket.x = -pad;
+            if (rocket.y < -pad) rocket.y = window.innerHeight + pad;
+            if (rocket.y > window.innerHeight + pad) rocket.y = -pad;
+
+            const targetAngle = Math.atan2(rocket.vy, rocket.vx) * (180 / Math.PI) + 90;
+            rocket.angle += shortAngle(rocket.angle, targetAngle) * (rocket.boostFuel > 0 ? 0.12 : 0.06);
+
+            rocketEl.classList.remove('boosting', 'cruising');
+            if (rocket.boostFuel > 0) rocketEl.classList.add('boosting');
+            else if (rocket.speed > 0.8) rocketEl.classList.add('cruising');
+
+            rocketEl.style.left = rocket.x + 'px';
+            rocketEl.style.top  = rocket.y + 'px';
+            rocketEl.style.transform = `translate(-50%, -50%) rotate(${rocket.angle}deg)`;
+
+            /* Tooltip */
+            updateTooltip();
+
+            rocket.trailTick++;
+            const spawnRate = rocket.boostFuel > 0 ? 1 : (rocket.speed > 1 ? 2 : 3);
+            if (rocket.trailTick % spawnRate === 0) spawnTrail(rocket.boostFuel > 0);
+        }
+
+        function updateTooltip() {
+            if (window.innerWidth < 480) return; /* hidden by CSS */
+
+            const ttDx = rocket.x - mouseX, ttDy = rocket.y - mouseY;
+            const ttDist = Math.sqrt(ttDx * ttDx + ttDy * ttDy);
+            const isNear = cfg.proxRange > 0 && ttDist < cfg.proxRange;
+
+            tooltipEl.classList.remove('visible', 'dim');
+
+            if (isNear) {
+                tooltipEl.classList.add('visible');
+                const rad = rocket.angle * (Math.PI / 180);
+                const noseX = rocket.x + Math.sin(-rad) * -30;
+                const noseY = rocket.y + Math.cos(-rad) * -30;
+                let ttLeft = noseX + 22, ttTop = noseY - 16;
+                if (ttLeft + 140 > window.innerWidth - 10) ttLeft = noseX - 156;
+                if (ttTop < 10) ttTop = 10;
+                if (ttTop + 40 > window.innerHeight - 10) ttTop = window.innerHeight - 50;
+                tooltipEl.style.left = ttLeft + 'px'; tooltipEl.style.top = ttTop + 'px';
+            } else {
+                tooltipEl.classList.add('dim');
+                tooltipEl.style.left = (rocket.x + 24) + 'px'; tooltipEl.style.top = (rocket.y - 18) + 'px';
+            }
+
+            ttSpeed.textContent = rocket.speed.toFixed(2);
+            const thrustPct = Math.min(100, (rocket.speed / 5) * 100);
+            ttBar.style.width = thrustPct + '%';
+
+            if (rocket.boostFuel > 0) {
+                ttThrust.textContent = 'BOOST'; ttThrust.classList.add('active');
+                ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 6px rgba(var(--accent-rgb), 0.5)';
+            } else if (rocket.speed > 0.8) {
+                ttThrust.textContent = 'CRUISE'; ttThrust.classList.add('active');
+                ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 4px rgba(var(--accent-rgb), 0.3)';
+            } else {
+                ttThrust.textContent = 'IDLE'; ttThrust.classList.remove('active');
+                ttBar.style.background = '#333'; ttBar.style.boxShadow = 'none';
+            }
+        }
+
+        /* ── Trail ── */
+        const trail = [];
+
+        function spawnTrail(heavy) {
+            const rad = rocket.angle * (Math.PI / 180);
+            const sinA = Math.sin(rad), cosA = Math.cos(rad);
+            const flameDirX = -sinA, flameDirY = cosA;
+            const perpX = cosA, perpY = -sinA;
+            const exitOffset = getRocketExitOffset();
+            const exitX = rocket.x + flameDirX * exitOffset;
+            const exitY = rocket.y + flameDirY * exitOffset;
+            const count = heavy ? 3 : 1;
+
+            for (let i = 0; i < count; i++) {
+                const spread = (Math.random() - 0.5) * 2;
+                const fwdDist = 2 + Math.random() * 6;
+                trail.push({
+                    x: exitX + flameDirX * fwdDist + perpX * spread * 6,
+                    y: exitY + flameDirY * fwdDist + perpY * spread * 6,
+                    vx: flameDirX * (0.4 + Math.random() * 0.8) + perpX * spread * 0.15,
+                    vy: flameDirY * (0.4 + Math.random() * 0.8) + perpY * spread * 0.15,
+                    life: 1, decay: 0.012 + Math.random() * 0.018,
+                    size: heavy ? (1.5 + Math.random() * 3) : (0.8 + Math.random() * 2)
+                });
+            }
+            while (trail.length > cfg.maxTrail) trail.shift();
+        }
+
+        function drawTrail() {
+            tCtx.clearRect(0, 0, tW, tH);
+            for (let i = trail.length - 1; i >= 0; i--) {
+                const p = trail[i];
+                p.x += p.vx; p.y += p.vy; p.vx *= 0.97; p.vy *= 0.97;
+                p.life -= p.decay; p.size *= 0.985;
+                if (p.life <= 0) { trail.splice(i, 1); continue; }
+                tCtx.beginPath();
+                tCtx.arc(p.x, p.y, Math.max(0.1, p.size), 0, Math.PI * 2);
+                tCtx.fillStyle = `rgba(167, 139, 250, ${p.life * 0.4})`;
+                tCtx.fill();
+            }
+        }
+
+        /* ── Background particles ── */
+        let bgParticles = [];
+
+        function initBgParticles() {
+            bgParticles = [];
+            for (let i = 0; i < cfg.particles; i++) {
+                bgParticles.push({
+                    x: Math.random() * bW, y: Math.random() * bH,
+                    vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+                    r: Math.random() * 1.5 + 0.5,
+                    ba: Math.random() * 0.4 + 0.1, a: 0,
+                    ps: Math.random() * 0.01 + 0.005, po: Math.random() * Math.PI * 2
+                });
+            }
+        }
+        initBgParticles();
+
+        let fr = 0;
+        function drawBg() {
+            fr++;
+            bgX.clearRect(0, 0, bW, bH);
+
+            for (const p of bgParticles) {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = bW; if (p.x > bW) p.x = 0;
+                if (p.y < 0) p.y = bH; if (p.y > bH) p.y = 0;
+                p.a = p.ba + Math.sin(fr * p.ps + p.po) * 0.15;
+                bgX.beginPath();
+                bgX.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                bgX.fillStyle = `rgba(167, 139, 250, ${Math.max(0, p.a)})`;
+                bgX.fill();
+            }
+
+            /* Connection lines only on larger screens */
+            if (cfg.connectDist > 0) {
+                for (let i = 0; i < bgParticles.length; i++) {
+                    for (let j = i + 1; j < bgParticles.length; j++) {
+                        const dx = bgParticles[i].x - bgParticles[j].x, dy = bgParticles[i].y - bgParticles[j].y;
+                        const d = Math.sqrt(dx * dx + dy * dy);
+                        if (d < cfg.connectDist) {
+                            bgX.beginPath();
+                            bgX.moveTo(bgParticles[i].x, bgParticles[i].y);
+                            bgX.lineTo(bgParticles[j].x, bgParticles[j].y);
+                            bgX.strokeStyle = `rgba(167, 139, 250, ${(1 - d / cfg.connectDist) * 0.08})`;
+                            bgX.lineWidth = 0.5;
+                            bgX.stroke();
+                        }
+                    }
+                }
+            }
+        }
+
+        /* ── Main loop ── */
+        (function loop(now) {
+            updateRocket(now);
+            drawTrail();
+            drawBg();
+            requestAnimationFrame(loop);
+        })(performance.now());
+    </script>
 </body>
 </html>
