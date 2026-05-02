@@ -753,6 +753,27 @@
             transform: scale(0.97);
         }
 
+        .cta-secondary {
+            border-color: #1a1a1a;
+            color: #444;
+            transition-delay: 0.1s;
+        }
+
+        .cta-secondary.visible {
+            opacity: 0.7;
+        }
+
+        .cta-secondary:hover {
+            opacity: 1;
+        }
+
+        .cta-secondary:focus-visible {
+            outline: none;
+            color: var(--accent);
+            border-color: rgba(var(--accent-rgb), 0.4);
+            box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+        }
+
         .click-ripple {
             position: fixed;
             width: 10px;
@@ -955,6 +976,8 @@
         <div class="title" id="title">Software Engineer &middot; Optimizing Code and Architecture</div>
         <a href="https://www.linkedin.com/in/bishalgc/" target="_blank" rel="noopener noreferrer" class="cta" id="cta">[
             CONNECT ]</a>
+        <a href="https://github.com/bislerium" target="_blank" rel="noopener noreferrer" class="cta cta-secondary"
+            id="ctaSecondary">[ SOURCE ]</a>
     </div>
 
     <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound">
@@ -1345,7 +1368,7 @@
             el.addEventListener('mouseleave', function () { dot.classList.remove('hovering'); ring.classList.remove('hovering'); cross.classList.remove('hovering'); });
         });
 
-        var typedEl = document.getElementById('typed-text'), titleEl = document.getElementById('title'), ctaEl = document.getElementById('cta'), ci = 0, fullName = 'Bishal Gharti Chhetri', typeEcho = document.getElementById('typeEcho');
+        var typedEl = document.getElementById('typed-text'), titleEl = document.getElementById('title'), ctaEl = document.getElementById('cta'), ctaSecondary = document.getElementById('ctaSecondary'), ci = 0, fullName = 'Bishal Gharti Chhetri', typeEcho = document.getElementById('typeEcho');
 
         function typeNext() {
             if (ci < fullName.length) {
@@ -1358,10 +1381,11 @@
             } else {
                 setTimeout(function () { titleEl.classList.add('visible'); }, 350);
                 setTimeout(function () { ctaEl.classList.add('visible'); ctaVisible = true; }, 750);
+                setTimeout(function () { ctaSecondary.classList.add('visible'); }, 950);
             }
         }
 
-        var initOverlay = document.getElementById('initOverlay'), initPromptEl = document.getElementById('initPrompt'), initSubEl = document.getElementById('initSub'), ctaScrambleText = '> open profile --target linkedin', glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?', ctaVisible = false;
+        var initOverlay = document.getElementById('initOverlay'), initPromptEl = document.getElementById('initPrompt'), initSubEl = document.getElementById('initSub'), ctaScrambleText = '> open -p --t linkedin', glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?', ctaVisible = false;
 
         initPromptEl.addEventListener('mouseenter', function () {
             var baseText = '> ClientHello', r = 0;
