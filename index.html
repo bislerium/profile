@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bishal GC</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A0A0A'/%3E%3Ctext x='9' y='24' font-family='monospace' font-size='22' font-weight='700' fill='%23A78BFA'%3E%3E%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230A0A0A'/><text x='9' y='23' font-family='monospace' font-size='20' font-weight='700' fill='%23A78BFA'>&gt;</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0A0A0A;
@@ -32,7 +33,6 @@
 
         a, button { cursor: none; touch-action: manipulation; }
 
-        /* ── Custom cursor (hover-only devices) ── */
         .cursor-dot {
             position: fixed; width: 6px; height: 6px;
             background: var(--accent); border-radius: 50%;
@@ -62,13 +62,11 @@
         .cursor-crosshair .ch-v { width: 1px; height: 14px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
         .cursor-crosshair.hovering { opacity: 0; }
 
-        /* Touch: restore native cursor, hide custom cursor only */
         @media (hover: none) {
             .cursor-dot, .cursor-ring, .cursor-crosshair { display: none !important; }
             html, body, a, button { cursor: auto !important; }
         }
 
-        /* ── Grid ── */
         .grid-layer {
             position: fixed; inset: 0;
             background-image:
@@ -80,7 +78,6 @@
         }
         @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 48px 48px; } }
 
-        /* ── Orbs ── */
         .orb { position: fixed; border-radius: 50%; pointer-events: none; filter: blur(100px); z-index: 0; will-change: transform; }
         .orb-1 { width: clamp(250px, 40vw, 500px); height: clamp(250px, 40vw, 500px); background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08) 0%, transparent 70%); top: -10%; left: -5%; animation: orbFloat1 18s ease-in-out infinite; }
         .orb-2 { width: clamp(200px, 32vw, 400px); height: clamp(200px, 32vw, 400px); background: radial-gradient(circle, rgba(var(--accent-rgb), 0.05) 0%, transparent 70%); bottom: -15%; right: -8%; animation: orbFloat2 22s ease-in-out infinite; }
@@ -90,11 +87,8 @@
         @keyframes orbFloat2 { 0%, 100% { transform: translate(0, 0) scale(1); } 25% { transform: translate(-100px, -60px) scale(1.08); } 50% { transform: translate(-50px, -130px) scale(0.9); } 75% { transform: translate(60px, -80px) scale(1.05); } }
         @keyframes orbFloat3 { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(-80px, -100px) scale(1.15); } 66% { transform: translate(50px, 60px) scale(0.85); } }
 
-        @media (max-width: 600px) {
-            .orb { filter: blur(60px); }
-        }
+        @media (max-width: 600px) { .orb { filter: blur(60px); } }
 
-        /* ── Pulse rings ── */
         .pulse-ring {
             position: fixed; top: 50%; left: 50%; width: 10px; height: 10px;
             border-radius: 50%; border: 1px solid rgba(var(--accent-rgb), 0.15);
@@ -109,8 +103,10 @@
             100% { width: 900px; height: 900px; opacity: 0; border-color: rgba(var(--accent-rgb), 0); }
         }
 
-        #particles { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
-        #thrustTrail { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+        #particles, #planets, #thrustTrail { position: fixed; inset: 0; pointer-events: none; }
+        #particles { z-index: 1; }
+        #planets { z-index: 2; }
+        #thrustTrail { z-index: 3; }
 
         .scanlines {
             position: fixed; inset: 0;
@@ -118,12 +114,9 @@
             pointer-events: none; z-index: 100;
         }
 
-        /* ── Rocket ── */
         .free-rocket {
-            position: fixed;
-            width: var(--rocket-w); height: var(--rocket-h);
-            pointer-events: none; z-index: 3;
-            opacity: 0.5;
+            position: fixed; width: var(--rocket-w); height: var(--rocket-h);
+            pointer-events: none; z-index: 4; opacity: 0.5;
             filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.15));
             transition: opacity 0.5s ease, filter 0.5s ease;
         }
@@ -142,9 +135,8 @@
         .free-rocket.boosting .flame-mid   { animation-duration: 0.06s; }
         .free-rocket.boosting .flame-inner { animation-duration: 0.04s; }
 
-        /* ── Tooltip ── */
         .rocket-tooltip {
-            position: fixed; z-index: 4; pointer-events: none;
+            position: fixed; z-index: 5; pointer-events: none;
             font-family: 'JetBrains Mono', monospace;
             font-size: clamp(0.45rem, 1.2vw, 0.55rem);
             line-height: 1.6; letter-spacing: 0.03em; white-space: nowrap;
@@ -169,17 +161,23 @@
 
         @media (max-width: 480px) { .rocket-tooltip { display: none; } }
 
-        /* ── Terminal ── */
-        .terminal { position: relative; z-index: 10; text-align: center; opacity: 0; animation: fadeIn 0.8s ease 0.2s forwards; padding: 0 20px; }
+        .terminal {
+            position: relative; z-index: 10; text-align: center;
+            opacity: 0; animation: fadeIn 0.8s ease 0.2s forwards;
+            padding: 0 20px;
+        }
         @keyframes fadeIn { to { opacity: 1; } }
 
         .command-line {
-            font-size: clamp(1.1rem, 5.5vw, 2.2rem); font-weight: 500; color: var(--fg);
+            font-size: clamp(1rem, 5vw, 2.2rem); font-weight: 500; color: var(--fg);
             display: inline-flex; align-items: center; letter-spacing: -0.02em; white-space: nowrap;
         }
-        .prompt-symbol { color: var(--accent); margin-right: clamp(2px, 0.5vw, 4px); user-select: none; text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3); }
+        .prompt-symbol {
+            color: var(--accent); margin-right: clamp(2px, 0.5vw, 4px);
+            user-select: none; text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3);
+        }
         .cursor-blink {
-            display: inline-block; width: clamp(6px, 1.5vw, 10px); height: 1.15em;
+            display: inline-block; width: clamp(5px, 1.2vw, 10px); height: 1.15em;
             background-color: var(--accent); margin-left: 2px; vertical-align: text-bottom;
             animation: blink 1s step-end infinite;
             box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5), 0 0 20px rgba(var(--accent-rgb), 0.15);
@@ -188,8 +186,8 @@
 
         .title {
             margin-top: clamp(10px, 2vw, 16px);
-            font-size: clamp(0.55rem, 2vw, 0.88rem);
-            color: var(--muted); font-weight: 300; letter-spacing: 0.18em;
+            font-size: clamp(0.42rem, 1.4vw, 0.72rem);
+            color: var(--muted); font-weight: 300; letter-spacing: 0.12em;
             text-transform: uppercase; opacity: 0; transform: translateY(6px);
             transition: opacity 0.7s ease, transform 0.7s ease;
         }
@@ -219,35 +217,31 @@
         .click-ripple {
             position: fixed; width: 10px; height: 10px; border-radius: 50%;
             border: 1px solid rgba(var(--accent-rgb), 0.5);
-            pointer-events: none; z-index: 5;
+            pointer-events: none; z-index: 6;
             transform: translate(-50%, -50%) scale(1);
             animation: rippleOut 0.7s ease-out forwards;
         }
         @keyframes rippleOut { 0% { width: 10px; height: 10px; opacity: 0.7; } 100% { width: 120px; height: 120px; opacity: 0; } }
 
-        .version { position: fixed; bottom: clamp(10px, 2vw, 20px); right: clamp(12px, 2vw, 24px); font-size: 0.55rem; color: #222; z-index: 1; letter-spacing: 0.05em; user-select: none; }
+        .version { position: fixed; bottom: clamp(10px, 2vw, 20px); right: clamp(12px, 2vw, 24px); font-size: 0.55rem; color: #222; z-index: 10; letter-spacing: 0.05em; user-select: none; }
         .hint {
             position: fixed; bottom: clamp(10px, 2vw, 20px); left: clamp(12px, 2vw, 24px);
-            font-size: clamp(0.4rem, 1.2vw, 0.55rem); color: #1a1a1a; z-index: 1;
+            font-size: clamp(0.4rem, 1.2vw, 0.55rem); color: #1a1a1a; z-index: 10;
             letter-spacing: 0.04em; user-select: none;
             font-family: 'JetBrains Mono', monospace;
-            opacity: 0; animation: hintFade 4s ease 3s forwards;
+            opacity: 0; animation: hintFade 5s ease 3s forwards;
         }
-        @keyframes hintFade { 0% { opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; } }
+        @keyframes hintFade { 0% { opacity: 0; } 10% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; } }
 
-        /* Hide hint on touch-only since tapping is intuitive */
         @media (hover: none) { .hint { display: none; } }
-
-        /* Safe area insets for notched devices */
         @supports (padding: env(safe-area-inset-bottom)) {
             .version { bottom: calc(clamp(10px, 2vw, 20px) + env(safe-area-inset-bottom)); }
         }
 
         @media (prefers-reduced-motion: reduce) {
             .orb, .pulse-ring, .grid-layer, .flame-outer, .flame-mid, .flame-inner { animation: none !important; }
-            #particles, #thrustTrail { display: none; }
-            .free-rocket { display: none; }
-            .rocket-tooltip { display: none; }
+            #particles, #planets, #thrustTrail { display: none; }
+            .free-rocket, .rocket-tooltip { display: none; }
         }
     </style>
 </head>
@@ -268,6 +262,7 @@
     <div class="pulse-ring"></div>
     <div class="pulse-ring"></div>
     <canvas id="particles"></canvas>
+    <canvas id="planets"></canvas>
     <canvas id="thrustTrail"></canvas>
 
     <div class="free-rocket" id="freeRocket">
@@ -296,47 +291,116 @@
         <div class="command-line">
             <span class="prompt-symbol">&gt;</span><span id="typed-text"></span><span class="cursor-blink"></span>
         </div>
-        <div class="title" id="title">Software Engineer | Optimizing Code and Architecture</div>
+        <div class="title" id="title">Software Engineer &middot; Optimizing Code and Architecture</div>
         <a href="https://www.linkedin.com/in/bishalgc/" target="_blank" rel="noopener noreferrer" class="cta" id="cta">[ INITIALIZE_LINKEDIN ]</a>
     </div>
 
     <div class="version">v1.0.0</div>
-    <div class="hint">// click anywhere to boost</div>
+    <div class="hint">// click to boost &middot; tap planets to attract</div>
 
     <script>
-        /* ── Device detection ── */
-        let isTouchDevice = false;
-        document.addEventListener('touchstart', () => { isTouchDevice = true; }, { once: true, passive: true });
+        var isTouchDevice = false;
+        document.addEventListener('touchstart', function() { isTouchDevice = true; }, { once: true, passive: true });
 
         function getResponsiveConfig() {
-            const w = window.innerWidth;
-            if (w < 500)  return { particles: 15, connectDist: 0, maxTrail: 80,  rocketPad: 40, wanderMargin: 40,  proxRange: 0 };
-            if (w < 768)  return { particles: 25, connectDist: 0, maxTrail: 100, rocketPad: 50, wanderMargin: 60,  proxRange: 0 };
-            if (w < 1024) return { particles: 35, connectDist: 110, maxTrail: 140, rocketPad: 60, wanderMargin: 80,  proxRange: 130 };
-            return                  { particles: 55, connectDist: 140, maxTrail: 200, rocketPad: 70, wanderMargin: 100, proxRange: 130 };
+            var w = window.innerWidth;
+            if (w < 500)  return { particles: 15, connectDist: 0, maxTrail: 80,  rocketPad: 40, wanderMargin: 40,  proxRange: 0, planetScale: 0.55, gravMult: 0.4 };
+            if (w < 768)  return { particles: 25, connectDist: 0, maxTrail: 100, rocketPad: 50, wanderMargin: 60,  proxRange: 0, planetScale: 0.7,  gravMult: 0.6 };
+            if (w < 1024) return { particles: 35, connectDist: 110, maxTrail: 140, rocketPad: 60, wanderMargin: 80,  proxRange: 130, planetScale: 0.85, gravMult: 0.8 };
+            return                  { particles: 55, connectDist: 140, maxTrail: 200, rocketPad: 70, wanderMargin: 100, proxRange: 130, planetScale: 1.0, gravMult: 1.0 };
         }
 
-        let cfg = getResponsiveConfig();
-        window.addEventListener('resize', () => { cfg = getResponsiveConfig(); resizeAll(); });
+        var cfg = getResponsiveConfig();
+        var planets = [];
 
-        /* ── Cursor (desktop only) ── */
-        const dot   = document.getElementById('cursorDot');
-        const ring  = document.getElementById('cursorRing');
-        const cross = document.getElementById('cursorCross');
-        let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-        let ringX = mouseX, ringY = mouseY;
-        let crossX = mouseX, crossY = mouseY;
-        let mouseActive = false;
+        var plCanvas = document.getElementById('planets');
+        var plCtx = plCanvas.getContext('2d');
+        var tCanvas = document.getElementById('thrustTrail');
+        var tCtx = tCanvas.getContext('2d');
+        var bgC = document.getElementById('particles');
+        var bgX = bgC.getContext('2d');
 
-        document.addEventListener('mousemove', (e) => {
-            mouseActive = true;
-            mouseX = e.clientX; mouseY = e.clientY;
-            dot.style.left = mouseX + 'px';
-            dot.style.top  = mouseY + 'px';
+        function resizeAll() {
+            cfg = getResponsiveConfig();
+            tCanvas.width = window.innerWidth; tCanvas.height = window.innerHeight;
+            bgC.width = window.innerWidth;     bgC.height = window.innerHeight;
+            plCanvas.width = window.innerWidth; plCanvas.height = window.innerHeight;
+            for (var i = 0; i < planets.length; i++) {
+                var p = planets[i];
+                p.radius = p.baseRadius * cfg.planetScale;
+                p.gravRange = p.baseGravRange * cfg.planetScale * cfg.gravMult;
+                p.safeZone = p.radius * 2.2;
+                if (p.moon) p.moon.dist = p.moon.baseDist * cfg.planetScale;
+            }
+        }
+        resizeAll();
+        window.addEventListener('resize', resizeAll);
+
+        function initPlanets() {
+            var w = window.innerWidth, h = window.innerHeight;
+            var templates = [
+                { rx: 0.85, ry: 0.15, baseRadius: 18, color: [167,139,250], mass: 1.2, baseGravRange: 130, hasRing: false },
+                { rx: 0.12, ry: 0.78, baseRadius: 30, color: [124,58,237],  mass: 2.8, baseGravRange: 190, hasRing: true, ringColor: [167,139,250], ringTilt: -0.3 },
+                { rx: 0.78, ry: 0.75, baseRadius: 38, color: [79,70,229],   mass: 3.8, baseGravRange: 230, hasRing: false, moonData: { baseDist: 60, speed: 0.012, radius: 4, color: [167,139,250] } },
+                { rx: 0.2,  ry: 0.18, baseRadius: 11, color: [6,182,212],   mass: 0.6, baseGravRange: 90,  hasRing: false },
+                { rx: 0.55, ry: 0.88, baseRadius: 14, color: [139,92,246],  mass: 0.9, baseGravRange: 100, hasRing: true, ringColor: [139,92,246], ringTilt: 0.4 }
+            ];
+
+            for (var i = 0; i < templates.length; i++) {
+                var t = templates[i];
+                var s = cfg.planetScale;
+                var p = {
+                    x: w * t.rx, y: h * t.ry,
+                    vx: (Math.random() - 0.5) * 0.12,
+                    vy: (Math.random() - 0.5) * 0.12,
+                    baseRadius: t.baseRadius,
+                    radius: t.baseRadius * s,
+                    color: t.color,
+                    mass: t.mass,
+                    baseGravRange: t.baseGravRange,
+                    gravRange: t.baseGravRange * s * cfg.gravMult,
+                    safeZone: t.baseRadius * s * 2.2,
+                    hasRing: t.hasRing,
+                    ringColor: t.ringColor || t.color,
+                    ringTilt: t.ringTilt || 0,
+                    baseGlow: 0.06 + (t.mass / 3.8) * 0.06,
+                    glowIntensity: 0.06,
+                    pulseTimer: 0,
+                    rotation: Math.random() * Math.PI * 2,
+                    rotSpeed: (Math.random() - 0.5) * 0.004,
+                    moon: null
+                };
+
+                if (t.moonData) {
+                    p.moon = {
+                        baseDist: t.moonData.baseDist,
+                        dist: t.moonData.baseDist * s,
+                        speed: t.moonData.speed,
+                        angle: Math.random() * Math.PI * 2,
+                        radius: t.moonData.radius * s,
+                        color: t.moonData.color
+                    };
+                }
+
+                planets.push(p);
+            }
+        }
+        initPlanets();
+
+        /* ── Cursor ── */
+        var dot = document.getElementById('cursorDot');
+        var ring = document.getElementById('cursorRing');
+        var cross = document.getElementById('cursorCross');
+        var mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+        var ringX = mouseX, ringY = mouseY, crossX = mouseX, crossY = mouseY;
+        var mouseActive = false;
+
+        document.addEventListener('mousemove', function(e) {
+            mouseActive = true; mouseX = e.clientX; mouseY = e.clientY;
+            dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
         });
-
-        document.addEventListener('mouseleave', () => { dot.style.opacity = ring.style.opacity = cross.style.opacity = '0'; });
-        document.addEventListener('mouseenter', () => { dot.style.opacity = ring.style.opacity = cross.style.opacity = '1'; });
+        document.addEventListener('mouseleave', function() { dot.style.opacity = ring.style.opacity = cross.style.opacity = '0'; });
+        document.addEventListener('mouseenter', function() { dot.style.opacity = ring.style.opacity = cross.style.opacity = '1'; });
 
         (function animCursor() {
             ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
@@ -346,82 +410,47 @@
             requestAnimationFrame(animCursor);
         })();
 
-        document.querySelectorAll('a, button').forEach(el => {
-            el.addEventListener('mouseenter', () => { dot.classList.add('hovering'); ring.classList.add('hovering'); cross.classList.add('hovering'); });
-            el.addEventListener('mouseleave', () => { dot.classList.remove('hovering'); ring.classList.remove('hovering'); cross.classList.remove('hovering'); });
+        document.querySelectorAll('a, button').forEach(function(el) {
+            el.addEventListener('mouseenter', function() { dot.classList.add('hovering'); ring.classList.add('hovering'); cross.classList.add('hovering'); });
+            el.addEventListener('mouseleave', function() { dot.classList.remove('hovering'); ring.classList.remove('hovering'); cross.classList.remove('hovering'); });
         });
 
         /* ── Typing ── */
-        const typedEl = document.getElementById('typed-text');
-        const titleEl = document.getElementById('title');
-        const ctaEl   = document.getElementById('cta');
-        let ci = 0;
-        const name = 'Bishal Gharti Chhetri';
+        var typedEl = document.getElementById('typed-text');
+        var titleEl = document.getElementById('title');
+        var ctaEl = document.getElementById('cta');
+        var ci = 0;
+        var fullName = 'Bishal Gharti Chhetri';
 
         function typeNext() {
-            if (ci < name.length) { typedEl.textContent += name.charAt(ci++); setTimeout(typeNext, 75 + Math.random() * 50); }
-            else { setTimeout(() => titleEl.classList.add('visible'), 350); setTimeout(() => ctaEl.classList.add('visible'), 750); }
+            if (ci < fullName.length) {
+                typedEl.textContent += fullName.charAt(ci++);
+                setTimeout(typeNext, 55 + Math.random() * 35);
+            } else {
+                setTimeout(function() { titleEl.classList.add('visible'); }, 350);
+                setTimeout(function() { ctaEl.classList.add('visible'); }, 750);
+            }
         }
         setTimeout(typeNext, 800);
 
-        /* ── Scramble ── */
-        const orig = '[ INITIALIZE_LINKEDIN ]';
-        const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?';
-        ctaEl.addEventListener('mouseenter', function () {
-            let r = 0;
-            const iv = setInterval(() => {
-                ctaEl.textContent = orig.split('').map((c, i) => i < r ? orig[i] : glyphs[Math.floor(Math.random() * glyphs.length)]).join('');
+        var orig = '[ INITIALIZE_LINKEDIN ]';
+        var glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?';
+        ctaEl.addEventListener('mouseenter', function() {
+            var r = 0;
+            var iv = setInterval(function() {
+                ctaEl.textContent = orig.split('').map(function(c, i) { return i < r ? orig[i] : glyphs[Math.floor(Math.random() * glyphs.length)]; }).join('');
                 if (++r > orig.length) { clearInterval(iv); ctaEl.textContent = orig; }
             }, 38);
         });
 
-        /* ── Click/tap to boost ── */
-        function handleBoost(x, y) {
-            if (cfg.proxRange === 0 && !isTouchDevice) return; /* skip on desktop if no proximity */
-            rocket.boostFuel = 1.0;
-            rocket.boostX = x;
-            rocket.boostY = y;
+        /* ── Rocket ── */
+        var rocketEl = document.getElementById('freeRocket');
+        var tooltipEl = document.getElementById('rocketTooltip');
+        var ttSpeed = document.getElementById('ttSpeed');
+        var ttThrust = document.getElementById('ttThrust');
+        var ttBar = document.getElementById('ttBar');
 
-            for (let i = 0; i < 8; i++) {
-                const a = Math.random() * Math.PI * 2;
-                trail.push({ x, y, vx: Math.cos(a) * (1 + Math.random() * 2), vy: Math.sin(a) * (1 + Math.random() * 2), life: 1, decay: 0.025 + Math.random() * 0.02, size: 1.5 + Math.random() * 2 });
-            }
-
-            const rip = document.createElement('div');
-            rip.className = 'click-ripple';
-            rip.style.left = x + 'px'; rip.style.top = y + 'px';
-            document.body.appendChild(rip);
-            setTimeout(() => rip.remove(), 700);
-        }
-
-        document.addEventListener('click', (e) => { if (!e.target.closest('.cta')) handleBoost(e.clientX, e.clientY); });
-        document.addEventListener('touchstart', (e) => {
-            if (e.target.closest('.cta')) return;
-            const t = e.touches[0];
-            handleBoost(t.clientX, t.clientY);
-        }, { passive: true });
-
-        /* ── Canvases ── */
-        const tCanvas = document.getElementById('thrustTrail');
-        const tCtx    = tCanvas.getContext('2d');
-        const bgC     = document.getElementById('particles');
-        const bgX     = bgC.getContext('2d');
-        let tW, tH, bW, bH;
-
-        function resizeAll() {
-            tW = tCanvas.width  = window.innerWidth; tH = tCanvas.height = window.innerHeight;
-            bW = bgC.width  = window.innerWidth;     bH = bgC.height = window.innerHeight;
-        }
-        resizeAll();
-
-        /* ── Rocket physics ── */
-        const rocketEl  = document.getElementById('freeRocket');
-        const tooltipEl = document.getElementById('rocketTooltip');
-        const ttSpeed   = document.getElementById('ttSpeed');
-        const ttThrust  = document.getElementById('ttThrust');
-        const ttBar     = document.getElementById('ttBar');
-
-        const rocket = {
+        var rocket = {
             x: window.innerWidth * 0.7, y: window.innerHeight * 0.35,
             vx: 0, vy: 0, angle: 0,
             wanderX: window.innerWidth * 0.5, wanderY: window.innerHeight * 0.4,
@@ -430,26 +459,283 @@
         };
 
         function pickWander() {
-            const m = cfg.wanderMargin;
+            var m = cfg.wanderMargin;
             rocket.wanderX = m + Math.random() * (window.innerWidth - m * 2);
             rocket.wanderY = m + Math.random() * (window.innerHeight - m * 2);
         }
         pickWander();
 
-        let lastWander = performance.now();
-
+        var lastWander = performance.now();
         function shortAngle(from, to) { return ((to - from) % 360 + 540) % 360 - 180; }
+        function getRocketExitOffset() { return rocketEl.getBoundingClientRect().height / 2; }
 
-        /* Get rendered rocket dimensions for accurate flame offset */
-        function getRocketExitOffset() {
-            const rect = rocketEl.getBoundingClientRect();
-            return rect.height / 2;
+        /* ── Trail ── */
+        var trail = [];
+
+        function spawnTrail(heavy) {
+            var rad = rocket.angle * (Math.PI / 180);
+            var sinA = Math.sin(rad), cosA = Math.cos(rad);
+            var fdx = -sinA, fdy = cosA, ppx = cosA, ppy = -sinA;
+            var eo = getRocketExitOffset();
+            var ex = rocket.x + fdx * eo, ey = rocket.y + fdy * eo;
+            var count = heavy ? 3 : 1;
+            for (var i = 0; i < count; i++) {
+                var sp = (Math.random() - 0.5) * 2;
+                var fw = 2 + Math.random() * 6;
+                trail.push({
+                    x: ex + fdx * fw + ppx * sp * 6,
+                    y: ey + fdy * fw + ppy * sp * 6,
+                    vx: fdx * (0.4 + Math.random() * 0.8) + ppx * sp * 0.15,
+                    vy: fdy * (0.4 + Math.random() * 0.8) + ppy * sp * 0.15,
+                    life: 1, decay: 0.012 + Math.random() * 0.018,
+                    size: heavy ? (1.5 + Math.random() * 3) : (0.8 + Math.random() * 2),
+                    color: '167,139,250'
+                });
+            }
+            while (trail.length > cfg.maxTrail) trail.shift();
         }
 
+        function drawTrail() {
+            tCtx.clearRect(0, 0, tCanvas.width, tCanvas.height);
+            for (var i = trail.length - 1; i >= 0; i--) {
+                var p = trail[i];
+                p.x += p.vx; p.y += p.vy; p.vx *= 0.97; p.vy *= 0.97;
+                p.life -= p.decay; p.size *= 0.985;
+                if (p.life <= 0) { trail.splice(i, 1); continue; }
+                tCtx.beginPath();
+                tCtx.arc(p.x, p.y, Math.max(0.1, p.size), 0, Math.PI * 2);
+                tCtx.fillStyle = 'rgba(' + p.color + ',' + (p.life * 0.4) + ')';
+                tCtx.fill();
+            }
+        }
+
+        /* ── Background particles ── */
+        var bgParticles = [];
+        function initBgParticles() {
+            bgParticles = [];
+            for (var i = 0; i < cfg.particles; i++) {
+                bgParticles.push({
+                    x: Math.random() * bgC.width, y: Math.random() * bgC.height,
+                    vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+                    r: Math.random() * 1.5 + 0.5,
+                    ba: Math.random() * 0.4 + 0.1, a: 0,
+                    ps: Math.random() * 0.01 + 0.005, po: Math.random() * Math.PI * 2
+                });
+            }
+        }
+        initBgParticles();
+
+        var fr = 0;
+        function drawBg() {
+            fr++;
+            bgX.clearRect(0, 0, bgC.width, bgC.height);
+            for (var i = 0; i < bgParticles.length; i++) {
+                var p = bgParticles[i];
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = bgC.width; if (p.x > bgC.width) p.x = 0;
+                if (p.y < 0) p.y = bgC.height; if (p.y > bgC.height) p.y = 0;
+                p.a = p.ba + Math.sin(fr * p.ps + p.po) * 0.15;
+                bgX.beginPath();
+                bgX.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                bgX.fillStyle = 'rgba(167,139,250,' + Math.max(0, p.a) + ')';
+                bgX.fill();
+            }
+            if (cfg.connectDist > 0) {
+                for (var i = 0; i < bgParticles.length; i++) {
+                    for (var j = i + 1; j < bgParticles.length; j++) {
+                        var dx = bgParticles[i].x - bgParticles[j].x, dy = bgParticles[i].y - bgParticles[j].y;
+                        var d = Math.sqrt(dx * dx + dy * dy);
+                        if (d < cfg.connectDist) {
+                            bgX.beginPath();
+                            bgX.moveTo(bgParticles[i].x, bgParticles[i].y);
+                            bgX.lineTo(bgParticles[j].x, bgParticles[j].y);
+                            bgX.strokeStyle = 'rgba(167,139,250,' + ((1 - d / cfg.connectDist) * 0.08) + ')';
+                            bgX.lineWidth = 0.5;
+                            bgX.stroke();
+                        }
+                    }
+                }
+            }
+        }
+
+        /* ── Planet update & draw ── */
+        function updatePlanets() {
+            var w = window.innerWidth, h = window.innerHeight;
+            var cx = w / 2, cy = h / 2;
+            var minCenterDist = Math.min(w, h) * 0.22;
+
+            for (var i = 0; i < planets.length; i++) {
+                var p = planets[i];
+                p.x += p.vx; p.y += p.vy;
+                p.vx *= 0.999; p.vy *= 0.999;
+
+                var cdx = p.x - cx, cdy = p.y - cy;
+                var cdist = Math.sqrt(cdx * cdx + cdy * cdy);
+                if (cdist < minCenterDist && cdist > 0) {
+                    var repel = (1 - cdist / minCenterDist) * 0.015;
+                    p.vx += (cdx / cdist) * repel;
+                    p.vy += (cdy / cdist) * repel;
+                }
+
+                var pad = p.radius + 20;
+                if (p.x < -pad) p.x = w + pad;
+                if (p.x > w + pad) p.x = -pad;
+                if (p.y < -pad) p.y = h + pad;
+                if (p.y > h + pad) p.y = -pad;
+
+                p.rotation += p.rotSpeed;
+                if (p.moon) p.moon.angle += p.moon.speed;
+
+                if (p.pulseTimer > 0) { p.pulseTimer -= 0.008; if (p.pulseTimer < 0) p.pulseTimer = 0; }
+
+                var targetGlow = p.baseGlow;
+                var rdx = rocket.x - p.x, rdy = rocket.y - p.y;
+                var rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+                if (rdist < p.gravRange) { targetGlow = p.baseGlow + (1 - rdist / p.gravRange) * 0.2; }
+                if (p.pulseTimer > 0) targetGlow += p.pulseTimer * 0.15;
+                p.glowIntensity += (targetGlow - p.glowIntensity) * 0.06;
+            }
+        }
+
+        function drawPlanets() {
+            plCtx.clearRect(0, 0, plCanvas.width, plCanvas.height);
+
+            plCtx.save();
+            plCtx.setLineDash([3, 7]);
+            for (var i = 0; i < planets.length; i++) {
+                var p = planets[i];
+                var dx = rocket.x - p.x, dy = rocket.y - p.y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < p.gravRange && dist > p.safeZone) {
+                    plCtx.beginPath();
+                    plCtx.moveTo(p.x, p.y);
+                    plCtx.lineTo(rocket.x, rocket.y);
+                    plCtx.strokeStyle = 'rgba(' + p.color[0] + ',' + p.color[1] + ',' + p.color[2] + ',' + ((1 - dist / p.gravRange) * 0.1) + ')';
+                    plCtx.lineWidth = 0.5;
+                    plCtx.stroke();
+                }
+            }
+            plCtx.restore();
+
+            for (var i = 0; i < planets.length; i++) {
+                var p = planets[i];
+                var r = p.radius;
+                var cr = p.color[0], cg = p.color[1], cb = p.color[2];
+
+                var glowR = r * 2.8;
+                var atmosGrad = plCtx.createRadialGradient(p.x, p.y, r * 0.4, p.x, p.y, glowR);
+                atmosGrad.addColorStop(0, 'rgba(' + cr + ',' + cg + ',' + cb + ',' + p.glowIntensity + ')');
+                atmosGrad.addColorStop(0.5, 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (p.glowIntensity * 0.3) + ')');
+                atmosGrad.addColorStop(1, 'rgba(' + cr + ',' + cg + ',' + cb + ',0)');
+                plCtx.fillStyle = atmosGrad;
+                plCtx.beginPath();
+                plCtx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
+                plCtx.fill();
+
+                /* Safe zone ring (very faint) */
+                plCtx.beginPath();
+                plCtx.arc(p.x, p.y, p.safeZone, 0, Math.PI * 2);
+                plCtx.strokeStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',0.03)';
+                plCtx.lineWidth = 0.5;
+                plCtx.stroke();
+
+                if (p.pulseTimer > 0) {
+                    plCtx.beginPath();
+                    plCtx.arc(p.x, p.y, p.gravRange, 0, Math.PI * 2);
+                    plCtx.strokeStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (p.pulseTimer * 0.08) + ')';
+                    plCtx.lineWidth = 0.5;
+                    plCtx.stroke();
+                    var progress = 1 - p.pulseTimer;
+                    var pulseR = r * 1.5 + progress * p.gravRange * 0.8;
+                    plCtx.beginPath();
+                    plCtx.arc(p.x, p.y, pulseR, 0, Math.PI * 2);
+                    plCtx.strokeStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (p.pulseTimer * 0.25) + ')';
+                    plCtx.lineWidth = 1;
+                    plCtx.stroke();
+                    if (p.pulseTimer < 0.7) {
+                        var p2 = (0.7 - p.pulseTimer) / 0.7;
+                        var r2 = r * 1.5 + p2 * p.gravRange * 0.8;
+                        plCtx.beginPath();
+                        plCtx.arc(p.x, p.y, r2, 0, Math.PI * 2);
+                        plCtx.strokeStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + ((1 - p2) * 0.15) + ')';
+                        plCtx.stroke();
+                    }
+                }
+
+                if (p.hasRing) {
+                    var rr = p.ringColor[0], rg = p.ringColor[1], rb = p.ringColor[2];
+                    plCtx.beginPath();
+                    plCtx.ellipse(p.x, p.y, r * 1.85, r * 0.42, p.ringTilt, 0, Math.PI * 2);
+                    plCtx.strokeStyle = 'rgba(' + rr + ',' + rg + ',' + rb + ',0.18)';
+                    plCtx.lineWidth = Math.max(1, r * 0.06);
+                    plCtx.stroke();
+                    plCtx.beginPath();
+                    plCtx.ellipse(p.x, p.y, r * 2.15, r * 0.5, p.ringTilt, 0, Math.PI * 2);
+                    plCtx.strokeStyle = 'rgba(' + rr + ',' + rg + ',' + rb + ',0.08)';
+                    plCtx.lineWidth = Math.max(0.5, r * 0.035);
+                    plCtx.stroke();
+                }
+
+                var bodyGrad = plCtx.createRadialGradient(p.x - r * 0.3, p.y - r * 0.3, r * 0.05, p.x, p.y, r);
+                bodyGrad.addColorStop(0, 'rgba(' + cr + ',' + cg + ',' + cb + ',0.18)');
+                bodyGrad.addColorStop(0.6, 'rgba(' + cr + ',' + cg + ',' + cb + ',0.07)');
+                bodyGrad.addColorStop(1, 'rgba(' + cr + ',' + cg + ',' + cb + ',0.02)');
+                plCtx.beginPath();
+                plCtx.arc(p.x, p.y, r, 0, Math.PI * 2);
+                plCtx.fillStyle = bodyGrad;
+                plCtx.fill();
+                plCtx.strokeStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',0.3)';
+                plCtx.lineWidth = 0.8;
+                plCtx.stroke();
+
+                plCtx.save();
+                plCtx.translate(p.x, p.y);
+                plCtx.rotate(p.rotation);
+                plCtx.globalAlpha = 0.12;
+                plCtx.beginPath();
+                plCtx.ellipse(0, -r * 0.3, r * 0.88, Math.max(1, r * 0.12), 0, 0, Math.PI * 2);
+                plCtx.strokeStyle = 'rgb(' + cr + ',' + cg + ',' + cb + ')';
+                plCtx.lineWidth = 0.6;
+                plCtx.stroke();
+                plCtx.beginPath();
+                plCtx.ellipse(0, r * 0.2, r * 0.82, Math.max(1, r * 0.1), 0, 0, Math.PI * 2);
+                plCtx.stroke();
+                if (r > 20) {
+                    plCtx.beginPath();
+                    plCtx.ellipse(0, r * 0.55, r * 0.75, Math.max(1, r * 0.08), 0, 0, Math.PI * 2);
+                    plCtx.stroke();
+                }
+                plCtx.globalAlpha = 1;
+                plCtx.restore();
+
+                if (p.moon) {
+                    var m = p.moon;
+                    var mx = p.x + Math.cos(m.angle) * m.dist;
+                    var my = p.y + Math.sin(m.angle) * m.dist * 0.38;
+                    plCtx.beginPath();
+                    plCtx.ellipse(p.x, p.y, m.dist, m.dist * 0.38, 0, 0, Math.PI * 2);
+                    plCtx.strokeStyle = 'rgba(' + m.color[0] + ',' + m.color[1] + ',' + m.color[2] + ',0.04)';
+                    plCtx.lineWidth = 0.5;
+                    plCtx.stroke();
+                    plCtx.beginPath();
+                    plCtx.arc(mx, my, m.radius, 0, Math.PI * 2);
+                    var moonGrad = plCtx.createRadialGradient(mx - m.radius * 0.3, my - m.radius * 0.3, 0, mx, my, m.radius);
+                    moonGrad.addColorStop(0, 'rgba(' + m.color[0] + ',' + m.color[1] + ',' + m.color[2] + ',0.3)');
+                    moonGrad.addColorStop(1, 'rgba(' + m.color[0] + ',' + m.color[1] + ',' + m.color[2] + ',0.08)');
+                    plCtx.fillStyle = moonGrad;
+                    plCtx.fill();
+                    plCtx.strokeStyle = 'rgba(' + m.color[0] + ',' + m.color[1] + ',' + m.color[2] + ',0.35)';
+                    plCtx.lineWidth = 0.5;
+                    plCtx.stroke();
+                }
+            }
+        }
+
+        /* ── Rocket update ── */
         function updateRocket(now) {
             if (now - lastWander > 4000 + Math.random() * 3000) { pickWander(); lastWander = now; }
 
-            let tx, ty, accel;
+            var tx, ty, accel;
 
             if (rocket.boostFuel > 0) {
                 tx = rocket.boostX; ty = rocket.boostY;
@@ -457,16 +743,15 @@
                 rocket.boostFuel -= 0.012;
                 if (rocket.boostFuel <= 0) rocket.boostFuel = 0;
             } else {
-                const mInf = 0.35;
+                var mInf = 0.35;
                 tx = rocket.wanderX * (1 - mInf) + mouseX * mInf;
                 ty = rocket.wanderY * (1 - mInf) + mouseY * mInf;
                 accel = 0.01;
-
                 if (cfg.proxRange > 0 && mouseActive) {
-                    const dx = rocket.x - mouseX, dy = rocket.y - mouseY;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < cfg.proxRange) {
-                        const prox = 1 - dist / cfg.proxRange;
+                    var mdx = rocket.x - mouseX, mdy = rocket.y - mouseY;
+                    var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+                    if (mdist < cfg.proxRange) {
+                        var prox = 1 - mdist / cfg.proxRange;
                         tx = tx * (1 - prox * 0.6) + mouseX * (prox * 0.6);
                         ty = ty * (1 - prox * 0.6) + mouseY * (prox * 0.6);
                         accel += prox * 0.025;
@@ -474,32 +759,75 @@
                 }
             }
 
-            const dx = tx - rocket.x, dy = ty - rocket.y;
-            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-
+            var dx = tx - rocket.x, dy = ty - rocket.y;
+            var dist = Math.sqrt(dx * dx + dy * dy) || 1;
             rocket.vx += (dx / dist) * accel;
             rocket.vy += (dy / dist) * accel;
 
-            const damp = rocket.boostFuel > 0 ? 0.975 : 0.985;
-            rocket.vx *= damp; rocket.vy *= damp;
+            /* Planet gravity with safe zone & repulsion */
+            for (var i = 0; i < planets.length; i++) {
+                var p = planets[i];
+                var pdx = p.x - rocket.x;
+                var pdy = p.y - rocket.y;
+                var pdist = Math.sqrt(pdx * pdx + pdy * pdy);
+                var pnx = pdx / pdist;
+                var pny = pdy / pdist;
+
+                if (pdist < p.safeZone) {
+                    /* REPULSION ZONE: push away hard, capped */
+                    var repelStrength = 0.25 * (1 - pdist / p.safeZone);
+                    repelStrength = Math.min(repelStrength, 0.08);
+                    rocket.vx -= pnx * repelStrength;
+                    rocket.vy -= pny * repelStrength;
+                } else if (pdist < p.gravRange) {
+                    /* GRAVITY ZONE: pull in with bell-curve falloff */
+                    /* Normalized position: 0 at safeZone edge, 1 at gravRange edge */
+                    var normDist = (pdist - p.safeZone) / (p.gravRange - p.safeZone);
+                    /* Bell curve: peaks at 0.3 (close), fades at both ends */
+                    var gravCurve = Math.sin(normDist * Math.PI) * 0.7 + Math.sin(normDist * Math.PI * 0.5) * 0.3;
+                    var gForce = p.mass * 0.012 * cfg.gravMult * gravCurve;
+                    /* Cap max force */
+                    gForce = Math.min(gForce, 0.03);
+                    rocket.vx += pnx * gForce;
+                    rocket.vy += pny * gForce;
+
+                    /* Spark particles when close */
+                    if (pdist < p.radius * 3.5 && rocket.trailTick % 5 === 0) {
+                        trail.push({
+                            x: rocket.x + (Math.random() - 0.5) * 8,
+                            y: rocket.y + (Math.random() - 0.5) * 8,
+                            vx: (Math.random() - 0.5) * 0.4,
+                            vy: (Math.random() - 0.5) * 0.4,
+                            life: 0.5, decay: 0.025,
+                            size: 0.8 + Math.random(),
+                            color: p.color[0] + ',' + p.color[1] + ',' + p.color[2]
+                        });
+                    }
+                }
+            }
+
+            var damp = rocket.boostFuel > 0 ? 0.975 : 0.985;
+            rocket.vx *= damp;
+            rocket.vy *= damp;
 
             rocket.speed = Math.sqrt(rocket.vx * rocket.vx + rocket.vy * rocket.vy);
-            const maxSpd = rocket.boostFuel > 0 ? 5 : 1.6;
+            var maxSpd = rocket.boostFuel > 0 ? 5 : 1.6;
             if (rocket.speed > maxSpd) {
                 rocket.vx = (rocket.vx / rocket.speed) * maxSpd;
                 rocket.vy = (rocket.vy / rocket.speed) * maxSpd;
                 rocket.speed = maxSpd;
             }
 
-            rocket.x += rocket.vx; rocket.y += rocket.vy;
+            rocket.x += rocket.vx;
+            rocket.y += rocket.vy;
 
-            const pad = cfg.rocketPad;
+            var pad = cfg.rocketPad;
             if (rocket.x < -pad) rocket.x = window.innerWidth + pad;
             if (rocket.x > window.innerWidth + pad) rocket.x = -pad;
             if (rocket.y < -pad) rocket.y = window.innerHeight + pad;
             if (rocket.y > window.innerHeight + pad) rocket.y = -pad;
 
-            const targetAngle = Math.atan2(rocket.vy, rocket.vx) * (180 / Math.PI) + 90;
+            var targetAngle = Math.atan2(rocket.vy, rocket.vx) * (180 / Math.PI) + 90;
             rocket.angle += shortAngle(rocket.angle, targetAngle) * (rocket.boostFuel > 0 ? 0.12 : 0.06);
 
             rocketEl.classList.remove('boosting', 'cruising');
@@ -507,32 +835,28 @@
             else if (rocket.speed > 0.8) rocketEl.classList.add('cruising');
 
             rocketEl.style.left = rocket.x + 'px';
-            rocketEl.style.top  = rocket.y + 'px';
-            rocketEl.style.transform = `translate(-50%, -50%) rotate(${rocket.angle}deg)`;
+            rocketEl.style.top = rocket.y + 'px';
+            rocketEl.style.transform = 'translate(-50%, -50%) rotate(' + rocket.angle + 'deg)';
 
-            /* Tooltip */
             updateTooltip();
-
             rocket.trailTick++;
-            const spawnRate = rocket.boostFuel > 0 ? 1 : (rocket.speed > 1 ? 2 : 3);
+            var spawnRate = rocket.boostFuel > 0 ? 1 : (rocket.speed > 1 ? 2 : 3);
             if (rocket.trailTick % spawnRate === 0) spawnTrail(rocket.boostFuel > 0);
         }
 
         function updateTooltip() {
-            if (window.innerWidth < 480) return; /* hidden by CSS */
-
-            const ttDx = rocket.x - mouseX, ttDy = rocket.y - mouseY;
-            const ttDist = Math.sqrt(ttDx * ttDx + ttDy * ttDy);
-            const isNear = cfg.proxRange > 0 && ttDist < cfg.proxRange;
+            if (window.innerWidth < 480) return;
+            var ttDx = rocket.x - mouseX, ttDy = rocket.y - mouseY;
+            var ttDist = Math.sqrt(ttDx * ttDx + ttDy * ttDy);
+            var isNear = cfg.proxRange > 0 && ttDist < cfg.proxRange;
 
             tooltipEl.classList.remove('visible', 'dim');
-
             if (isNear) {
                 tooltipEl.classList.add('visible');
-                const rad = rocket.angle * (Math.PI / 180);
-                const noseX = rocket.x + Math.sin(-rad) * -30;
-                const noseY = rocket.y + Math.cos(-rad) * -30;
-                let ttLeft = noseX + 22, ttTop = noseY - 16;
+                var rad = rocket.angle * (Math.PI / 180);
+                var noseX = rocket.x + Math.sin(-rad) * -30;
+                var noseY = rocket.y + Math.cos(-rad) * -30;
+                var ttLeft = noseX + 22, ttTop = noseY - 16;
                 if (ttLeft + 140 > window.innerWidth - 10) ttLeft = noseX - 156;
                 if (ttTop < 10) ttTop = 10;
                 if (ttTop + 40 > window.innerHeight - 10) ttTop = window.innerHeight - 50;
@@ -543,8 +867,7 @@
             }
 
             ttSpeed.textContent = rocket.speed.toFixed(2);
-            const thrustPct = Math.min(100, (rocket.speed / 5) * 100);
-            ttBar.style.width = thrustPct + '%';
+            ttBar.style.width = Math.min(100, (rocket.speed / 5) * 100) + '%';
 
             if (rocket.boostFuel > 0) {
                 ttThrust.textContent = 'BOOST'; ttThrust.classList.add('active');
@@ -558,102 +881,66 @@
             }
         }
 
-        /* ── Trail ── */
-        const trail = [];
-
-        function spawnTrail(heavy) {
-            const rad = rocket.angle * (Math.PI / 180);
-            const sinA = Math.sin(rad), cosA = Math.cos(rad);
-            const flameDirX = -sinA, flameDirY = cosA;
-            const perpX = cosA, perpY = -sinA;
-            const exitOffset = getRocketExitOffset();
-            const exitX = rocket.x + flameDirX * exitOffset;
-            const exitY = rocket.y + flameDirY * exitOffset;
-            const count = heavy ? 3 : 1;
-
-            for (let i = 0; i < count; i++) {
-                const spread = (Math.random() - 0.5) * 2;
-                const fwdDist = 2 + Math.random() * 6;
-                trail.push({
-                    x: exitX + flameDirX * fwdDist + perpX * spread * 6,
-                    y: exitY + flameDirY * fwdDist + perpY * spread * 6,
-                    vx: flameDirX * (0.4 + Math.random() * 0.8) + perpX * spread * 0.15,
-                    vy: flameDirY * (0.4 + Math.random() * 0.8) + perpY * spread * 0.15,
-                    life: 1, decay: 0.012 + Math.random() * 0.018,
-                    size: heavy ? (1.5 + Math.random() * 3) : (0.8 + Math.random() * 2)
-                });
-            }
-            while (trail.length > cfg.maxTrail) trail.shift();
-        }
-
-        function drawTrail() {
-            tCtx.clearRect(0, 0, tW, tH);
-            for (let i = trail.length - 1; i >= 0; i--) {
-                const p = trail[i];
-                p.x += p.vx; p.y += p.vy; p.vx *= 0.97; p.vy *= 0.97;
-                p.life -= p.decay; p.size *= 0.985;
-                if (p.life <= 0) { trail.splice(i, 1); continue; }
-                tCtx.beginPath();
-                tCtx.arc(p.x, p.y, Math.max(0.1, p.size), 0, Math.PI * 2);
-                tCtx.fillStyle = `rgba(167, 139, 250, ${p.life * 0.4})`;
-                tCtx.fill();
-            }
-        }
-
-        /* ── Background particles ── */
-        let bgParticles = [];
-
-        function initBgParticles() {
-            bgParticles = [];
-            for (let i = 0; i < cfg.particles; i++) {
-                bgParticles.push({
-                    x: Math.random() * bW, y: Math.random() * bH,
-                    vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
-                    r: Math.random() * 1.5 + 0.5,
-                    ba: Math.random() * 0.4 + 0.1, a: 0,
-                    ps: Math.random() * 0.01 + 0.005, po: Math.random() * Math.PI * 2
-                });
-            }
-        }
-        initBgParticles();
-
-        let fr = 0;
-        function drawBg() {
-            fr++;
-            bgX.clearRect(0, 0, bW, bH);
-
-            for (const p of bgParticles) {
-                p.x += p.vx; p.y += p.vy;
-                if (p.x < 0) p.x = bW; if (p.x > bW) p.x = 0;
-                if (p.y < 0) p.y = bH; if (p.y > bH) p.y = 0;
-                p.a = p.ba + Math.sin(fr * p.ps + p.po) * 0.15;
-                bgX.beginPath();
-                bgX.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                bgX.fillStyle = `rgba(167, 139, 250, ${Math.max(0, p.a)})`;
-                bgX.fill();
+        /* ── Boost / Planet tap ── */
+        function handleBoost(x, y) {
+            var hitPlanet = null;
+            for (var i = 0; i < planets.length; i++) {
+                var dx = x - planets[i].x, dy = y - planets[i].y;
+                if (Math.sqrt(dx * dx + dy * dy) < Math.max(planets[i].radius * 2.5, 35)) { hitPlanet = planets[i]; break; }
             }
 
-            /* Connection lines only on larger screens */
-            if (cfg.connectDist > 0) {
-                for (let i = 0; i < bgParticles.length; i++) {
-                    for (let j = i + 1; j < bgParticles.length; j++) {
-                        const dx = bgParticles[i].x - bgParticles[j].x, dy = bgParticles[i].y - bgParticles[j].y;
-                        const d = Math.sqrt(dx * dx + dy * dy);
-                        if (d < cfg.connectDist) {
-                            bgX.beginPath();
-                            bgX.moveTo(bgParticles[i].x, bgParticles[i].y);
-                            bgX.lineTo(bgParticles[j].x, bgParticles[j].y);
-                            bgX.strokeStyle = `rgba(167, 139, 250, ${(1 - d / cfg.connectDist) * 0.08})`;
-                            bgX.lineWidth = 0.5;
-                            bgX.stroke();
-                        }
-                    }
+            var rip = document.createElement('div');
+            rip.className = 'click-ripple';
+            rip.style.left = x + 'px'; rip.style.top = y + 'px';
+            document.body.appendChild(rip);
+            setTimeout(function() { rip.remove(); }, 700);
+
+            if (hitPlanet) {
+                hitPlanet.pulseTimer = 1.0;
+                var origMass = hitPlanet.mass;
+                var origGrav = hitPlanet.gravRange;
+                hitPlanet.mass *= 3;
+                hitPlanet.gravRange *= 1.4;
+                for (var j = 0; j < 12; j++) {
+                    var a = Math.random() * Math.PI * 2;
+                    trail.push({
+                        x: hitPlanet.x + Math.cos(a) * hitPlanet.radius,
+                        y: hitPlanet.y + Math.sin(a) * hitPlanet.radius,
+                        vx: Math.cos(a) * (0.8 + Math.random() * 1.5),
+                        vy: Math.sin(a) * (0.8 + Math.random() * 1.5),
+                        life: 0.8, decay: 0.02, size: 1 + Math.random() * 2,
+                        color: hitPlanet.color[0] + ',' + hitPlanet.color[1] + ',' + hitPlanet.color[2]
+                    });
+                }
+                setTimeout(function() { hitPlanet.mass = origMass; hitPlanet.gravRange = origGrav; }, 1500);
+            } else {
+                if (cfg.proxRange === 0 && !isTouchDevice) return;
+                rocket.boostFuel = 1.0;
+                rocket.boostX = x; rocket.boostY = y;
+                for (var k = 0; k < 8; k++) {
+                    var a = Math.random() * Math.PI * 2;
+                    trail.push({
+                        x: x, y: y,
+                        vx: Math.cos(a) * (1 + Math.random() * 2),
+                        vy: Math.sin(a) * (1 + Math.random() * 2),
+                        life: 1, decay: 0.025 + Math.random() * 0.02,
+                        size: 1.5 + Math.random() * 2,
+                        color: '167,139,250'
+                    });
                 }
             }
         }
 
+        document.addEventListener('click', function(e) { if (!e.target.closest('.cta')) handleBoost(e.clientX, e.clientY); });
+        document.addEventListener('touchstart', function(e) {
+            if (e.target.closest('.cta')) return;
+            handleBoost(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+
         /* ── Main loop ── */
         (function loop(now) {
+            updatePlanets();
+            drawPlanets();
             updateRocket(now);
             drawTrail();
             drawBg();
