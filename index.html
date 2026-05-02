@@ -513,6 +513,7 @@
         }
 
         .tt-bar-fill {
+            display: block;
             height: 100%;
             background: var(--accent);
             border-radius: 2px;
@@ -1781,7 +1782,11 @@
             } else if (rocket.speed > 0.8) {
                 ttThrust.textContent = 'CRUISE'; ttThrust.classList.add('active');
                 ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 4px rgba(var(--accent-rgb), 0.3)';
-            } else {
+            } else if (rocket.speed > 0.1) {
+                ttThrust.textContent = 'DRIFT'; ttThrust.classList.remove('active');
+                ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 2px rgba(var(--accent-rgb), 0.1)';
+            }
+            else {
                 ttThrust.textContent = 'IDLE'; ttThrust.classList.remove('active');
                 ttBar.style.background = '#333'; ttBar.style.boxShadow = 'none';
             }
