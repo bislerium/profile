@@ -12,7 +12,7 @@
     <style>
         :root {
             --bg: #0A0A0A;
-            --fg: #D4D4D4D4;
+            --fg: #D4D4D4;
             --muted: #555555;
             --accent: #A78BFA;
             --accent-rgb: 167, 139, 250;
@@ -48,6 +48,15 @@
             justify-content: center;
             position: relative;
             transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 80%, rgba(0, 0, 0, 0.5) 100%);
+            pointer-events: none;
+            z-index: 99;
         }
 
         a,
@@ -178,11 +187,12 @@
             flex-direction: column;
             cursor: none;
             opacity: 1;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .init-overlay.hidden {
             opacity: 0;
+            transform: scale(1.02);
             pointer-events: none;
         }
 
@@ -282,6 +292,23 @@
             }
         }
 
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 10% 20%, rgba(167, 139, 250, 0.15), transparent),
+                radial-gradient(1px 1px at 80% 10%, rgba(255, 255, 255, 0.08), transparent),
+                radial-gradient(1px 1px at 45% 75%, rgba(167, 139, 250, 0.1), transparent),
+                radial-gradient(1px 1px at 90% 60%, rgba(255, 255, 255, 0.06), transparent),
+                radial-gradient(1px 1px at 25% 50%, rgba(255, 255, 255, 0.05), transparent),
+                radial-gradient(1px 1px at 65% 35%, rgba(167, 139, 250, 0.08), transparent),
+                radial-gradient(1px 1px at 15% 85%, rgba(255, 255, 255, 0.07), transparent),
+                radial-gradient(1px 1px at 50% 10%, rgba(255, 255, 255, 0.04), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
         .grid-layer {
             position: fixed;
             inset: 0;
@@ -377,6 +404,7 @@
             opacity: 0.5;
             filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.15));
             transition: opacity 0.5s ease, filter 0.5s ease;
+            will-change: transform;
         }
 
         .free-rocket.cruising {
@@ -887,12 +915,14 @@
             <path d="M32 46 L38 58 L32 54Z" stroke="#A78BFA" stroke-width="1" fill="rgba(167,139,250,0.04)"
                 stroke-linejoin="round" />
             <line x1="8" y1="50" x2="32" y2="50" stroke="#A78BFA" stroke-width="0.8" opacity="0.4" />
-            <path class="flame-outer" d="M12 50 Q14 68, 20 76 Q26 68, 28 50" fill="rgba(167,139,250,0.12)"
-                stroke="none" />
-            <path class="flame-mid" d="M15 50 Q17 64, 20 70 Q23 64, 25 50" fill="rgba(167,139,250,0.25)"
-                stroke="none" />
-            <path class="flame-inner" d="M17.5 50 Q19 59, 20 64 Q21 59, 22.5 50" fill="rgba(196,181,253,0.45)"
-                stroke="none" />
+            <g class="flame-group" style="transform-origin: 20px 50px;">
+                <path class="flame-outer" d="M12 50 Q14 68, 20 76 Q26 68, 28 50" fill="rgba(167,139,250,0.12)"
+                    stroke="none" />
+                <path class="flame-mid" d="M15 50 Q17 64, 20 70 Q23 64, 25 50" fill="rgba(167,139,250,0.25)"
+                    stroke="none" />
+                <path class="flame-inner" d="M17.5 50 Q19 59, 20 64 Q21 59, 22.5 50" fill="rgba(196,181,253,0.45)"
+                    stroke="none" />
+            </g>
         </svg>
     </div>
 
@@ -1205,7 +1235,12 @@
         }
 
         resizeAll();
-        window.addEventListener('resize', resizeAll);
+
+        var resizeTimer;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(resizeAll, 100);
+        });
 
         function initPlanets() {
             var w = window.innerWidth, h = window.innerHeight;
@@ -1340,7 +1375,10 @@
 
         initPromptEl.addEventListener('mouseleave', function () { initPromptEl.textContent = '[ PING ]'; initSubEl.textContent = 'AWAITING HANDSHAKE'; initSubEl.style.color = '#333'; });
 
+        var initDismissed = false;
         function dismissInit() {
+            if (initDismissed) return;
+            initDismissed = true;
             initAudio();
             if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
             soundOn = true;
@@ -1456,12 +1494,15 @@
                 bgX.fillStyle = 'rgba(167,139,250,' + p.a + ')';
                 bgX.fill();
             }
+
             if (cfg.connectDist > 0) {
+                var cSq = cfg.connectDist * cfg.connectDist;
                 for (var i = 0; i < bgParticles.length; i++) {
                     for (var j = i + 1; j < bgParticles.length; j++) {
                         var dx = bgParticles[i].x - bgParticles[j].x, dy = bgParticles[i].y - bgParticles[j].y;
-                        var d = Math.sqrt(dx * dx + dy * dy);
-                        if (d < cfg.connectDist) {
+                        var dSq = dx * dx + dy * dy;
+                        if (dSq < cSq) {
+                            var d = Math.sqrt(dSq);
                             bgX.beginPath();
                             bgX.moveTo(bgParticles[i].x, bgParticles[i].y);
                             bgX.lineTo(bgParticles[j].x, bgParticles[j].y);
@@ -1738,10 +1779,12 @@
             rocketEl.style.left = rocket.x + 'px';
             rocketEl.style.top = rocket.y + 'px';
             rocketEl.style.transform = 'translate(-50%, -50%) rotate(' + rocket.angle + 'deg)';
+            var flameScale = 0.6 + Math.min(rocket.speed / 1.6, 1) * 0.8;
+            rocketEl.querySelector('.flame-group').style.transform = 'scale(1,' + flameScale + ')';
             updateTooltip();
             rocket.trailTick++;
             var sr = rocket.boostFuel > 0 ? 1 : (rocket.speed > 1 ? 2 : 3);
-            if (rocket.trailTick % sr === 0) spawnTrail(rocket.boostFuel > 0);
+            if (rocket.trailTick % sr === 0 && rocket.speed > 0.05) spawnTrail(rocket.boostFuel > 0);
         }
 
         function updateTooltip() {
