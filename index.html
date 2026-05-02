@@ -47,6 +47,16 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            transition: transform 0.15s ease-out;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+            background: radial-gradient(ellipse at center, transparent 60%, #0A0A0A 100%);
         }
 
         a,
@@ -194,6 +204,8 @@
             padding: 12px 28px;
             transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             -webkit-tap-highlight-color: transparent;
+            position: relative;
+            z-index: 1;
         }
 
         .init-overlay:hover .init-prompt {
@@ -605,6 +617,9 @@
             opacity: 0;
             animation: fadeIn 0.8s ease 0.2s forwards;
             padding: 0 20px;
+
+            transition: transform 0.3s ease-out, opacity 0.8s ease 0.2s;
+            will-change: transform;
         }
 
         @keyframes fadeIn {
@@ -1303,6 +1318,8 @@
         ring.style.opacity = '0';
         cross.style.opacity = '0';
 
+        var terminalEl = document.querySelector('.terminal');
+
         document.addEventListener('mousemove', function (e) {
             if (!cursorReady) {
                 cursorReady = true;
@@ -1315,6 +1332,11 @@
             mouseY = e.clientY;
             dot.style.left = mouseX + 'px';
             dot.style.top = mouseY + 'px';
+
+            // Subtle parallax (move terminal slightly away from cursor)
+            var px = (window.innerWidth / 2 - mouseX) * 0.008;
+            var py = (window.innerHeight / 2 - mouseY) * 0.008;
+            terminalEl.style.transform = 'translate(' + px + 'px, ' + py + 'px)';
         });
 
         document.addEventListener('mouseleave', function () {
@@ -1390,7 +1412,6 @@
 
         var orig = '> open profile --target linkedin';
         var glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?';
-
 
         ctaEl.addEventListener('mouseenter', function () {
             var r = 0;
@@ -1854,6 +1875,8 @@
             setTimeout(function () { rip.remove(); }, 700);
 
             if (hit) {
+                document.body.style.transform = 'translate(' + (Math.random() * 4 - 2) + 'px, ' + (Math.random() * 4 - 2) + 'px)';
+                setTimeout(function () { document.body.style.transform = ''; }, 150);
                 playPlanetPulse();
                 hit.pulseTimer = 1.0;
                 var om = hit.mass, og = hit.gravRange;
