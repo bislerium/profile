@@ -1354,12 +1354,40 @@
         document.addEventListener('mouseleave', function () { dot.style.opacity = ring.style.opacity = cross.style.opacity = '0'; });
         document.addEventListener('mouseenter', function () { if (cursorReady) dot.style.opacity = ring.style.opacity = cross.style.opacity = '1'; });
 
-        (function animCursor() {
-            ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
-            crossX += (mouseX - crossX) * 0.25; crossY += (mouseY - crossY) * 0.25;
-            ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
-            cross.style.left = crossX + 'px'; cross.style.top = crossY + 'px';
-            terminalEl.style.transform = 'translate(' + tX + 'px, ' + tY + 'px)';
+               (function animCursor() {
+            ringX += (mouseX - ringX) * 0.12;
+            ringY += (mouseY - ringY) * 0.12;
+            crossX += (mouseX - crossX) * 0.25;
+            crossY += (mouseY - crossY) * 0.25;
+            ring.style.left = ringX + 'px';
+            ring.style.top = ringY + 'px';
+            cross.style.left = crossX + 'px';
+            cross.style.top = crossY + 'px';
+            
+            // Terminal stays strictly locked at 0
+            terminalEl.style.transform = 'translate(0px, 0px)';
+
+            // Parallax array defined locally inside the loop to prevent scope errors
+            var layers = [
+                document.querySelector('.grid-layer'),  // Furthest back
+                document.getElementById('particles'),    // Mid-back
+                document.getElementById('planets'),      // Mid-front
+                document.getElementById('thrustTrail'),  // Foreground canvas
+                document.getElementById('planetLabel'),  // UI floating with planets
+                document.getElementById('rocketTooltip') // UI floating with rocket
+            ];
+            var speeds = [0.008, 0.015, 0.025, 0.032, 0.025, 0.032];
+
+            var cx = window.innerWidth / 2;
+            var cy = window.innerHeight / 2;
+
+            for (var i = 0; i < layers.length; i++) {
+                if (!layers[i]) continue; 
+                var dx = (cx - mouseX) * speeds[i];
+                var dy = (cy - mouseY) * speeds[i];
+                layers[i].style.transform = 'translate(' + dx + 'px, ' + dy + 'px)';
+            }
+
             requestAnimationFrame(animCursor);
         })();
 
