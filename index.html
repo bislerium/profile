@@ -166,6 +166,74 @@
             letter-spacing: 0.08em;
         }
 
+        .init-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: #0A0A0A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            cursor: none;
+            opacity: 1;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .init-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .init-prompt {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            border: 1px solid #222;
+            padding: 12px 28px;
+            transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .init-overlay:hover .init-prompt {
+            color: var(--accent);
+            border-color: rgba(var(--accent-rgb), 0.4);
+            box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.08), inset 0 0 20px rgba(var(--accent-rgb), 0.03);
+        }
+
+        .init-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.45rem;
+            color: #333;
+            margin-top: 14px;
+            letter-spacing: 0.12em;
+        }
+
+        .init-pulse {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.4);
+            animation: initPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes initPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: scale(1.6);
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 480px) {
             .planet-label {
                 display: none;
@@ -824,12 +892,19 @@
 
     <div class="scanlines"></div>
 
+    <div class="init-overlay" id="initOverlay">
+        <div class="init-pulse"></div>
+        <div class="init-prompt">[ IGNITION ]</div>
+        <div class="init-sub">AUDIO REQUIRED</div>
+    </div>
+
     <div class="terminal">
         <div class="command-line">
             <span class="prompt-symbol">&gt;</span><span id="typed-text"></span><span class="cursor-blink"></span>
         </div>
         <div class="title" id="title">Software Engineer &middot; Optimizing Code and Architecture</div>
-        <a href="https://www.linkedin.com/in/bishalgc/" target="_blank" rel="noopener noreferrer" class="cta" id="cta">[ ESTABLISH_LINK ]</a>
+        <a href="https://www.linkedin.com/in/bishalgc/" target="_blank" rel="noopener noreferrer" class="cta" id="cta">[
+            ESTABLISH_LINK ]</a>
     </div>
 
     <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound">
@@ -1220,9 +1295,21 @@
         var cross = document.getElementById('cursorCross');
         var mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
         var ringX = mouseX, ringY = mouseY, crossX = mouseX, crossY = mouseY;
+
         var mouseActive = false;
+        var cursorReady = false;
+
+        dot.style.opacity = '0';
+        ring.style.opacity = '0';
+        cross.style.opacity = '0';
 
         document.addEventListener('mousemove', function (e) {
+            if (!cursorReady) {
+                cursorReady = true;
+                dot.style.opacity = '1';
+                ring.style.opacity = '1';
+                cross.style.opacity = '1';
+            }
             mouseActive = true;
             mouseX = e.clientX;
             mouseY = e.clientY;
@@ -1233,8 +1320,11 @@
         document.addEventListener('mouseleave', function () {
             dot.style.opacity = ring.style.opacity = cross.style.opacity = '0';
         });
+
         document.addEventListener('mouseenter', function () {
-            dot.style.opacity = ring.style.opacity = cross.style.opacity = '1';
+            if (cursorReady) {
+                dot.style.opacity = ring.style.opacity = cross.style.opacity = '1';
+            }
         });
 
         (function animCursor() {
@@ -1278,7 +1368,25 @@
                 setTimeout(function () { ctaEl.classList.add('visible'); }, 750);
             }
         }
-        setTimeout(typeNext, 800);
+
+        var initOverlay = document.getElementById('initOverlay');
+
+        function dismissInit() {
+            initAudio();
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            soundOn = true;
+            soundToggle.classList.add('on');
+            soundToggle.innerHTML = '[SFX: ON]';
+            masterGain.gain.setTargetAtTime(1, audioCtx.currentTime, 0.3);
+            initOverlay.classList.add('hidden');
+            setTimeout(function () { initOverlay.remove(); }, 800);
+            setTimeout(typeNext, 400);
+            document.removeEventListener('click', dismissInit);
+            document.removeEventListener('touchstart', dismissInit);
+        }
+
+        document.addEventListener('click', dismissInit);
+        document.addEventListener('touchstart', dismissInit, { passive: true });
 
         var orig = '> connect --linkedin';
         var glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?';
