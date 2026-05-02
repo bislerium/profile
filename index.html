@@ -621,12 +621,13 @@
             z-index: 10;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.55rem;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
             user-select: none;
             cursor: none;
-            padding: 5px 10px;
+            padding: 4px 10px;
             border: 1px solid #1a1a1a;
             color: #333;
+            background: transparent;
             transition: color 0.3s ease, border-color 0.3s ease, text-shadow 0.3s ease;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
@@ -634,16 +635,17 @@
 
         .sound-toggle:hover {
             border-color: #333;
+            color: #444;
         }
 
         .sound-toggle.on {
             color: var(--accent);
             border-color: rgba(var(--accent-rgb), 0.2);
-            text-shadow: 0 0 8px rgba(var(--accent-rgb), 0.2);
+            text-shadow: 0 0 8px rgba(var(--accent-rgb), 0.15);
         }
 
         .sound-toggle.on:hover {
-            border-color: rgba(var(--accent-rgb), 0.4);
+            border-color: rgba(var(--accent-rgb), 0.35);
         }
 
         .sound-dot {
@@ -990,7 +992,7 @@
                 if (audioCtx.state === 'suspended') audioCtx.resume();
                 soundOn = true;
                 soundToggle.classList.add('on');
-                soundToggle.innerHTML = '<span class="sound-dot"></span>SFX ON';
+                soundToggle.innerHTML = '[SFX: ON]';
                 masterGain.gain.setTargetAtTime(1, audioCtx.currentTime, 0.3);
             } else {
                 soundOn = false;
@@ -998,7 +1000,7 @@
                     masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.3);
                 }
                 soundToggle.classList.remove('on');
-                soundToggle.innerHTML = '<span class="sound-dot"></span>SFX OFF';
+                soundToggle.innerHTML = '[SFX: OFF]';
             }
         }
 
