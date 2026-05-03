@@ -949,6 +949,7 @@
 
     <div class="rocket-tooltip" id="rocketTooltip">
         <div><span class="tt-label">SPD </span><span class="tt-val" id="ttSpeed">0.00</span></div>
+        <div><span class="tt-label">HDG </span><span class="tt-val" id="ttHdg">N 0°</span></div>
         <div><span class="tt-label">THR </span><span class="tt-val" id="ttThrust">IDLE</span><span
                 class="tt-bar-track"><span class="tt-bar-fill" id="ttBar"></span></span></div>
     </div>
@@ -1354,7 +1355,7 @@
         document.addEventListener('mouseleave', function () { dot.style.opacity = ring.style.opacity = cross.style.opacity = '0'; });
         document.addEventListener('mouseenter', function () { if (cursorReady) dot.style.opacity = ring.style.opacity = cross.style.opacity = '1'; });
 
-               (function animCursor() {
+        (function animCursor() {
             ringX += (mouseX - ringX) * 0.12;
             ringY += (mouseY - ringY) * 0.12;
             crossX += (mouseX - crossX) * 0.25;
@@ -1363,7 +1364,7 @@
             ring.style.top = ringY + 'px';
             cross.style.left = crossX + 'px';
             cross.style.top = crossY + 'px';
-            
+
             // Terminal stays strictly locked at 0
             terminalEl.style.transform = 'translate(0px, 0px)';
 
@@ -1382,7 +1383,7 @@
             var cy = window.innerHeight / 2;
 
             for (var i = 0; i < layers.length; i++) {
-                if (!layers[i]) continue; 
+                if (!layers[i]) continue;
                 var dx = (cx - mouseX) * speeds[i];
                 var dy = (cy - mouseY) * speeds[i];
                 layers[i].style.transform = 'translate(' + dx + 'px, ' + dy + 'px)';
@@ -1839,6 +1840,12 @@
             if (rocket.trailTick % sr === 0 && rocket.speed > 0.05) spawnTrail(rocket.boostFuel > 0);
         }
 
+        function toCardinal(deg) {
+            var d = ((deg % 360) + 360) % 360;
+            var dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+            return dirs[Math.round(d / 45) % 8];
+        }
+
         function updateTooltip() {
             if (window.innerWidth < 480) return;
             var td = rocket.x - mouseX, te = rocket.y - mouseY;
@@ -1853,7 +1860,7 @@
                 var tl = nX + 22, tt = nY - 16;
                 if (tl + 140 > window.innerWidth - 10) tl = nX - 156;
                 if (tt < 10) tt = 10;
-                if (tt + 40 > window.innerHeight - 10) tt = window.innerHeight - 50;
+                if (tt + 48 > window.innerHeight - 10) tt = window.innerHeight - 58;
                 tooltipEl.style.left = tl + 'px';
                 tooltipEl.style.top = tt + 'px';
             } else {
@@ -1862,6 +1869,10 @@
                 tooltipEl.style.top = (rocket.y - 18) + 'px';
             }
             ttSpeed.textContent = rocket.speed.toFixed(2);
+
+            var normDeg = ((rocket.angle % 360) + 360) % 360;
+            ttHdg.textContent = toCardinal(rocket.angle) + ' ' + normDeg.toFixed(0) + '\u00B0';
+            ttHdg.classList.toggle('active', rocket.speed > 0.1);
 
             var displaySpeed = rocket.speed;
             if (rocket.boostFuel <= 0 && displaySpeed <= 1.6) {
@@ -1880,8 +1891,7 @@
             } else if (rocket.speed > 0.1) {
                 ttThrust.textContent = 'DRIFT'; ttThrust.classList.remove('active');
                 ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 2px rgba(var(--accent-rgb), 0.1)';
-            }
-            else {
+            } else {
                 ttThrust.textContent = 'IDLE'; ttThrust.classList.remove('active');
                 ttBar.style.background = '#333'; ttBar.style.boxShadow = 'none';
             }
