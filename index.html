@@ -1123,28 +1123,64 @@
             user-select: none;
         }
 
-        .help-hint {
+        .term-log {
             position: fixed;
-            top: clamp(10px, 2vw, 20px);
-            right: clamp(12px, 2vw, 24px);
+            bottom: clamp(40px, 5vw, 60px);
+            left: clamp(14px, 3vw, 24px);
             z-index: 10;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.38rem;
-            color: #222;
-            letter-spacing: 0.05em;
-            text-align: right;
-            line-height: 1.8;
-            opacity: 0;
-            transition: opacity 1s ease;
             pointer-events: none;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(10, 10, 10, 0.85);
+            border: 1px solid rgba(167, 139, 250, 0.1);
+            padding: 0;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            max-width: 320px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
-        .help-hint.visible {
+        .term-log.visible {
             opacity: 1;
+            transform: translateY(0);
         }
 
-        .help-hint span {
+        .term-log-header {
+            padding: 6px 12px;
+            font-size: 0.4rem;
+            color: rgba(167, 139, 250, 0.5);
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .term-log-body {
+            padding: 8px 12px;
+            font-size: 0.45rem;
+            color: #555;
+            line-height: 1.8;
+            min-height: 20px;
+        }
+
+        .term-log-body .log-key {
+            color: var(--accent);
+            text-shadow: 0 0 6px rgba(167, 139, 250, 0.3);
+            font-weight: 500;
+        }
+
+        .term-log-body .log-dim {
             color: #333;
+        }
+
+        .term-log-body .log-cursor {
+            display: inline-block;
+            width: 6px;
+            height: 8px;
+            background: var(--accent);
+            vertical-align: middle;
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            opacity: 0.6;
         }
 
         @supports (padding: env(safe-area-inset-bottom)) {
@@ -1261,11 +1297,9 @@
     </div>
 
     <div class="hud-mode" id="hudMode">ATTRACT</div>
-
-    <div class="help-hint" id="helpHint">
-        <span>CLICK</span> boost &middot; <span>DBLCLICK</span> warp<br>
-        <span>SCROLL</span> gravity mode &middot; <span>WASD</span> steer<br>
-        <span>SPACE</span> fleet &middot; <span>PLANET CLICK</span> skill
+    <div class="term-log" id="termLog">
+        <div class="term-log-header">// SYS.CONTROLS</div>
+        <div class="term-log-body" id="termLogBody"></div>
     </div>
 
     <div class="scanlines"></div>
@@ -1422,7 +1456,25 @@
         document.querySelectorAll('a').forEach(function (el) { el.addEventListener('mouseenter', function () { dot.classList.add('hovering'); ring.classList.add('hovering'); cross.classList.add('hovering'); }); el.addEventListener('mouseleave', function () { dot.classList.remove('hovering'); ring.classList.remove('hovering'); cross.classList.remove('hovering'); }); });
 
         var typedEl = document.getElementById('typed-text'), titleEl = document.getElementById('title'), ctaEl = document.getElementById('cta'), ctaSecondary = document.getElementById('ctaSecondary'), ci = 0, fullName = 'Bishal Gharti Chhetri', typeEcho = document.getElementById('typeEcho');
-        function typeNext() { if (ci < fullName.length) { typedEl.textContent += fullName.charAt(ci++); playTypeClick(); typeEcho.classList.remove('active'); void typeEcho.offsetWidth; typeEcho.classList.add('active'); setTimeout(typeNext, 55 + Math.random() * 35); } else { setTimeout(function () { titleEl.classList.add('visible'); }, 350); setTimeout(function () { ctaEl.classList.add('visible'); ctaVisible = true; }, 750); setTimeout(function () { ctaSecondary.classList.add('visible'); }, 950); setTimeout(function () { document.getElementById('hudCompass').classList.add('visible'); document.getElementById('hudSpeed').classList.add('visible'); document.getElementById('hudMode').classList.add('visible'); }, 1200); setTimeout(function () { document.getElementById('helpHint').classList.add('visible'); }, 2500); setTimeout(function () { document.getElementById('helpHint').classList.remove('visible'); }, 9000); } }
+        function typeNext() {
+            if (ci < fullName.length) {
+                typedEl.textContent += fullName.charAt(ci++);
+                playTypeClick();
+                typeEcho.classList.remove('active');
+                void typeEcho.offsetWidth;
+                typeEcho.classList.add('active');
+                setTimeout(typeNext, 55 + Math.random() * 35);
+            } else {
+                setTimeout(function () { titleEl.classList.add('visible'); }, 350);
+                setTimeout(function () { ctaEl.classList.add('visible'); ctaVisible = true; }, 750);
+                setTimeout(function () { ctaSecondary.classList.add('visible'); }, 950);
+                setTimeout(function () {
+                    document.getElementById('hudCompass').classList.add('visible');
+                    document.getElementById('hudSpeed').classList.add('visible');
+                    document.getElementById('hudMode').classList.add('visible');
+                }, 1200);
+            }
+        }
 
         var initOverlay = document.getElementById('initOverlay'), initPromptEl = document.getElementById('initPrompt'), initSubEl = document.getElementById('initSub'), ctaScrambleText = '> open -p --t linkedin', glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?', ctaVisible = false;
         initPromptEl.addEventListener('mouseenter', function () { var baseText = '> ClientHello', r = 0; var iv = setInterval(function () { initPromptEl.textContent = baseText.split('').map(function (c, idx) { return idx < r ? baseText[idx] : glyphs[Math.floor(Math.random() * glyphs.length)]; }).join(''); if (++r > baseText.length) { clearInterval(iv); initPromptEl.textContent = baseText; initSubEl.textContent = 'TLS 1.3 HANDSHAKE PENDING'; initSubEl.style.color = '#555'; } }, 35); });
@@ -1433,6 +1485,30 @@
         document.addEventListener('click', dismissInit);
         document.addEventListener('touchstart', dismissInit, { passive: true });
         document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && initOverlay) dismissInit(); });
+
+        var termLog = document.getElementById('termLog');
+        var termLogBody = document.getElementById('termLogBody');
+        var helpTimeout;
+
+        var controlText = '<span class="log-key">CLICK</span> boost to target<br><span class="log-key">DBLCLK</span> hyperjump<br><span class="log-key">SHIFT</span> forward boost<br><span class="log-key">SCROLL</span> speed 0.1x-10x<br><span class="log-key">WASD</span> manual steer<br><span class="log-key">SPACE</span> deploy fleet<br><span class="log-key">PLANET</span> use skill<br><span class="log-key">ESC</span> cancel';
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === '/' && initDismissed) {
+                e.preventDefault();
+                clearTimeout(helpTimeout);
+
+                // Instantly put the text in
+                termLogBody.innerHTML = controlText + '<span class="log-cursor"></span>';
+
+                // Make it visible
+                termLog.classList.add('visible');
+
+                // Hide after 5 seconds
+                helpTimeout = setTimeout(function () {
+                    termLog.classList.remove('visible');
+                }, 5000);
+            }
+        });
 
         ctaEl.addEventListener('mouseenter', function () { var r = 0; var iv = setInterval(function () { ctaEl.textContent = ctaScrambleText.split('').map(function (c, idx) { return idx < r ? ctaScrambleText[idx] : glyphs[Math.floor(Math.random() * glyphs.length)]; }).join(''); playTypeClick(); if (++r > ctaScrambleText.length) { clearInterval(iv); ctaEl.textContent = ctaScrambleText; } }, 38); });
         titleEl.addEventListener('mouseenter', function () { titleEl.classList.remove('glitch-active'); void titleEl.offsetWidth; titleEl.classList.add('glitch-active'); });
