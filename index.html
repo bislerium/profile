@@ -794,11 +794,6 @@
             border-color: rgba(16, 185, 129, 0.3);
         }
 
-        .hud-mode.fleet {
-            color: var(--accent);
-            border-color: rgba(var(--accent-rgb), 0.3);
-        }
-
         .terminal {
             position: relative;
             z-index: 10;
@@ -1189,140 +1184,6 @@
             opacity: 0.6;
         }
 
-        .grid-layer.cleared {
-            opacity: 0;
-        }
-
-        .pulse-ring.cleared {
-            opacity: 0;
-            animation: none;
-        }
-
-        #particles.cleared,
-        #planets.cleared,
-        #thrustTrail.cleared,
-        #fx.cleared {
-            opacity: 0;
-        }
-
-        .free-rocket.cleared {
-            opacity: 0 !important;
-            filter: none !important;
-            transition: opacity 0.4s ease, filter 0.4s ease;
-        }
-
-        .rocket-tooltip.cleared {
-            opacity: 0 !important;
-            transition: opacity 0.3s ease;
-        }
-
-        .hud-compass.cleared,
-        .hud-speed.cleared,
-        .hud-mode.cleared {
-            opacity: 0 !important;
-            transition: opacity 0.4s ease;
-        }
-
-        .terminal.cleared {
-            filter: brightness(1.3);
-        }
-
-        .clear-toggle {
-            position: fixed;
-            bottom: clamp(10px, 2vw, 20px);
-            right: clamp(12px, 2vw, 24px);
-            bottom: calc(clamp(10px, 2vw, 20px) + 22px);
-            z-index: 10;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.55rem;
-            letter-spacing: 0.05em;
-            user-select: none;
-            padding: 4px 10px;
-            border: 1px solid #1a1a1a;
-            color: #333;
-            background: transparent;
-            transition: color 0.3s ease, border-color 0.3s ease, text-shadow 0.3s ease;
-        }
-
-        .clear-toggle:hover {
-            border-color: #333;
-            color: #444;
-        }
-
-        .clear-dot {
-            display: inline-block;
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: #333;
-            margin-right: 6px;
-            vertical-align: middle;
-            transition: background 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .clear-toggle.on .clear-dot {
-            background: #F43F5E;
-            box-shadow: 0 0 6px rgba(244, 63, 94, 0.5);
-            animation: clearPulse 1.8s ease-in-out infinite;
-        }
-
-        @keyframes clearPulse {
-
-            0%,
-            100% {
-                box-shadow: 0 0 4px rgba(244, 63, 94, 0.3);
-            }
-
-            50% {
-                box-shadow: 0 0 8px rgba(244, 63, 94, 0.7);
-            }
-        }
-
-        .clear-toggle.on {
-            color: #F43F5E;
-            border-color: rgba(244, 63, 94, 0.3);
-            text-shadow: 0 0 8px rgba(244, 63, 94, 0.2);
-        }
-
-        .clear-toggle.on:hover {
-            border-color: rgba(244, 63, 94, 0.5);
-        }
-
-        .clear-sweep {
-            position: fixed;
-            inset: 0;
-            z-index: 50;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .clear-sweep-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 3px;
-            height: 100%;
-            background: linear-gradient(to bottom,
-                    transparent 0%,
-                    rgba(244, 63, 94, 0.6) 20%,
-                    rgba(244, 63, 94, 0.9) 50%,
-                    rgba(244, 63, 94, 0.6) 80%,
-                    transparent 100%);
-            box-shadow: 0 0 20px rgba(244, 63, 94, 0.5),
-                0 0 60px rgba(244, 63, 94, 0.2),
-                0 0 100px rgba(244, 63, 94, 0.08);
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-
-        .clear-sweep-line.active {
-            animation: sweepAcross 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        .clear-sweep-line.active.reverse {
-            animation: sweepReverse 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
         @keyframes sweepAcross {
             0% {
                 left: -20px;
@@ -1361,29 +1222,6 @@
             }
         }
 
-        .clear-sweep-glow {
-            position: absolute;
-            top: 0;
-            height: 100%;
-            width: 80px;
-            background: linear-gradient(90deg,
-                    transparent 0%,
-                    rgba(244, 63, 94, 0.04) 30%,
-                    rgba(244, 63, 94, 0.08) 50%,
-                    rgba(244, 63, 94, 0.04) 70%,
-                    transparent 100%);
-            opacity: 0;
-            transform: translateX(-100px);
-        }
-
-        .clear-sweep-glow.active {
-            animation: glowAcross 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        .clear-sweep-glow.active.reverse {
-            animation: glowReverse 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
         @keyframes glowAcross {
             0% {
                 left: -100px;
@@ -1408,20 +1246,6 @@
             }
         }
 
-        .clear-sweep-spark {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            border-radius: 50%;
-            background: rgba(244, 63, 94, 0.8);
-            box-shadow: 0 0 4px rgba(244, 63, 94, 0.6);
-            opacity: 0;
-        }
-
-        .clear-sweep-spark.active {
-            animation: sparkFade 0.3s ease-out forwards;
-        }
-
         @keyframes sparkFade {
             0% {
                 opacity: 1;
@@ -1434,17 +1258,6 @@
             }
         }
 
-        @supports (padding: env(safe-area-inset-bottom)) {
-            .clear-toggle {
-                bottom: calc(clamp(10px, 2vw, 20px) + 22px + env(safe-area-inset-bottom));
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .clear-dot {
-                animation: none !important;
-            }
-        }
 
         @supports (padding: env(safe-area-inset-bottom)) {
             .sound-toggle {
@@ -1504,10 +1317,6 @@
     <canvas id="thrustTrail"></canvas>
     <canvas id="fx"></canvas>
     <div class="warp-flash" id="warpFlash"></div>
-    <div class="clear-sweep" id="clearSweep">
-        <div class="clear-sweep-line" id="sweepLine"></div>
-        <div class="clear-sweep-glow" id="sweepGlow"></div>
-    </div>
 
     <div class="free-rocket" id="freeRocket">
         <svg viewBox="0 0 40 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1597,10 +1406,6 @@
         <span class="sound-dot"></span>SFX OFF
     </button>
 
-    <button class="clear-toggle" id="clearToggle" aria-label="Clear screen">
-        <span class="clear-dot"></span>[ CLR ]
-    </button>
-
     <div class="version">v2.1.0</div>
 
     <script>
@@ -1654,14 +1459,11 @@
             var t = audioCtx.currentTime + 0.05;
             var sn = Math.min(rocket.speed / 5, 1);
 
-            // Thrust audio guard
-            if (screenCleared) {
-                thrustGain.gain.setTargetAtTime(0, t, 0.1);
-            } else {
-                thrustGain.gain.setTargetAtTime(sn * 0.08, t, 0.1);
-                thrustFilter.frequency.setTargetAtTime(200 + sn * 600, t, 0.1);
-                thrustFilter.Q.setTargetAtTime(0.5 + sn * 1.5, t, 0.1);
-            }
+
+            thrustGain.gain.setTargetAtTime(sn * 0.08, t, 0.1);
+            thrustFilter.frequency.setTargetAtTime(200 + sn * 600, t, 0.1);
+            thrustFilter.Q.setTargetAtTime(0.5 + sn * 1.5, t, 0.1);
+
 
             // Calculate planet proximity
             var maxInf = 0;
@@ -1675,7 +1477,7 @@
             }
 
             // Planet hum audio guard
-            planetHumGain.gain.setTargetAtTime(screenCleared ? 0 : maxInf * 0.06, t, 0.15);
+            planetHumGain.gain.setTargetAtTime(maxInf * 0.06, t, 0.15);
             planetHumFilter.frequency.setTargetAtTime(80 + maxInf * 250, t, 0.15);
             planetHumOsc.frequency.setTargetAtTime(70 + maxInf * 50, t, 0.15);
         }
@@ -1718,8 +1520,7 @@
                 { rx: 0.12, ry: 0.78, baseRadius: 30, color: [124, 58, 237], mass: 2.8, baseGravRange: 190, hasRing: true, ringColor: [167, 139, 250], ringTilt: -0.3, name: 'Indigo Major', skill: 'warp', skillLabel: 'HYPERJUMP', skClass: 'sk-warp' },
                 { rx: 0.78, ry: 0.75, baseRadius: 38, color: [79, 70, 229], mass: 3.8, baseGravRange: 230, hasRing: false, moonData: { baseDist: 60, speed: 0.012, radius: 4, color: [167, 139, 250] }, name: 'Cosmos IX', skill: 'shockwave', skillLabel: 'SHOCKWAVE', skClass: 'sk-mine' },
                 { rx: 0.2, ry: 0.18, baseRadius: 11, color: [6, 182, 212], mass: 0.6, baseGravRange: 90, hasRing: false, name: 'Teal Minor', skill: 'softlock', skillLabel: 'SOFT LOCK', skClass: 'sk-tractor' },
-                { rx: 0.55, ry: 0.88, baseRadius: 14, color: [139, 92, 246], mass: 0.9, baseGravRange: 100, hasRing: true, ringColor: [139, 92, 246], ringTilt: 0.4, name: 'Nebula Edge', skill: 'orbit', skillLabel: 'ORBIT LOCK', skClass: 'sk-orbit' },
-                { rx: 0.88, ry: 0.48, baseRadius: 38, color: [0, 0, 0], mass: 6.0, baseGravRange: 300, hasRing: false, name: 'Void Singularity', skill: 'blackhole', skillLabel: 'EVENT HORIZON', skClass: 'sk-mine', isBlackHole: true }
+                { rx: 0.55, ry: 0.88, baseRadius: 14, color: [139, 92, 246], mass: 0.9, baseGravRange: 100, hasRing: true, ringColor: [139, 92, 246], ringTilt: 0.4, name: 'Nebula Edge', skill: 'orbit', skillLabel: 'ORBIT LOCK', skClass: 'sk-orbit' }
             ];
             for (var i = 0; i < templates.length; i++) {
                 var t = templates[i], s = cfg.planetScale;
@@ -1740,7 +1541,7 @@
 
         var hoveredPlanet = null, planetLabel = document.getElementById('planetLabel'), plName = document.getElementById('plName'), plStats = document.getElementById('plStats'), plSkills = document.getElementById('plSkills');
         function checkPlanetHover() {
-            if (screenCleared) { planetLabel.classList.remove('visible'); return; }
+
             var prev = hoveredPlanet; hoveredPlanet = null;
             for (var i = 0; i < planets.length; i++) { var p = planets[i]; var dx = mouseX - p.x, dy = mouseY - p.y; if (Math.sqrt(dx * dx + dy * dy) < Math.max(p.radius * 2.5, 30)) { hoveredPlanet = p; break; } }
             if (hoveredPlanet && !prev) { dot.classList.add('hovering'); ring.classList.add('hovering'); cross.classList.add('hovering'); } else if (!hoveredPlanet && prev) { dot.classList.remove('hovering'); ring.classList.remove('hovering'); cross.classList.remove('hovering'); }
@@ -1796,8 +1597,7 @@
         var termLogBody = document.getElementById('termLogBody');
         var helpTimeout;
 
-        var controlText = '<span class="log-key">CLICK</span> boost to target<br><span class="log-key">DBLCLK</span> hyperjump<br><span class="log-key">SHIFT</span> forward boost<br><span class="log-key">SCROLL</span> speed 0.1x-10x<br><span class="log-key">WASD</span> manual steer<br><span class="log-key">SPACE</span> deploy fleet<br><span class="log-key">PLANET</span> use skill<br><span class="log-key">C</span> clear screen<br><span class="log-key">ESC</span> cancel';
-
+        var controlText = '<span class="log-key">CLICK</span> boost to target<br><span class="log-key">DBLCLK</span> hyperjump<br><span class="log-key">SHIFT</span> forward boost<br><span class="log-key">SCROLL</span> speed 0.1x-10x<br><span class="log-key">WASD</span> manual steer<br><span class="log-key">PLANET</span> use skill<br><span class="log-key">B</span> spawn black hole<br><span class="log-key">ESC</span> cancel';
         document.addEventListener('keydown', function (e) {
             if (e.key === '/' && initDismissed) {
                 e.preventDefault();
@@ -1822,13 +1622,9 @@
 
         var rocketEl = document.getElementById('freeRocket'), tooltipEl = document.getElementById('rocketTooltip'), ttSpeed = document.getElementById('ttSpeed'), ttThrust = document.getElementById('ttThrust'), ttBar = document.getElementById('ttBar'), ttHdg = document.getElementById('ttHdg'), ttMode = document.getElementById('ttMode'), ttModeRow = document.getElementById('ttModeRow'), compassNeedle = document.getElementById('compassNeedle'), hudSpdVal = document.getElementById('hudSpdVal'), hudSpdFill = document.getElementById('hudSpdFill'), hudMode = document.getElementById('hudMode'), gridLayer = document.getElementById('gridLayer'), warpFlash = document.getElementById('warpFlash');
 
-        var clearToggle = document.getElementById('clearToggle');
-        var sweepLine = document.getElementById('sweepLine');
-        var sweepGlow = document.getElementById('sweepGlow');
-        var clearSweepEl = document.getElementById('clearSweep');
-
+        var keysDown = {};
         var rocket = { x: window.innerWidth * 0.7, y: window.innerHeight * 0.35, vx: 0, vy: 0, angle: 0, wanderX: window.innerWidth * 0.5, wanderY: window.innerHeight * 0.4, boostFuel: 0, boostX: 0, boostY: 0, speed: 0, trailTick: 0, mode: 'wander', orbitPlanet: null, orbitAngle: 0, orbitDist: 0, warpFrom: null, warpTo: null, warpProgress: 0, slowTimer: 0, speedMult: 1.0 };
-        var fleetMode = false, fleetRockets = [], keysDown = {};
+
 
         function pickWander() { var m = cfg.wanderMargin; rocket.wanderX = m + Math.random() * (window.innerWidth - m * 2); rocket.wanderY = m + Math.random() * (window.innerHeight - m * 2); }
         pickWander();
@@ -1838,22 +1634,22 @@
         function getRocketExitOffset() { return rocketEl.getBoundingClientRect().height / 2; }
         var trail = [];
 
-        function spawnTrail(heavy) { if (screenCleared) return; var rad = rocket.angle * (Math.PI / 180); var sinA = Math.sin(rad), cosA = Math.cos(rad); var fdx = -sinA, fdy = cosA, ppx = cosA, ppy = -sinA; var eo = getRocketExitOffset(); var ex = rocket.x + fdx * eo, ey = rocket.y + fdy * eo; var count = heavy ? 3 : 1; var col = rocket.mode === 'warp' ? '245,158,11' : (rocket.mode === 'orbit' ? '6,182,212' : (rocket.slowTimer > 0 ? '6,182,212' : '167,139,250')); for (var i = 0; i < count; i++) { var sp = (Math.random() - 0.5) * 2, fw = 2 + Math.random() * 6; trail.push({ x: ex + fdx * fw + ppx * sp * 6, y: ey + fdy * fw + ppy * sp * 6, vx: fdx * (0.4 + Math.random() * 0.8) + ppx * sp * 0.15, vy: fdy * (0.4 + Math.random() * 0.8) + ppy * sp * 0.15, life: 1, decay: 0.012 + Math.random() * 0.018, size: heavy ? (1.5 + Math.random() * 3) : (0.8 + Math.random() * 2), color: col }); } while (trail.length > cfg.maxTrail) trail.shift(); }
-        function drawTrail() { tCtx.clearRect(0, 0, tCanvas.width, tCanvas.height); if (screenCleared) return; for (var i = trail.length - 1; i >= 0; i--) { var p = trail[i]; p.x += p.vx; p.y += p.vy; p.vx *= 0.97; p.vy *= 0.97; p.life -= p.decay; p.size *= 0.985; if (p.life <= 0) { trail.splice(i, 1); continue; } tCtx.beginPath(); tCtx.arc(p.x, p.y, Math.max(0.1, p.size), 0, Math.PI * 2); tCtx.fillStyle = 'rgba(' + p.color + ',' + (p.life * 0.4) + ')'; tCtx.fill(); } }
+        function spawnTrail(heavy) { var rad = rocket.angle * (Math.PI / 180); var sinA = Math.sin(rad), cosA = Math.cos(rad); var fdx = -sinA, fdy = cosA, ppx = cosA, ppy = -sinA; var eo = getRocketExitOffset(); var ex = rocket.x + fdx * eo, ey = rocket.y + fdy * eo; var count = heavy ? 3 : 1; var col = rocket.mode === 'warp' ? '245,158,11' : (rocket.mode === 'orbit' ? '6,182,212' : (rocket.slowTimer > 0 ? '6,182,212' : '167,139,250')); for (var i = 0; i < count; i++) { var sp = (Math.random() - 0.5) * 2, fw = 2 + Math.random() * 6; trail.push({ x: ex + fdx * fw + ppx * sp * 6, y: ey + fdy * fw + ppy * sp * 6, vx: fdx * (0.4 + Math.random() * 0.8) + ppx * sp * 0.15, vy: fdy * (0.4 + Math.random() * 0.8) + ppy * sp * 0.15, life: 1, decay: 0.012 + Math.random() * 0.018, size: heavy ? (1.5 + Math.random() * 3) : (0.8 + Math.random() * 2), color: col }); } while (trail.length > cfg.maxTrail) trail.shift(); }
+        function drawTrail() { tCtx.clearRect(0, 0, tCanvas.width, tCanvas.height); for (var i = trail.length - 1; i >= 0; i--) { var p = trail[i]; p.x += p.vx; p.y += p.vy; p.vx *= 0.97; p.vy *= 0.97; p.life -= p.decay; p.size *= 0.985; if (p.life <= 0) { trail.splice(i, 1); continue; } tCtx.beginPath(); tCtx.arc(p.x, p.y, Math.max(0.1, p.size), 0, Math.PI * 2); tCtx.fillStyle = 'rgba(' + p.color + ',' + (p.life * 0.4) + ')'; tCtx.fill(); } }
 
         var bgParticles = [];
         function initBgParticles() { bgParticles = []; for (var i = 0; i < cfg.particles; i++) { bgParticles.push({ x: Math.random() * bgC.width, y: Math.random() * bgC.height, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, r: Math.random() * 1.5 + 0.5, ba: Math.random() * 0.4 + 0.1, a: 0, ps: Math.random() * 0.01 + 0.005, po: Math.random() * Math.PI * 2 }); } }
         initBgParticles();
         var fr = 0;
-        function drawBg() { fr++; bgX.clearRect(0, 0, bgC.width, bgC.height); if (screenCleared) return; for (var i = 0; i < bgParticles.length; i++) { var p = bgParticles[i]; if (mouseActive) { var pdx = mouseX - p.x, pdy = mouseY - p.y; var pd = Math.sqrt(pdx * pdx + pdy * pdy); if (pd < 200 && pd > 5) { var pull = 0.003 * (1 - pd / 200); p.vx += (pdx / pd) * pull; p.vy += (pdy / pd) * pull; } } p.x += p.vx; p.y += p.vy; p.vx *= 0.995; p.vy *= 0.995; if (p.x < 0) p.x = bgC.width; if (p.x > bgC.width) p.x = 0; if (p.y < 0) p.y = bgC.height; if (p.y > bgC.height) p.y = 0; p.a = Math.max(0, p.ba + Math.sin(fr * p.ps + p.po) * 0.15); bgX.beginPath(); bgX.arc(p.x, p.y, p.r, 0, Math.PI * 2); bgX.fillStyle = 'rgba(167,139,250,' + p.a + ')'; bgX.fill(); } if (cfg.connectDist > 0) { var cSq = cfg.connectDist * cfg.connectDist; for (var i = 0; i < bgParticles.length; i++) { for (var j = i + 1; j < bgParticles.length; j++) { var dx = bgParticles[i].x - bgParticles[j].x, dy = bgParticles[i].y - bgParticles[j].y; var dSq = dx * dx + dy * dy; if (dSq < cSq) { var d = Math.sqrt(dSq); bgX.beginPath(); bgX.moveTo(bgParticles[i].x, bgParticles[i].y); bgX.lineTo(bgParticles[j].x, bgParticles[j].y); bgX.strokeStyle = 'rgba(167,139,250,' + ((1 - d / cfg.connectDist) * 0.08) + ')'; bgX.lineWidth = 0.5; bgX.stroke(); } } } } }
+        function drawBg() { fr++; bgX.clearRect(0, 0, bgC.width, bgC.height); for (var i = 0; i < bgParticles.length; i++) { var p = bgParticles[i]; if (mouseActive) { var pdx = mouseX - p.x, pdy = mouseY - p.y; var pd = Math.sqrt(pdx * pdx + pdy * pdy); if (pd < 200 && pd > 5) { var pull = 0.003 * (1 - pd / 200); p.vx += (pdx / pd) * pull; p.vy += (pdy / pd) * pull; } } p.x += p.vx; p.y += p.vy; p.vx *= 0.995; p.vy *= 0.995; if (p.x < 0) p.x = bgC.width; if (p.x > bgC.width) p.x = 0; if (p.y < 0) p.y = bgC.height; if (p.y > bgC.height) p.y = 0; p.a = Math.max(0, p.ba + Math.sin(fr * p.ps + p.po) * 0.15); bgX.beginPath(); bgX.arc(p.x, p.y, p.r, 0, Math.PI * 2); bgX.fillStyle = 'rgba(167,139,250,' + p.a + ')'; bgX.fill(); } if (cfg.connectDist > 0) { var cSq = cfg.connectDist * cfg.connectDist; for (var i = 0; i < bgParticles.length; i++) { for (var j = i + 1; j < bgParticles.length; j++) { var dx = bgParticles[i].x - bgParticles[j].x, dy = bgParticles[i].y - bgParticles[j].y; var dSq = dx * dx + dy * dy; if (dSq < cSq) { var d = Math.sqrt(dSq); bgX.beginPath(); bgX.moveTo(bgParticles[i].x, bgParticles[i].y); bgX.lineTo(bgParticles[j].x, bgParticles[j].y); bgX.strokeStyle = 'rgba(167,139,250,' + ((1 - d / cfg.connectDist) * 0.08) + ')'; bgX.lineWidth = 0.5; bgX.stroke(); } } } } }
 
         var fxParticles = [], lightningBolts = [];
-        function addFxParticle(x, y, vx, vy, life, size, color) { if (screenCleared) return; fxParticles.push({ x: x, y: y, vx: vx, vy: vy, life: life, maxLife: life, size: size, color: color }); if (fxParticles.length > 400) fxParticles.shift(); }
-        function addSparkBurst(x, y, count, color) { if (screenCleared) return; for (var i = 0; i < count; i++) { var a = Math.random() * Math.PI * 2; var sp = 1 + Math.random() * 3; addFxParticle(x, y, Math.cos(a) * sp, Math.sin(a) * sp, 0.5 + Math.random() * 0.3, 1 + Math.random() * 2, color); } }
-        function addLightning(x1, y1, x2, y2, color) { if (screenCleared) return; var points = [{ x: x1, y: y1 }]; for (var i = 1; i < 8; i++) { var t = i / 8; points.push({ x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * 40, y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * 40 }); } points.push({ x: x2, y: y2 }); lightningBolts.push({ points: points, life: 0.3, color: color }); }
+        function addFxParticle(x, y, vx, vy, life, size, color) { fxParticles.push({ x: x, y: y, vx: vx, vy: vy, life: life, maxLife: life, size: size, color: color }); if (fxParticles.length > 400) fxParticles.shift(); }
+        function addSparkBurst(x, y, count, color) { for (var i = 0; i < count; i++) { var a = Math.random() * Math.PI * 2; var sp = 1 + Math.random() * 3; addFxParticle(x, y, Math.cos(a) * sp, Math.sin(a) * sp, 0.5 + Math.random() * 0.3, 1 + Math.random() * 2, color); } }
+        function addLightning(x1, y1, x2, y2, color) { var points = [{ x: x1, y: y1 }]; for (var i = 1; i < 8; i++) { var t = i / 8; points.push({ x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * 40, y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * 40 }); } points.push({ x: x2, y: y2 }); lightningBolts.push({ points: points, life: 0.3, color: color }); }
         function drawFx() {
             fxX.clearRect(0, 0, fxC.width, fxC.height);
-            if (screenCleared) return;
+
             for (var l = lightningBolts.length - 1; l >= 0; l--) { var bolt = lightningBolts[l]; bolt.life -= 0.02; if (bolt.life <= 0) { lightningBolts.splice(l, 1); continue; } fxX.beginPath(); fxX.moveTo(bolt.points[0].x, bolt.points[0].y); for (var p = 1; p < bolt.points.length; p++) fxX.lineTo(bolt.points[p].x, bolt.points[p].y); fxX.strokeStyle = 'rgba(' + bolt.color + ',' + (bolt.life * 0.8) + ')'; fxX.lineWidth = bolt.life * 2; fxX.stroke(); fxX.strokeStyle = 'rgba(' + bolt.color + ',' + (bolt.life * 0.2) + ')'; fxX.lineWidth = bolt.life * 6; fxX.stroke(); }
             for (var i = 0; i < planets.length; i++) {
                 var proj = planets[i].softLockProj;
@@ -1900,7 +1696,6 @@
 
         function drawPlanets() {
             plCtx.clearRect(0, 0, plCanvas.width, plCanvas.height);
-            if (screenCleared) return;
             plCtx.save(); plCtx.setLineDash([3, 7]);
             for (var i = 0; i < planets.length; i++) { var p = planets[i]; if (p.consumed) continue; var dx = rocket.x - p.x, dy = rocket.y - p.y; var dist = Math.sqrt(dx * dx + dy * dy); var color = p.color[0] + ',' + p.color[1] + ',' + p.color[2]; if (dist < p.gravRange && dist > p.safeZone) { plCtx.beginPath(); plCtx.moveTo(p.x, p.y); plCtx.lineTo(rocket.x, rocket.y); plCtx.strokeStyle = 'rgba(' + color + ',' + ((1 - dist / p.gravRange) * 0.1) + ')'; plCtx.lineWidth = 0.5; plCtx.stroke(); } }
             plCtx.restore();
@@ -1908,56 +1703,38 @@
                 var p = planets[i], r = Math.max(0.01, p.radius), cr = p.color[0], cg = p.color[1], cb = p.color[2];
                 if (p.consumed) continue;
                 if (p.isBlackHole) {
-                    // 1. The Void (Pure black center that eats the background)
-                    var voidG = plCtx.createRadialGradient(p.x, p.y, r * 0.2, p.x, p.y, r * 1.3);
-                    voidG.addColorStop(0, '#000000');
-                    voidG.addColorStop(0.8, 'rgba(0, 0, 0, 0.98)');
-                    voidG.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                    plCtx.fillStyle = voidG;
+                    var bhIntensity = (blackHoleActive && blackHolePlanet === p) ? blackHoleIntensity : 0;
+                    var bhR = Math.max(0.01, p.radius * (1 + bhIntensity * 2));
+
+                    // 1. The Absolute Void (Pure black, drawing slightly larger to cleanly eat the background)
                     plCtx.beginPath();
-                    plCtx.arc(p.x, p.y, r * 1.3, 0, Math.PI * 2);
+                    plCtx.arc(p.x, p.y, bhR * 1.1, 0, Math.PI * 2);
+                    plCtx.fillStyle = '#000000';
                     plCtx.fill();
 
-                    // 2. Spinning Accretion Disk
-                    plCtx.save();
-                    plCtx.translate(p.x, p.y);
-                    plCtx.rotate(p.rotation);
+                    // 2. The Event Horizon (A single, razor-thin, faint white stroke just to define the edge)
                     plCtx.beginPath();
-                    plCtx.ellipse(0, 0, r * 2.2, r * 0.6, 0, 0, Math.PI * 2);
-                    plCtx.strokeStyle = 'rgba(167, 139, 250, 0.15)';
-                    plCtx.lineWidth = r * 0.4;
+                    plCtx.arc(p.x, p.y, bhR * 1.1, 0, Math.PI * 2);
+                    plCtx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+                    plCtx.lineWidth = 1;
                     plCtx.stroke();
 
-                    plCtx.beginPath();
-                    plCtx.ellipse(0, 0, r * 1.6, r * 0.4, 0, 0, Math.PI * 2);
-                    plCtx.strokeStyle = 'rgba(245, 158, 11, 0.2)';
-                    plCtx.lineWidth = r * 0.15;
-                    plCtx.stroke();
-                    plCtx.restore();
-
-                    // 3. Sharp Event Horizon Edge
-                    plCtx.beginPath();
-                    plCtx.arc(p.x, p.y, r, 0, Math.PI * 2);
-                    plCtx.strokeStyle = 'rgba(167, 139, 250, 0.6)';
-                    plCtx.lineWidth = 1.5;
-                    plCtx.stroke();
-
-                    // 4. Inner gravitational tether to rocket
+                    // 3. Gravity Tether to Rocket (Stripped back to standard grey)
                     var dx = rocket.x - p.x, dy = rocket.y - p.y;
                     var dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < p.gravRange && dist > p.safeZone) {
                         plCtx.save();
-                        plCtx.setLineDash([2, 4]);
+                        plCtx.setLineDash([3, 7]);
                         plCtx.beginPath();
                         plCtx.moveTo(p.x, p.y);
                         plCtx.lineTo(rocket.x, rocket.y);
-                        plCtx.strokeStyle = 'rgba(244, 63, 94, ' + ((1 - dist / p.gravRange) * 0.3) + ')';
-                        plCtx.lineWidth = 1;
+                        plCtx.strokeStyle = 'rgba(255, 255, 255, ' + ((1 - dist / p.gravRange) * 0.04) + ')';
+                        plCtx.lineWidth = 0.5;
                         plCtx.stroke();
                         plCtx.restore();
                     }
 
-                    continue; // Skip normal planet drawing for the black hole
+                    continue;
                 }
                 if (p.shockwaveRing > 0) { var swP = 1 - p.shockwaveRing; var swR = swP * p.gravRange * 1.8; plCtx.beginPath(); plCtx.arc(p.x, p.y, swR, 0, Math.PI * 2); plCtx.strokeStyle = 'rgba(244,63,94,' + (p.shockwaveRing * 0.5) + ')'; plCtx.lineWidth = 3 * p.shockwaveRing; plCtx.stroke(); plCtx.strokeStyle = 'rgba(255,200,150,' + (p.shockwaveRing * 0.3) + ')'; plCtx.lineWidth = 8 * p.shockwaveRing; plCtx.stroke(); }
                 if (p.orbitActive && rocket.orbitPlanet === p) { plCtx.beginPath(); plCtx.arc(p.x, p.y, rocket.orbitDist, 0, Math.PI * 2); plCtx.setLineDash([2, 6]); plCtx.strokeStyle = 'rgba(6,182,212,0.15)'; plCtx.lineWidth = 1; plCtx.stroke(); plCtx.setLineDash([]); }
@@ -1970,14 +1747,12 @@
                 plCtx.save(); plCtx.translate(p.x, p.y); plCtx.rotate(p.rotation); plCtx.globalAlpha = 0.12; plCtx.beginPath(); plCtx.ellipse(0, -r * 0.3, r * 0.88, Math.max(1, r * 0.12), 0, 0, Math.PI * 2); plCtx.strokeStyle = 'rgb(' + cr + ',' + cg + ',' + cb + ')'; plCtx.lineWidth = 0.6; plCtx.stroke(); plCtx.beginPath(); plCtx.ellipse(0, r * 0.2, r * 0.82, Math.max(1, r * 0.1), 0, 0, Math.PI * 2); plCtx.stroke(); if (r > 20) { plCtx.beginPath(); plCtx.ellipse(0, r * 0.55, r * 0.75, Math.max(1, r * 0.08), 0, 0, Math.PI * 2); plCtx.stroke(); } plCtx.globalAlpha = 1; plCtx.restore();
                 if (p.moon) { var m = p.moon, mx = m.x, my = m.y; if (m.prevX) { plCtx.beginPath(); plCtx.moveTo(m.prevX, m.prevY); plCtx.lineTo(mx, my); plCtx.strokeStyle = 'rgba(' + m.color[0] + ',' + m.color[1] + ',' + m.color[2] + ',0.15)'; plCtx.lineWidth = 1; plCtx.stroke(); } plCtx.beginPath(); plCtx.ellipse(p.x, p.y, m.dist, m.dist * 0.38, 0, 0, Math.PI * 2); plCtx.strokeStyle = 'rgba(' + m.color[0] + ',' + m.color[1] + ',' + m.color[2] + ',0.04)'; plCtx.lineWidth = 0.5; plCtx.stroke(); plCtx.beginPath(); plCtx.arc(mx, my, m.radius, 0, Math.PI * 2); var mG = plCtx.createRadialGradient(mx - m.radius * 0.3, my - m.radius * 0.3, 0, mx, my, m.radius); mG.addColorStop(0, 'rgba(' + m.color[0] + ',' + m.color[1] + ',' + m.color[2] + ',0.3)'); mG.addColorStop(1, 'rgba(' + m.color[0] + ',' + m.color[1] + ',' + m.color[2] + ',0.08)'); plCtx.fillStyle = mG; plCtx.fill(); plCtx.strokeStyle = 'rgba(' + m.color[0] + ',' + m.color[1] + ',' + m.color[2] + ',0.35)'; plCtx.lineWidth = 0.5; plCtx.stroke(); }
             }
-            if (fleetMode) { for (var f = 0; f < fleetRockets.length; f++) { var fr2 = fleetRockets[f]; plCtx.save(); plCtx.translate(fr2.x, fr2.y); plCtx.rotate(fr2.angle * (Math.PI / 180)); plCtx.globalAlpha = 0.4; plCtx.strokeStyle = 'rgba(167,139,250,0.5)'; plCtx.lineWidth = 0.8; plCtx.beginPath(); plCtx.moveTo(0, -8); plCtx.lineTo(-3, 4); plCtx.lineTo(0, 2); plCtx.lineTo(3, 4); plCtx.closePath(); plCtx.stroke(); plCtx.globalAlpha = 1; plCtx.restore(); } }
         }
 
         function exitOrbit() { if (rocket.mode !== 'orbit' || !rocket.orbitPlanet) return; rocket.orbitPlanet.orbitActive = false; rocket.orbitPlanet.skillActive = false; rocket.orbitPlanet = null; rocket.mode = 'wander'; pickWander(); }
         function exitWarp() { if (rocket.mode !== 'warp') return; rocket.mode = 'wander'; rocket.warpTo = null; rocket.warpFrom = null; warpFlash.classList.remove('active'); gridLayer.classList.remove('warp'); gridLayer.style.filter = ''; rocket.vx = 0; rocket.vy = 0; pickWander(); }
 
         function updateRocket(now) {
-            if (screenCleared) { rocket.trailTick++; return; }
 
             // Black hole consuming the rocket
             if (blackHoleActive && blackHolePlanet && !rocketConsumed) {
@@ -2010,9 +1785,15 @@
                 rocketEl.style.opacity = '0';
                 rocketEl.offsetHeight; // force reflow
                 rocketEl.style.transition = '';
+
+                tooltipEl.style.transition = 'none';
+                tooltipEl.style.opacity = '0';
+                tooltipEl.offsetHeight; // force reflow
+                tooltipEl.style.transition = '';
+
                 rocket.trailTick++;
                 rocket.consumedTimer = (rocket.consumedTimer || 0) + 1;
-                if (rocket.consumedTimer > 120) {
+                if (rocket.consumedTimer > 1000) {
                     stopBlackHole();
                 }
                 return;
@@ -2100,14 +1881,11 @@
 
         function updateRocketVisuals() {
             rocketEl.classList.remove('boosting', 'cruising', 'warping', 'orbiting');
-            if (screenCleared) {
-                return;
-            }
             if (rocket.mode === 'warp') rocketEl.classList.add('warping'); else if (rocket.mode === 'orbit') rocketEl.classList.add('orbiting'); else if (rocket.boostFuel > 0) rocketEl.classList.add('boosting'); else if (rocket.speed > 0.8) rocketEl.classList.add('cruising'); rocketEl.style.left = rocket.x + 'px'; rocketEl.style.top = rocket.y + 'px'; rocketEl.style.transform = 'translate(-50%, -50%) rotate(' + rocket.angle + 'deg)'; var fs = rocket.mode === 'warp' ? 1.8 : (rocket.slowTimer > 0 ? 0.3 : (0.6 + Math.min(rocket.speed / 1.6, 1) * 0.8)); rocketEl.querySelector('.flame-group').style.transform = 'scale(1,' + fs + ')'; if (rocket.slowTimer > 0) rocketEl.style.opacity = 0.5 + Math.sin(performance.now() * 0.01) * 0.3; else rocketEl.style.opacity = ''; updateTooltip(); updateHUD();
         }
         function toCardinal(deg) { var d = ((deg % 360) + 360) % 360; return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(d / 45) % 8]; }
-        function updateTooltip() { if (window.innerWidth < 480 || screenCleared) { tooltipEl.classList.remove('visible', 'dim'); return; } var tdi = Math.sqrt((rocket.x - mouseX) * (rocket.x - mouseX) + (rocket.y - mouseY) * (rocket.y - mouseY)); var isNear = cfg.proxRange > 0 && tdi < cfg.proxRange; tooltipEl.classList.remove('visible', 'dim'); if (isNear) { tooltipEl.classList.add('visible'); var rad = rocket.angle * (Math.PI / 180); var nX = rocket.x + Math.sin(-rad) * -30, nY = rocket.y + Math.cos(-rad) * -30; var tl = nX + 22, tt2 = nY - 16; if (tl + 140 > window.innerWidth - 10) tl = nX - 156; if (tt2 < 10) tt2 = 10; if (tt2 + 56 > window.innerHeight - 10) tt2 = window.innerHeight - 66; tooltipEl.style.left = tl + 'px'; tooltipEl.style.top = tt2 + 'px'; } else { tooltipEl.classList.add('dim'); tooltipEl.style.left = (rocket.x + 24) + 'px'; tooltipEl.style.top = (rocket.y - 18) + 'px'; } ttSpeed.textContent = rocket.speed.toFixed(2); var normDeg = ((rocket.angle % 360) + 360) % 360; ttHdg.textContent = toCardinal(rocket.angle) + ' ' + normDeg.toFixed(0) + '\u00B0'; ttHdg.classList.toggle('active', rocket.speed > 0.1); ttBar.style.width = Math.min(100, (rocket.speed / 5) * 100) + '%'; ttModeRow.style.display = 'none'; if (rocket.slowTimer > 0) { ttThrust.textContent = 'LOCKED'; ttThrust.className = 'tt-val cyan'; ttBar.style.background = '#06B6D4'; ttBar.style.boxShadow = '0 0 6px rgba(6,182,212,0.5)'; ttModeRow.style.display = 'block'; ttMode.textContent = 'SLOW ' + rocket.slowTimer.toFixed(1) + 's'; ttMode.className = 'tt-val cyan'; } else if (rocket.mode === 'warp') { ttThrust.textContent = 'WARP'; ttThrust.className = 'tt-val amber'; ttBar.style.background = '#F59E0B'; ttBar.style.boxShadow = '0 0 6px rgba(245,158,11,0.5)'; ttModeRow.style.display = 'block'; ttMode.textContent = 'HYPERJUMP'; ttMode.className = 'tt-val amber'; } else if (rocket.mode === 'orbit') { ttThrust.textContent = 'ORBIT'; ttThrust.className = 'tt-val cyan'; ttBar.style.background = '#06B6D4'; ttBar.style.boxShadow = '0 0 6px rgba(6,182,212,0.5)'; ttModeRow.style.display = 'block'; ttMode.textContent = 'LOCKED'; ttMode.className = 'tt-val cyan'; } else if (rocket.boostFuel > 0) { ttThrust.textContent = 'BOOST'; ttThrust.className = 'tt-val active'; ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 6px rgba(var(--accent-rgb),0.5)'; } else if (rocket.speed > 0.8) { ttThrust.textContent = 'CRUISE'; ttThrust.className = 'tt-val active'; ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 4px rgba(var(--accent-rgb),0.3)'; } else if (rocket.speed > 0.1) { ttThrust.textContent = 'DRIFT'; ttThrust.className = 'tt-val'; ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 2px rgba(var(--accent-rgb),0.1)'; } else { ttThrust.textContent = 'IDLE'; ttThrust.className = 'tt-val'; ttBar.style.background = '#333'; ttBar.style.boxShadow = 'none'; } }
-        function updateHUD() { if (window.innerWidth < 480 || screenCleared) return; compassNeedle.style.transform = 'rotate(' + rocket.angle + 'deg)'; hudSpdVal.textContent = rocket.speed.toFixed(2); hudSpdFill.style.width = Math.min(100, (rocket.speed / 5) * 100) + '%'; if (rocket.slowTimer > 0) { hudSpdFill.style.background = '#06B6D4'; hudSpdFill.style.boxShadow = '0 0 4px rgba(6,182,212,0.5)'; } else if (rocket.mode === 'warp') { hudSpdFill.style.background = '#F59E0B'; hudSpdFill.style.boxShadow = '0 0 4px rgba(245,158,11,0.5)'; } else if (rocket.mode === 'orbit') { hudSpdFill.style.background = '#06B6D4'; hudSpdFill.style.boxShadow = '0 0 4px rgba(6,182,212,0.5)'; } else { hudSpdFill.style.background = 'var(--accent)'; hudSpdFill.style.boxShadow = '0 0 4px rgba(var(--accent-rgb),0.3)'; } hudMode.className = 'hud-mode visible'; var mult = rocket.speedMult.toFixed(1); if (rocket.slowTimer > 0) { hudMode.textContent = 'SOFT LOCK'; hudMode.classList.add('orbit'); } else if (rocket.mode === 'warp') { hudMode.textContent = 'HYPERJUMP'; hudMode.classList.add('warp'); } else if (rocket.mode === 'orbit') { hudMode.textContent = 'ORBIT LOCK'; hudMode.classList.add('orbit'); } else if (fleetMode) { hudMode.textContent = 'FLEET x' + (fleetRockets.length + 1); hudMode.classList.add('fleet'); } else if (rocket.boostFuel > 0) { hudMode.textContent = 'BOOST'; hudMode.classList.add('boost'); } else if (rocket.speedMult > 1.05) { hudMode.textContent = 'BOOST x' + mult; hudMode.classList.add('boost'); } else if (rocket.speedMult < 0.95) { hudMode.textContent = 'SLOW x' + mult; hudMode.classList.add('repel'); } else { hudMode.textContent = 'CRUISE'; hudMode.classList.add('attract'); } }
+        function updateTooltip() { if (window.innerWidth < 480) { tooltipEl.classList.remove('visible', 'dim'); return; } var tdi = Math.sqrt((rocket.x - mouseX) * (rocket.x - mouseX) + (rocket.y - mouseY) * (rocket.y - mouseY)); var isNear = cfg.proxRange > 0 && tdi < cfg.proxRange; tooltipEl.classList.remove('visible', 'dim'); if (isNear) { tooltipEl.classList.add('visible'); var rad = rocket.angle * (Math.PI / 180); var nX = rocket.x + Math.sin(-rad) * -30, nY = rocket.y + Math.cos(-rad) * -30; var tl = nX + 22, tt2 = nY - 16; if (tl + 140 > window.innerWidth - 10) tl = nX - 156; if (tt2 < 10) tt2 = 10; if (tt2 + 56 > window.innerHeight - 10) tt2 = window.innerHeight - 66; tooltipEl.style.left = tl + 'px'; tooltipEl.style.top = tt2 + 'px'; } else { tooltipEl.classList.add('dim'); tooltipEl.style.left = (rocket.x + 24) + 'px'; tooltipEl.style.top = (rocket.y - 18) + 'px'; } ttSpeed.textContent = rocket.speed.toFixed(2); var normDeg = ((rocket.angle % 360) + 360) % 360; ttHdg.textContent = toCardinal(rocket.angle) + ' ' + normDeg.toFixed(0) + '\u00B0'; ttHdg.classList.toggle('active', rocket.speed > 0.1); ttBar.style.width = Math.min(100, (rocket.speed / 5) * 100) + '%'; ttModeRow.style.display = 'none'; if (rocket.slowTimer > 0) { ttThrust.textContent = 'LOCKED'; ttThrust.className = 'tt-val cyan'; ttBar.style.background = '#06B6D4'; ttBar.style.boxShadow = '0 0 6px rgba(6,182,212,0.5)'; ttModeRow.style.display = 'block'; ttMode.textContent = 'SLOW ' + rocket.slowTimer.toFixed(1) + 's'; ttMode.className = 'tt-val cyan'; } else if (rocket.mode === 'warp') { ttThrust.textContent = 'WARP'; ttThrust.className = 'tt-val amber'; ttBar.style.background = '#F59E0B'; ttBar.style.boxShadow = '0 0 6px rgba(245,158,11,0.5)'; ttModeRow.style.display = 'block'; ttMode.textContent = 'HYPERJUMP'; ttMode.className = 'tt-val amber'; } else if (rocket.mode === 'orbit') { ttThrust.textContent = 'ORBIT'; ttThrust.className = 'tt-val cyan'; ttBar.style.background = '#06B6D4'; ttBar.style.boxShadow = '0 0 6px rgba(6,182,212,0.5)'; ttModeRow.style.display = 'block'; ttMode.textContent = 'LOCKED'; ttMode.className = 'tt-val cyan'; } else if (rocket.boostFuel > 0) { ttThrust.textContent = 'BOOST'; ttThrust.className = 'tt-val active'; ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 6px rgba(var(--accent-rgb),0.5)'; } else if (rocket.speed > 0.8) { ttThrust.textContent = 'CRUISE'; ttThrust.className = 'tt-val active'; ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 4px rgba(var(--accent-rgb),0.3)'; } else if (rocket.speed > 0.1) { ttThrust.textContent = 'DRIFT'; ttThrust.className = 'tt-val'; ttBar.style.background = 'var(--accent)'; ttBar.style.boxShadow = '0 0 2px rgba(var(--accent-rgb),0.1)'; } else { ttThrust.textContent = 'IDLE'; ttThrust.className = 'tt-val'; ttBar.style.background = '#333'; ttBar.style.boxShadow = 'none'; } }
+        function updateHUD() { if (window.innerWidth < 480) return; compassNeedle.style.transform = 'rotate(' + rocket.angle + 'deg)'; hudSpdVal.textContent = rocket.speed.toFixed(2); hudSpdFill.style.width = Math.min(100, (rocket.speed / 5) * 100) + '%'; if (rocket.slowTimer > 0) { hudSpdFill.style.background = '#06B6D4'; hudSpdFill.style.boxShadow = '0 0 4px rgba(6,182,212,0.5)'; } else if (rocket.mode === 'warp') { hudSpdFill.style.background = '#F59E0B'; hudSpdFill.style.boxShadow = '0 0 4px rgba(245,158,11,0.5)'; } else if (rocket.mode === 'orbit') { hudSpdFill.style.background = '#06B6D4'; hudSpdFill.style.boxShadow = '0 0 4px rgba(6,182,212,0.5)'; } else { hudSpdFill.style.background = 'var(--accent)'; hudSpdFill.style.boxShadow = '0 0 4px rgba(var(--accent-rgb),0.3)'; } hudMode.className = 'hud-mode visible'; var mult = rocket.speedMult.toFixed(1); if (rocket.slowTimer > 0) { hudMode.textContent = 'SOFT LOCK'; hudMode.classList.add('orbit'); } else if (rocket.mode === 'warp') { hudMode.textContent = 'HYPERJUMP'; hudMode.classList.add('warp'); } else if (rocket.mode === 'orbit') { hudMode.textContent = 'ORBIT LOCK'; hudMode.classList.add('orbit'); } else if (rocket.boostFuel > 0) { hudMode.textContent = 'BOOST'; hudMode.classList.add('boost'); } else if (rocket.speedMult > 1.05) { hudMode.textContent = 'BOOST x' + mult; hudMode.classList.add('boost'); } else if (rocket.speedMult < 0.95) { hudMode.textContent = 'SLOW x' + mult; hudMode.classList.add('repel'); } else { hudMode.textContent = 'CRUISE'; hudMode.classList.add('attract'); } }
 
         function activatePlanetSkill(planet) {
             if (!initDismissed || planet.skillCooldown > 0 || planet.consumed) return;
@@ -2180,12 +1958,11 @@
 
         document.addEventListener('keydown', function (e) {
             keysDown[e.key.toLowerCase()] = true;
-            if (e.key === ' ' && initDismissed) { e.preventDefault(); toggleFleet(); }
-            if (e.key === 'Escape') { exitOrbit(); exitWarp(); if (fleetMode) toggleFleet(); stopBlackHole(); }
+            if (e.key === 'Escape') { exitOrbit(); exitWarp(); stopBlackHole(); }
 
 
             // C key to clear screen
-            if ((e.key === 'c' || e.key === 'C') && !e.ctrlKey && !e.metaKey && initDismissed) {
+            if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey && !e.metaKey && initDismissed) {
                 e.preventDefault();
                 triggerClearScreen();
             }
@@ -2193,70 +1970,10 @@
 
         document.addEventListener('keyup', function (e) { keysDown[e.key.toLowerCase()] = false; });
 
-        function toggleFleet() { fleetMode = !fleetMode; if (fleetMode) { fleetRockets = []; for (var i = 0; i < 4; i++) fleetRockets.push({ x: rocket.x + (Math.random() - 0.5) * 80, y: rocket.y + (Math.random() - 0.5) * 80, vx: 0, vy: 0, angle: rocket.angle, offsetAngle: (Math.PI * 2 / 4) * i, offsetDist: 40 + Math.random() * 20 }); } else { fleetRockets = []; } addSparkBurst(rocket.x, rocket.y, 12, '167,139,250'); }
-        function updateFleet() { if (!fleetMode) return; for (var i = 0; i < fleetRockets.length; i++) { var fr2 = fleetRockets[i]; var targetX = rocket.x + Math.cos(rocket.angle * (Math.PI / 180) + fr2.offsetAngle + Math.PI / 2) * fr2.offsetDist; var targetY = rocket.y + Math.sin(rocket.angle * (Math.PI / 180) + fr2.offsetAngle + Math.PI / 2) * fr2.offsetDist; fr2.vx += (targetX - fr2.x) * 0.02; fr2.vy += (targetY - fr2.y) * 0.02; fr2.vx *= 0.92; fr2.vy *= 0.92; fr2.x += fr2.vx; fr2.y += fr2.vy; fr2.angle += shortAngle(fr2.angle, Math.atan2(fr2.vy, fr2.vx) * (180 / Math.PI) + 90) * 0.1; if (rocket.trailTick % 4 === 0 && rocket.speed > 0.1) trail.push({ x: fr2.x, y: fr2.y, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, life: 0.4, decay: 0.02, size: 0.6 + Math.random() * 0.8, color: '167,139,250' }); } }
-
         (function positionHUD() { var hc = document.getElementById('hudCompass'), hs = document.getElementById('hudSpeed'), hm = document.getElementById('hudMode'); hc.style.top = 'clamp(14px,3vw,24px)'; hc.style.left = 'clamp(14px,3vw,24px)'; hs.style.top = 'clamp(90px,10vw,100px)'; hs.style.left = 'clamp(14px,3vw,24px)'; hm.style.top = 'clamp(120px,14vw,134px)'; hm.style.left = 'clamp(14px,3vw,24px)'; })();
 
-        (function loop(now) { checkPlanetHover(); updatePlanets(); updateBlackHoleSuction(); drawPlanets(); updateRocket(now); updateFleet(); drawTrail(); drawBg(); drawFx(); updateAudio(); requestAnimationFrame(loop); })(performance.now());
-        function playClearSweep() {
-            if (!audioCtx || !soundOn) return;
-            var t = audioCtx.currentTime;
-            var o = audioCtx.createOscillator();
-            o.type = 'sawtooth';
-            o.frequency.setValueAtTime(80, t);
-            o.frequency.linearRampToValueAtTime(4000, t + 0.25);
-            o.frequency.linearRampToValueAtTime(100, t + 0.5);
-            var g = audioCtx.createGain();
-            g.gain.setValueAtTime(0.12, t);
-            g.gain.linearRampToValueAtTime(0, t + 0.5);
-            var f = audioCtx.createBiquadFilter();
-            f.type = 'bandpass';
-            f.frequency.setValueAtTime(200, t);
-            f.frequency.linearRampToValueAtTime(3000, t + 0.25);
-            f.frequency.linearRampToValueAtTime(100, t + 0.5);
-            f.Q.value = 2;
-            o.connect(f);
-            f.connect(g);
-            g.connect(masterGain);
-            o.start(t);
-            o.stop(t + 0.5);
-            var ns = audioCtx.createBufferSource();
-            var bl = Math.floor(audioCtx.sampleRate * 0.3);
-            var nb = audioCtx.createBuffer(1, bl, audioCtx.sampleRate);
-            var nd = nb.getChannelData(0);
-            for (var i = 0; i < bl; i++) nd[i] = Math.random() * 2 - 1;
-            ns.buffer = nb;
-            var nf = audioCtx.createBiquadFilter();
-            nf.type = 'highpass';
-            nf.frequency.setValueAtTime(1000, t);
-            nf.frequency.linearRampToValueAtTime(6000, t + 0.15);
-            nf.frequency.linearRampToValueAtTime(500, t + 0.3);
-            var ng = audioCtx.createGain();
-            ng.gain.setValueAtTime(0.06, t);
-            ng.gain.linearRampToValueAtTime(0, t + 0.35);
-            ns.connect(nf);
-            nf.connect(ng);
-            ng.connect(masterGain);
-            ns.start(t);
-            ns.stop(t + 0.35);
-        }
+        (function loop(now) { checkPlanetHover(); updatePlanets(); updateBlackHoleSuction(); drawPlanets(); updateRocket(now); drawTrail(); drawBg(); drawFx(); updateAudio(); requestAnimationFrame(loop); })(performance.now());
 
-        function playClearRestore() {
-            if (!audioCtx || !soundOn) return;
-            var t = audioCtx.currentTime;
-            var o = audioCtx.createOscillator();
-            o.type = 'sine';
-            o.frequency.setValueAtTime(3000, t);
-            o.frequency.exponentialRampToValueAtTime(200, t + 0.3);
-            var g = audioCtx.createGain();
-            g.gain.setValueAtTime(0.06, t);
-            g.gain.linearRampToValueAtTime(0, t + 0.4);
-            o.connect(g);
-            g.connect(masterGain);
-            o.start(t);
-            o.stop(t + 0.4);
-        }
 
         function initClearRefs() {
             visualLayers = [
@@ -2276,50 +1993,31 @@
             ];
         }
 
-        function spawnSweepSparks(progress) {
-            var count = 6;
-            for (var i = 0; i < count; i++) {
-                var spark = document.createElement('div');
-                spark.className = 'clear-sweep-spark active';
-                var sx = window.innerWidth * progress + (Math.random() - 0.5) * 10;
-                var sy = Math.random() * window.innerHeight;
-                spark.style.left = sx + 'px';
-                spark.style.top = sy + 'px';
-                spark.style.setProperty('--sx', (Math.random() - 0.5) * 30 + 'px');
-                spark.style.setProperty('--sy', (Math.random() - 0.5) * 30 + 'px');
-                clearSweepEl.appendChild(spark);
-                (function (el) {
-                    setTimeout(function () { el.remove(); }, 350);
-                })(spark);
-            }
-        }
-
-        // Required state variables and DOM references (declare these in your main scope)
-        var screenCleared = false;
-        var sweepSparkInterval = null;
         var visualLayers, hudElements;
 
-        // DOM references (assuming these are grabbed via getElementById elsewhere)
-        // var clearToggle = document.getElementById('clearToggle');
-        // var sweepLine = document.getElementById('sweepLine');
-        // var sweepGlow = document.getElementById('sweepGlow');
-        // var clearSweepEl = document.getElementById('clearSweep');
-
         function triggerClearScreen() {
-            // 1. Entry guard - prevent firing before the init overlay is dismissed
-            if (!initDismissed) return;
+            if (!initDismissed || blackHoleActive) return;
 
-            // 2. Toggle the master flag
-            screenCleared = !screenCleared;
+            var newBH = {
+                x: window.innerWidth * 0.15 + Math.random() * window.innerWidth * 0.7,
+                y: window.innerHeight * 0.15 + Math.random() * window.innerHeight * 0.7,
+                vx: 0, vy: 0,
+                baseRadius: 38, radius: 38 * cfg.planetScale,
+                color: [0, 0, 0], mass: 6.0, name: 'Void Singularity',
+                baseGravRange: 300, gravRange: 300 * cfg.planetScale * cfg.gravMult,
+                safeZone: 38 * cfg.planetScale * 2.2,
+                hasRing: false, baseGlow: 0.04, glowIntensity: 0.04,
+                pulseTimer: 0, rotation: 0, rotSpeed: 0.03,
+                moon: null, pingTimer: 0,
+                skill: 'blackhole', skillLabel: 'EVENT HORIZON', skClass: 'sk-mine',
+                skillCooldown: 0, skillActive: false, skillTimer: 0,
+                orbitActive: false, shockwaveRing: 0, softLockProj: null,
+                isBlackHole: true, consumed: false, isDynamic: true
+            };
 
-            // 3. Force reflow to reset CSS animations
-            sweepLine.classList.remove('active', 'reverse');
-            sweepGlow.classList.remove('active', 'reverse');
-            void sweepLine.offsetWidth; // Trigger reflow
-
-            if (screenCleared) {
-                stopBlackHole();
-            }
+            planets.push(newBH);
+            blackHolePlanet = newBH;
+            activatePlanetSkill(blackHolePlanet);
         }
 
         function updateBlackHoleSuction() {
@@ -2425,7 +2123,7 @@
             planet.glowIntensity = 1.0;
 
             blackHoleShakeTimer = setInterval(function () {
-                blackHoleIntensity = Math.min(blackHoleIntensity + 0.006, 1.0);
+                blackHoleIntensity = Math.min(blackHoleIntensity + 0.002, 3);
                 var shake = Math.min(blackHoleIntensity * 12, 12);
                 document.body.style.transform = 'translate(' + (Math.random() * shake - shake / 2) + 'px,' + (Math.random() * shake - shake / 2) + 'px)';
             }, 50);
@@ -2457,7 +2155,13 @@
 
             releaseRocket();
 
-            if (blackHolePlanet) { blackHolePlanet.skillCooldown = 0; }
+            // Completely remove the spawned black hole from the game
+            if (blackHolePlanet) {
+                var idx = planets.indexOf(blackHolePlanet);
+                if (idx > -1) {
+                    planets.splice(idx, 1);
+                }
+            }
             blackHolePlanet = null;
 
             var decayStart = performance.now();
@@ -2484,6 +2188,12 @@
             rocketEl.style.filter = '';
             rocketEl.offsetHeight; // force reflow
             rocketEl.style.transition = '';
+
+            tooltipEl.style.transition = 'none';
+            tooltipEl.style.opacity = '';
+            tooltipEl.offsetHeight; // force reflow
+            tooltipEl.style.transition = '';
+
             rocket.vx = 0;
             rocket.vy = 0;
             rocket.speed = 0;
@@ -2491,14 +2201,6 @@
             rocket.boostFuel = 0;
             pickWander();
         }
-
-        // Button click/touch
-
-        clearToggle.addEventListener('click', function (e) { e.stopPropagation(); triggerClearScreen(); });
-        clearToggle.addEventListener('touchend', function (e) { e.stopPropagation(); triggerClearScreen(); }, { passive: true });
-        clearToggle.addEventListener('mouseenter', function () { dot.classList.add('hovering'); ring.classList.add('hovering'); cross.classList.add('hovering'); });
-        clearToggle.addEventListener('mouseleave', function () { dot.classList.remove('hovering'); ring.classList.remove('hovering'); cross.classList.remove('hovering'); });
-
 
     </script>
 </body>
