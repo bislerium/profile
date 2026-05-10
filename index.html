@@ -63,7 +63,6 @@
             touch-action: manipulation;
         }
 
-        /* ===== CURSOR ===== */
         .cursor-dot {
             position: fixed;
             width: 6px;
@@ -140,7 +139,6 @@
             opacity: 0;
         }
 
-        /* ===== PLANET LABEL ===== */
         .planet-label {
             position: fixed;
             z-index: 5;
@@ -212,7 +210,6 @@
             color: rgba(16, 185, 129, .7);
         }
 
-        /* ===== INIT OVERLAY ===== */
         .init-overlay {
             position: fixed;
             inset: 0;
@@ -306,7 +303,6 @@
             }
         }
 
-        /* ===== LAYERS ===== */
         .grid-layer {
             position: fixed;
             inset: 0;
@@ -390,7 +386,6 @@
 
         #particles,
         #planets,
-        #thrustTrail,
         #fx {
             position: fixed;
             inset: 0;
@@ -417,7 +412,6 @@
             z-index: 100;
         }
 
-        /* ===== ROCKET ===== */
         .free-rocket {
             position: fixed;
             width: var(--rocket-w);
@@ -448,6 +442,11 @@
         .free-rocket.orbiting {
             opacity: .9;
             filter: drop-shadow(0 0 12px rgba(6, 182, 212, .5)) drop-shadow(0 0 30px rgba(6, 182, 212, .15));
+        }
+
+        .free-rocket.burping {
+            opacity: 1;
+            filter: drop-shadow(0 0 24px rgba(var(--accent-rgb), .8)) drop-shadow(0 0 60px rgba(var(--accent-rgb), .3));
         }
 
         .free-rocket svg {
@@ -529,7 +528,18 @@
             animation-duration: .04s;
         }
 
-        /* ===== ROCKET TOOLTIP ===== */
+        .free-rocket.burping .flame-outer {
+            animation-duration: .05s;
+        }
+
+        .free-rocket.burping .flame-mid {
+            animation-duration: .04s;
+        }
+
+        .free-rocket.burping .flame-inner {
+            animation-duration: .03s;
+        }
+
         .rocket-tooltip {
             position: fixed;
             z-index: 6;
@@ -611,7 +621,6 @@
             width: 0%;
         }
 
-        /* ===== HUD ===== */
         .hud-compass {
             position: fixed;
             z-index: 10;
@@ -772,7 +781,11 @@
             border-color: rgba(244, 63, 94, .3);
         }
 
-        /* ===== TERMINAL ===== */
+        .hud-mode.burp {
+            color: #C4B5FD;
+            border-color: rgba(196, 181, 253, .3);
+        }
+
         .terminal {
             position: relative;
             z-index: 10;
@@ -982,7 +995,6 @@
             opacity: 1;
         }
 
-        /* ===== FX ELEMENTS ===== */
         .click-ripple {
             position: fixed;
             width: 10px;
@@ -1029,7 +1041,6 @@
             transition: opacity 0s;
         }
 
-        /* ===== SOUND TOGGLE ===== */
         .sound-toggle {
             position: fixed;
             bottom: clamp(10px, 2vw, 20px);
@@ -1101,7 +1112,6 @@
             user-select: none;
         }
 
-        /* ===== TERM LOG ===== */
         .term-log {
             position: fixed;
             bottom: clamp(40px, 5vw, 60px);
@@ -1162,71 +1172,70 @@
             opacity: .6;
         }
 
-        @media (supports (padding: env(safe-area-inset-bottom)) {
-                .sound-toggle {
-                    bottom: calc(clamp(10px, 2vw, 20px) + env(safe-area-inset-bottom));
-                }
-
-                .version {
-                    bottom: calc(clamp(10px, 2vw, 20px) + env(safe-area-inset-bottom));
-                }
+        @media (supports (padding: env(safe-area-inset-bottom))) {
+            .sound-toggle {
+                bottom: calc(clamp(10px, 2vw, 20px) + env(safe-area-inset-bottom));
             }
 
-            @media (max-width: 480px) {
+            .version {
+                bottom: calc(clamp(10px, 2vw, 20px) + env(safe-area-inset-bottom));
+            }
+        }
 
-                .planet-label,
-                .rocket-tooltip,
-                .hud-compass,
-                .hud-speed {
-                    display: none !important;
-                }
+        @media (max-width: 480px) {
+
+            .planet-label,
+            .rocket-tooltip,
+            .hud-compass,
+            .hud-speed {
+                display: none !important;
+            }
+        }
+
+        @media (hover: none) {
+
+            .cursor-dot,
+            .cursor-ring,
+            .cursor-crosshair {
+                display: none !important;
             }
 
-            @media (hover: none) {
+            html,
+            body,
+            a,
+            button {
+                cursor: auto !important;
+            }
+        }
 
-                .cursor-dot,
-                .cursor-ring,
-                .cursor-crosshair {
-                    display: none !important;
-                }
+        @media (prefers-reduced-motion: reduce) {
 
-                html,
-                body,
-                a,
-                button {
-                    cursor: auto !important;
-                }
+            .grid-layer,
+            .flame-outer,
+            .flame-mid,
+            .flame-inner,
+            .sound-dot {
+                animation: none !important;
             }
 
-            @media (prefers-reduced-motion: reduce) {
-
-                .grid-layer,
-                .flame-outer,
-                .flame-mid,
-                .flame-inner,
-                .sound-dot {
-                    animation: none !important;
-                }
-
-                #particles,
-                #planets,
-                #thrustTrail,
-                #fx {
-                    display: none;
-                }
-
-                .free-rocket,
-                .rocket-tooltip,
-                .hud-compass,
-                .hud-speed,
-                .hud-mode {
-                    display: none;
-                }
-
-                .title {
-                    animation: none !important;
-                }
+            #particles,
+            #planets,
+            #fx {
+                display: none;
             }
+
+            .free-rocket,
+            .rocket-tooltip,
+            .hud-compass,
+            .hud-speed,
+            .hud-mode {
+                display: none;
+            }
+
+            .title {
+                animation: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -1333,9 +1342,6 @@
         (function () {
             'use strict';
 
-            // ═══════════════════════════════════════════════
-            //  CONFIGURATION
-            // ═══════════════════════════════════════════════
             const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?!';
             const FULL_NAME = 'Bishal Gharti Chhetri';
             const CTA_SCRAMBLE = '> open -p --t linkedin';
@@ -1356,9 +1362,6 @@
                 return { particles: 55, connectDist: 140, rocketPad: 70, wanderMargin: 100, proxRange: 130, planetScale: 1.0, gravMult: 1.0 };
             }
 
-            // ═══════════════════════════════════════════════
-            //  DOM REFERENCES
-            // ═══════════════════════════════════════════════
             const $ = (id) => document.getElementById(id);
             const dom = {
                 dot: $('cursorDot'), ring: $('cursorRing'), cross: $('cursorCross'),
@@ -1374,22 +1377,13 @@
                 soundToggle: $('soundToggle'), termLog: $('termLog'), termLogBody: $('termLogBody'),
                 hudCompass: $('hudCompass'), hudSpeed: $('hudSpeed')
             };
-            const parallaxLayers = [
-                $('particles'), $('planets'), $('fx'),
-                dom.planetLabel, dom.tooltipEl
-            ];
+            const parallaxLayers = [$('particles'), $('planets'), $('fx'), dom.planetLabel, dom.tooltipEl];
             const parallaxSpeeds = [0.015, 0.025, 0.028, 0.025, 0.032];
 
-            // ═══════════════════════════════════════════════
-            //  CANVAS CONTEXTS
-            // ═══════════════════════════════════════════════
             const plCtx = $('planets').getContext('2d');
             const bgCtx = $('particles').getContext('2d');
             const fxCtx = $('fx').getContext('2d');
 
-            // ═══════════════════════════════════════════════
-            //  MUTABLE STATE
-            // ═══════════════════════════════════════════════
             let cfg = getResponsiveConfig();
             let frameCount = 0;
             let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
@@ -1401,22 +1395,25 @@
             let lastWander = performance.now();
             let typeIndex = 0;
             let helpTimeout;
-
-            // Double-click state
             let clickTimer = null;
             let pendingClick = null;
-
             let rocketHalfH = 30;
+
+            // Post-burp background particle recovery
+            let bgRecoveryTimer = 0;
+            let burpOrigin = { x: 0, y: 0 };
 
             const rocket = {
                 x: window.innerWidth * 0.7, y: window.innerHeight * 0.35,
                 vx: 0, vy: 0, angle: 0,
                 wanderX: window.innerWidth * 0.5, wanderY: window.innerHeight * 0.4,
                 boostFuel: 0, boostX: 0, boostY: 0,
-                 speed: 0, mode: 'wander',
+                speed: 0, mode: 'wander',
                 orbitPlanet: null, orbitAngle: 0, orbitDist: 0,
                 warpFrom: null, warpTo: null, warpProgress: 0,
-                speedMult: 1.0, spaghetti: 0
+                speedMult: 1.0, spaghetti: 0,
+                burpTimer: 0, burpSeed: Math.random() * 1000,
+                _gravityImmune: 0
             };
 
             const blackHole = {
@@ -1426,9 +1423,6 @@
                 rocketConsumed: false, rocketTimer: 0
             };
 
-            // ═══════════════════════════════════════════════
-            //  CIRCULAR BUFFER — O(1) push, no splice
-            // ═══════════════════════════════════════════════
             function createRingBuffer(max) {
                 const data = new Array(max);
                 return {
@@ -1438,14 +1432,10 @@
                         this.head = (this.head + 1) % max;
                         if (this.count < max) this.count++;
                     },
-                    // Iterate oldest → newest. Returns false to signal "kill this slot".
                     forEach(fn) {
                         for (let i = 0; i < this.count; i++) {
                             const idx = (this.head - this.count + i + max) % max;
-                            if (fn(data[idx], idx) === false) {
-                                // Mark dead: shift count so this slot gets overwritten next push
-                                data[idx] = null;
-                            }
+                            if (fn(data[idx], idx) === false) data[idx] = null;
                         }
                     }
                 };
@@ -1453,12 +1443,10 @@
 
             const fxParticles = createRingBuffer(FX_MAX);
             let lightningBolts = [];
+            let burpRings = [];
             let bgParticles = [];
             let planets = [];
 
-            // ═══════════════════════════════════════════════
-            //  RIPPLE POOL — avoid DOM create/destroy per click
-            // ═══════════════════════════════════════════════
             const ripplePool = [];
             let rippleIndex = 0;
             (function initRipplePool() {
@@ -1475,30 +1463,18 @@
                 const el = ripplePool[rippleIndex];
                 rippleIndex = (rippleIndex + 1) % RIPPLE_POOL_SIZE;
                 el.classList.remove('active');
-                void el.offsetWidth; // force reflow to restart animation
+                void el.offsetWidth;
                 el.style.left = x + 'px';
                 el.style.top = y + 'px';
                 el.classList.add('active');
             }
 
-            // ═══════════════════════════════════════════════
-            //  UTILITY
-            // ═══════════════════════════════════════════════
-            function shortAngle(from, to) {
-                return ((to - from) % 360 + 540) % 360 - 180;
-            }
-            function toCardinal(deg) {
-                const d = ((deg % 360) + 360) % 360;
-                return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(d / 45) % 8];
-            }
-            function distSq(x1, y1, x2, y2) {
-                const dx = x1 - x2, dy = y1 - y2;
-                return dx * dx + dy * dy;
-            }
+            function shortAngle(from, to) { return ((to - from) % 360 + 540) % 360 - 180; }
+            function toCardinal(deg) { const d = ((deg % 360) + 360) % 360; return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(d / 45) % 8]; }
+            function distSq(x1, y1, x2, y2) { const dx = x1 - x2, dy = y1 - y2; return dx * dx + dy * dy; }
             function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
-
-            // Pre-build color prefix for a planet: "r,g,b"
             function colorKey(c) { return c[0] + ',' + c[1] + ',' + c[2]; }
+            function easeOutBack(t) { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); }
 
             // ═══════════════════════════════════════════════
             //  AUDIO ENGINE
@@ -1516,14 +1492,12 @@
                 masterGain.gain.value = 0;
                 masterGain.connect(audioCtx.destination);
 
-                // Ambient drone
                 const droneFilter = audioCtx.createBiquadFilter();
                 droneFilter.type = 'lowpass'; droneFilter.frequency.value = 180; droneFilter.Q.value = 1.5;
                 const droneGain = audioCtx.createGain(); droneGain.gain.value = 0.12;
                 droneFilter.connect(droneGain); droneGain.connect(masterGain);
                 const makeDroneOsc = (freq) => { const o = audioCtx.createOscillator(); o.type = 'sine'; o.frequency.value = freq; o.connect(droneFilter); o.start(); return o; };
-                makeDroneOsc(55);
-                makeDroneOsc(55.3);
+                makeDroneOsc(55); makeDroneOsc(55.3);
                 const d3 = audioCtx.createOscillator(); d3.type = 'sine'; d3.frequency.value = 82.4;
                 const sf = audioCtx.createBiquadFilter(); sf.type = 'lowpass'; sf.frequency.value = 100;
                 d3.connect(sf); sf.connect(droneGain); d3.start();
@@ -1531,7 +1505,6 @@
                 const lfoG = audioCtx.createGain(); lfoG.gain.value = 60;
                 lfo.connect(lfoG); lfoG.connect(droneFilter.frequency); lfo.start();
 
-                // Thrust noise
                 const bufLen = audioCtx.sampleRate * 2;
                 const nb = audioCtx.createBuffer(1, bufLen, audioCtx.sampleRate);
                 const nd = nb.getChannelData(0);
@@ -1544,7 +1517,6 @@
                 thrustSrc.connect(thrustFilter); thrustFilter.connect(thrustGain); thrustGain.connect(masterGain);
                 thrustSrc.start();
 
-                // Planet proximity hum
                 planetHumFilter = audioCtx.createBiquadFilter();
                 planetHumFilter.type = 'lowpass'; planetHumFilter.frequency.value = 200;
                 planetHumGain = audioCtx.createGain(); planetHumGain.gain.value = 0;
@@ -1647,56 +1619,87 @@
                 }
             }
 
-            function stopOsc(osc, gain, fadeTime) {
-                if (!osc || !audioCtx) return;
-                try {
-                    const t = audioCtx.currentTime;
-                    if (gain) gain.gain.cancelScheduledValues(t);
-                    if (gain) gain.gain.setValueAtTime(gain.gain.value, t);
-                    if (gain) gain.gain.linearRampToValueAtTime(0, t + fadeTime);
-                    setTimeout(() => { try { osc.stop(); } catch (_) { } }, fadeTime * 1000 + 50);
-                } catch (_) { }
+            function playBurp() {
+                if (!audioCtx || !soundOn) return;
+                const t = audioCtx.currentTime;
+                const o1 = audioCtx.createOscillator(); o1.type = 'sine';
+                o1.frequency.setValueAtTime(35, t);
+                o1.frequency.exponentialRampToValueAtTime(180, t + 0.12);
+                o1.frequency.exponentialRampToValueAtTime(25, t + 0.7);
+                const g1 = audioCtx.createGain();
+                g1.gain.setValueAtTime(0.35, t);
+                g1.gain.linearRampToValueAtTime(0.2, t + 0.12);
+                g1.gain.linearRampToValueAtTime(0, t + 0.7);
+                const f1 = audioCtx.createBiquadFilter(); f1.type = 'lowpass';
+                f1.frequency.setValueAtTime(120, t);
+                f1.frequency.exponentialRampToValueAtTime(500, t + 0.12);
+                f1.frequency.exponentialRampToValueAtTime(60, t + 0.7);
+                o1.connect(f1); f1.connect(g1); g1.connect(masterGain); o1.start(t); o1.stop(t + 0.7);
+
+                const o2 = audioCtx.createOscillator(); o2.type = 'square';
+                o2.frequency.setValueAtTime(900, t + 0.08);
+                o2.frequency.exponentialRampToValueAtTime(80, t + 0.22);
+                const g2 = audioCtx.createGain();
+                g2.gain.setValueAtTime(0, t);
+                g2.gain.linearRampToValueAtTime(0.15, t + 0.08);
+                g2.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+                const f2 = audioCtx.createBiquadFilter(); f2.type = 'bandpass';
+                f2.frequency.value = 600; f2.Q.value = 2;
+                o2.connect(f2); f2.connect(g2); g2.connect(masterGain); o2.start(t); o2.stop(t + 0.22);
+
+                ensureNoiseBuffer();
+                const ns = audioCtx.createBufferSource(); ns.buffer = clickNoiseBuffer;
+                const nf = audioCtx.createBiquadFilter(); nf.type = 'bandpass';
+                nf.frequency.setValueAtTime(400, t + 0.08);
+                nf.frequency.exponentialRampToValueAtTime(2500, t + 0.15);
+                nf.frequency.exponentialRampToValueAtTime(100, t + 0.5);
+                nf.Q.value = 1.5;
+                const ng = audioCtx.createGain();
+                ng.gain.setValueAtTime(0, t);
+                ng.gain.linearRampToValueAtTime(0.25, t + 0.08);
+                ng.gain.linearRampToValueAtTime(0.15, t + 0.2);
+                ng.gain.linearRampToValueAtTime(0, t + 0.5);
+                ns.connect(nf); nf.connect(ng); ng.connect(masterGain); ns.start(t); ns.stop(t + 0.5);
+
+                const o3 = audioCtx.createOscillator(); o3.type = 'sine';
+                o3.frequency.setValueAtTime(1200, t + 0.1);
+                o3.frequency.exponentialRampToValueAtTime(3000, t + 0.18);
+                o3.frequency.exponentialRampToValueAtTime(400, t + 0.6);
+                const g3 = audioCtx.createGain();
+                g3.gain.setValueAtTime(0, t);
+                g3.gain.linearRampToValueAtTime(0.06, t + 0.1);
+                g3.gain.linearRampToValueAtTime(0, t + 0.6);
+                o3.connect(g3); g3.connect(masterGain); o3.start(t); o3.stop(t + 0.6);
             }
 
-            // ── Black hole audio ──
             function startBlackHoleAudio() {
                 if (!audioCtx || !soundOn || blackHole.nodes) return;
                 const t = audioCtx.currentTime;
-
-                // Impact boom
                 const boom = audioCtx.createOscillator(); boom.type = 'sine';
                 boom.frequency.setValueAtTime(120, t); boom.frequency.exponentialRampToValueAtTime(18, t + 1.5);
                 const boomG = audioCtx.createGain();
                 boomG.gain.setValueAtTime(0.8, t); boomG.gain.exponentialRampToValueAtTime(0.001, t + 1.5);
                 boom.connect(boomG); boomG.connect(masterGain); boom.start(t); boom.stop(t + 1.6);
-
                 const hit = audioCtx.createOscillator(); hit.type = 'triangle';
                 hit.frequency.setValueAtTime(300, t); hit.frequency.exponentialRampToValueAtTime(20, t + 0.8);
                 const hitF = audioCtx.createBiquadFilter(); hitF.type = 'lowpass';
                 hitF.frequency.setValueAtTime(800, t); hitF.frequency.exponentialRampToValueAtTime(50, t + 0.8);
                 const hitG = audioCtx.createGain(); hitG.gain.setValueAtTime(0.4, t); hitG.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
                 hit.connect(hitF); hitF.connect(hitG); hitG.connect(masterGain); hit.start(t); hit.stop(t + 0.9);
-
-                // Sustained drone layers
                 const pulse = audioCtx.createOscillator(); pulse.type = 'sine'; pulse.frequency.value = 25;
                 const pulseG = audioCtx.createGain(); pulseG.gain.value = 0.25;
                 pulse.connect(pulseG); pulseG.connect(masterGain); pulse.start(t);
-
                 const sub = audioCtx.createOscillator(); sub.type = 'sine'; sub.frequency.value = 18;
                 const subG = audioCtx.createGain(); subG.gain.value = 0.3;
                 sub.connect(subG); subG.connect(masterGain); sub.start(t);
-
                 const harm1 = audioCtx.createOscillator(); harm1.type = 'sawtooth'; harm1.frequency.value = 36;
                 const h1f = audioCtx.createBiquadFilter(); h1f.type = 'lowpass'; h1f.frequency.value = 50;
                 const h1g = audioCtx.createGain(); h1g.gain.value = 0.08;
                 harm1.connect(h1f); h1f.connect(h1g); h1g.connect(masterGain); harm1.start(t);
-
                 const harm2 = audioCtx.createOscillator(); harm2.type = 'square'; harm2.frequency.value = 54;
                 const h2f = audioCtx.createBiquadFilter(); h2f.type = 'lowpass'; h2f.frequency.value = 70;
                 const h2g = audioCtx.createGain(); h2g.gain.value = 0.05;
                 harm2.connect(h2f); h2f.connect(h2g); h2g.connect(masterGain); harm2.start(t);
-
-                // Roar noise
                 const roarLen = audioCtx.sampleRate * 2;
                 const roarBuf = audioCtx.createBuffer(1, roarLen, audioCtx.sampleRate);
                 const rd = roarBuf.getChannelData(0);
@@ -1705,21 +1708,13 @@
                 const roarF = audioCtx.createBiquadFilter(); roarF.type = 'bandpass'; roarF.frequency.value = 80; roarF.Q.value = 1;
                 const roarG = audioCtx.createGain(); roarG.gain.value = 0.1;
                 roarSrc.connect(roarF); roarF.connect(roarG); roarG.connect(masterGain); roarSrc.start(t);
-
-                // LFOs
                 const breatheLFO = audioCtx.createOscillator(); breatheLFO.type = 'sine'; breatheLFO.frequency.value = 0.15;
                 const breatheG = audioCtx.createGain(); breatheG.gain.value = 15;
                 breatheLFO.connect(breatheG); breatheG.connect(pulse.frequency); breatheLFO.start(t);
-
                 const spinLFO = audioCtx.createOscillator(); spinLFO.type = 'sine'; spinLFO.frequency.value = 0.4;
                 const spinG = audioCtx.createGain(); spinG.gain.value = 30;
                 spinLFO.connect(spinG); spinG.connect(roarF.frequency); spinLFO.start(t);
-
-                blackHole.nodes = {
-                    pulse, pulseG, sub, subG, harm1, h1g, h1f, harm2, h2g, h2f,
-                    roarSrc, roarG, roarF, breatheLFO, breatheG, spinLFO, spinG
-                };
-
+                blackHole.nodes = { pulse, pulseG, sub, subG, harm1, h1g, h1f, harm2, h2g, h2f, roarSrc, roarG, roarF, breatheLFO, breatheG, spinLFO, spinG };
                 blackHole.soundInterval = setInterval(() => {
                     const n = blackHole.nodes, bi = blackHole.intensity;
                     if (!n || !audioCtx || !blackHole.active) return;
@@ -1742,10 +1737,9 @@
                 if (blackHole.soundInterval) { clearInterval(blackHole.soundInterval); blackHole.soundInterval = null; }
                 const n = blackHole.nodes;
                 if (!n || !audioCtx) { blackHole.nodes = null; return; }
-                const fade = 1.5;
-                // Quick dip then fade
+                const fade = 0.15;
                 n.pulseG.gain.setValueAtTime(n.pulseG.gain.value, audioCtx.currentTime);
-                n.pulseG.gain.linearRampToValueAtTime(n.pulseG.gain.value * 0.3, audioCtx.currentTime + 0.2);
+                n.pulseG.gain.linearRampToValueAtTime(0, audioCtx.currentTime + fade);
                 n.subG.gain.linearRampToValueAtTime(0, audioCtx.currentTime + fade);
                 n.h1g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + fade);
                 n.h2g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + fade);
@@ -1765,7 +1759,6 @@
                 thrustGain.gain.setTargetAtTime(Math.max(sn, mn * 0.3) * 0.08, t, 0.1);
                 thrustFilter.frequency.setTargetAtTime(200 + Math.max(sn, mn * 0.5) * 600, t, 0.1);
                 thrustFilter.Q.setTargetAtTime(0.5 + Math.max(sn, mn * 0.5) * 1.5, t, 0.1);
-
                 let maxInf = 0;
                 for (let i = 0; i < planets.length; i++) {
                     const p = planets[i]; if (p.consumed) continue;
@@ -1807,6 +1800,7 @@
                 [bgCtx.canvas, plCtx.canvas, fxCtx.canvas].forEach(c => { c.width = w; c.height = h; });
                 rocketHalfH = dom.rocketEl.getBoundingClientRect().height / 2 || 30;
                 for (const p of planets) {
+                    if (p._burpTargetRadius) p._burpTargetRadius = p.baseRadius * cfg.planetScale;
                     p.radius = p.baseRadius * cfg.planetScale;
                     p.gravRange = p.baseGravRange * cfg.planetScale * cfg.gravMult;
                     p.safeZone = p.radius * 2.2;
@@ -1822,12 +1816,13 @@
             function initBgParticles() {
                 bgParticles = [];
                 for (let i = 0; i < cfg.particles; i++) {
+                    const baseR = Math.random() * 1.5 + 0.5;
                     bgParticles.push({
                         x: Math.random() * bgCtx.canvas.width,
                         y: Math.random() * bgCtx.canvas.height,
                         vx: (Math.random() - 0.5) * 0.3,
                         vy: (Math.random() - 0.5) * 0.3,
-                        r: Math.random() * 1.5 + 0.5,
+                        r: baseR, baseR: baseR,
                         ba: Math.random() * 0.4 + 0.1,
                         a: 0,
                         ps: Math.random() * 0.01 + 0.005,
@@ -1841,32 +1836,43 @@
                 const w = bgCtx.canvas.width, h = bgCtx.canvas.height;
                 bgCtx.clearRect(0, 0, w, h);
 
+                if (bgRecoveryTimer > 0) {
+                    bgRecoveryTimer -= 0.016;
+                    for (const pt of bgParticles) {
+                        if (pt.r < pt.baseR * 0.95) {
+                            pt.r += (pt.baseR - pt.r) * 0.04;
+                        }
+                        if (pt.a < pt.ba * 0.9) {
+                            pt.a += (pt.ba - pt.a) * 0.03;
+                        }
+                    }
+                }
+
                 for (const p of bgParticles) {
-                    // Mouse attraction
                     if (mouseActive) {
                         const dx = mouseX - p.x, dy = mouseY - p.y;
                         const dSq = dx * dx + dy * dy;
                         if (dSq < 40000 && dSq > 25) {
                             const dSqrt = Math.sqrt(dSq);
                             const pull = 0.003 * (1 - dSqrt / 200);
-                            const inv = pull / dSqrt;
+                            const inv = pull / dSq;
                             p.vx += dx * inv;
                             p.vy += dy * inv;
                         }
                     }
                     p.x += p.vx; p.y += p.vy;
-                    p.vx *= 0.995; p.vy *= 0.995;
+                    const damp = bgRecoveryTimer > 0 ? 0.997 : 0.995;
+                    p.vx *= damp; p.vy *= damp;
                     if (p.x < 0) p.x = w; else if (p.x > w) p.x = 0;
                     if (p.y < 0) p.y = h; else if (p.y > h) p.y = 0;
                     p.a = Math.max(0, p.ba + Math.sin(frameCount * p.ps + p.po) * 0.15);
 
                     bgCtx.beginPath();
-                    bgCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    bgCtx.arc(p.x, p.y, Math.max(0.1, p.r), 0, Math.PI * 2);
                     bgCtx.fillStyle = `rgba(167,139,250,${p.a})`;
                     bgCtx.fill();
                 }
 
-                // Connections (only if enabled)
                 if (cfg.connectDist > 0) {
                     const cSq = cfg.connectDist * cfg.connectDist;
                     bgCtx.lineWidth = 0.5;
@@ -1888,11 +1894,6 @@
             }
 
             // ═══════════════════════════════════════════════
-            //  TRAIL SYSTEM
-            // ═══════════════════════════════════════════════
-
-
-            // ═══════════════════════════════════════════════
             //  FX SYSTEM
             // ═══════════════════════════════════════════════
             function addFxParticle(x, y, vx, vy, life, size, color) {
@@ -1910,10 +1911,7 @@
                 const points = [{ x: x1, y: y1 }];
                 for (let i = 1; i < 8; i++) {
                     const t = i / 8;
-                    points.push({
-                        x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * 40,
-                        y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * 40
-                    });
+                    points.push({ x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * 40, y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * 40 });
                 }
                 points.push({ x: x2, y: y2 });
                 lightningBolts.push({ points, life: 0.3, color });
@@ -1923,7 +1921,6 @@
                 const w = fxCtx.canvas.width, h = fxCtx.canvas.height;
                 fxCtx.clearRect(0, 0, w, h);
 
-                // Lightning
                 for (let l = lightningBolts.length - 1; l >= 0; l--) {
                     const bolt = lightningBolts[l];
                     bolt.life -= 0.02;
@@ -1937,7 +1934,25 @@
                     fxCtx.lineWidth = bolt.life * 6; fxCtx.stroke();
                 }
 
-                // Particles
+                for (let i = burpRings.length - 1; i >= 0; i--) {
+                    const ring = burpRings[i];
+                    ring.radius += (ring.maxRadius - ring.radius) * 0.06;
+                    ring.life -= 0.012;
+                    if (ring.life <= 0) { burpRings.splice(i, 1); continue; }
+                    fxCtx.beginPath();
+                    fxCtx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+                    fxCtx.strokeStyle = `rgba(${ring.color},${(ring.life * 0.08).toFixed(3)})`;
+                    fxCtx.lineWidth = 12 + ring.life * 16; fxCtx.stroke();
+                    fxCtx.beginPath();
+                    fxCtx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+                    fxCtx.strokeStyle = `rgba(${ring.color},${(ring.life * 0.25).toFixed(3)})`;
+                    fxCtx.lineWidth = 2 + ring.life * 3; fxCtx.stroke();
+                    fxCtx.beginPath();
+                    fxCtx.arc(ring.x, ring.y, ring.radius - 2, 0, Math.PI * 2);
+                    fxCtx.strokeStyle = `rgba(255,255,255,${(ring.life * 0.15).toFixed(3)})`;
+                    fxCtx.lineWidth = 1; fxCtx.stroke();
+                }
+
                 fxParticles.forEach(p => {
                     if (!p) return;
                     p.x += p.vx; p.y += p.vy;
@@ -1984,7 +1999,9 @@
                     skill: tmpl.skill, skillLabel: tmpl.skillLabel, skClass: tmpl.skClass,
                     skillCooldown: 0, skillActive: false, skillTimer: 0,
                     orbitActive: false, shockwaveRing: 0,
-                    firewallRadius: 0, firewallActive: false, consumed: false
+                    firewallRadius: 0, firewallActive: false, consumed: false,
+                    _burpSeed: Math.random() * 1000,
+                    _gravityImmune: 0
                 };
                 if (tmpl.moonData) {
                     const md = tmpl.moonData;
@@ -2011,8 +2028,62 @@
 
                 for (const p of planets) {
                     if (p.consumed) continue;
+
+                    // Decrement gravity immunity
+                    if (p._gravityImmune > 0) p._gravityImmune -= 0.016;
+
+                    // ── Burp recovery: elastic radius + chaotic motion ──
+                    if (p._burpTimer > 0) {
+                        p._burpTimer -= 0.016;
+                        const progress = 1 - clamp(p._burpTimer / p._burpDuration, 0, 1);
+                        const eased = easeOutBack(progress);
+                        p.radius = p._burpTargetRadius * clamp(eased, 0, 1.15);
+                        p.glowIntensity = p.baseGlow * clamp(progress * 2, 0, 1);
+
+                        p.vx *= 0.988;
+                        p.vy *= 0.988;
+
+                        const burpStrength = clamp(p._burpTimer / p._burpDuration, 0, 1);
+                        const seed = p._burpSeed;
+                        const t = frameCount * 0.08;
+
+                        const spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+                        if (spd > 0.1) {
+                            const perpX = -p.vy / spd;
+                            const perpY = p.vx / spd;
+                            const randJitter = burpStrength * 0.2;
+                            p.vx += perpX * (Math.random() - 0.5) * randJitter * 2;
+                            p.vy += perpY * (Math.random() - 0.5) * randJitter * 2;
+                            const wobbleAmp = burpStrength * 0.1;
+                            p.vx += perpX * Math.sin(t * 2.3 + seed) * wobbleAmp;
+                            p.vy += perpY * Math.cos(t * 1.7 + seed * 0.7) * wobbleAmp;
+                            const wobble2 = burpStrength * 0.05;
+                            p.vx += perpX * Math.sin(t * 5.1 + seed * 1.3) * wobble2;
+                            p.vy += perpY * Math.cos(t * 4.3 + seed * 0.9) * wobble2;
+                        }
+                        if (spd > 0.5 && frameCount % 2 === 0) {
+                            addFxParticle(
+                                p.x + (Math.random() - 0.5) * p.radius,
+                                p.y + (Math.random() - 0.5) * p.radius,
+                                -p.vx * 0.1 + (Math.random() - 0.5) * 0.5,
+                                -p.vy * 0.1 + (Math.random() - 0.5) * 0.5,
+                                0.4 + Math.random() * 0.3,
+                                1 + Math.random() * 2.5,
+                                p.colorKey
+                            );
+                        }
+
+                        if (p._burpTimer <= 0) {
+                            p.radius = p._burpTargetRadius;
+                            p.glowIntensity = p.baseGlow;
+                            delete p._burpTimer;
+                            delete p._burpDuration;
+                            delete p._burpTargetRadius;
+                        }
+                    }
+
                     p.x += p.vx; p.y += p.vy;
-                    p.vx *= 0.999; p.vy *= 0.999;
+                    if (!p._burpTimer) { p.vx *= 0.999; p.vy *= 0.999; }
 
                     // Center repulsion
                     const cdx = p.x - cx, cdy = p.y - cy;
@@ -2023,14 +2094,38 @@
                         p.vy += (cdy / cDist) * rep;
                     }
 
-                    // Wrap edges
-                    const pad = p.radius + 20;
-                    if (p.x < -pad) p.x = w + pad; else if (p.x > w + pad) p.x = -pad;
-                    if (p.y < -pad) p.y = h + pad; else if (p.y > h + pad) p.y = -pad;
+                    // ── Inter-planet repulsion during burp to prevent clustering ──
+                    if (p._burpTimer > 0) {
+                        for (const other of planets) {
+                            if (other === p || other.consumed || !other._burpTimer) continue;
+                            const dx = p.x - other.x, dy = p.y - other.y;
+                            const d = Math.sqrt(dx * dx + dy * dy);
+                            const pTargetR = p._burpTargetRadius || p.radius;
+                            const oTargetR = other._burpTargetRadius || other.radius;
+                            const minSep = pTargetR + oTargetR + 25;
+                            if (d < minSep && d > 0.001) {
+                                const push = (1 - d / minSep) * 0.3;
+                                p.vx += (dx / d) * push;
+                                p.vy += (dy / d) * push;
+                            }
+                        }
+                    }
+
+                    // Bounce off edges during burp
+                    if (p._burpTimer && p._burpTimer > 0) {
+                        const bPad = Math.max(p.radius + 5, 15);
+                        if (p.x < bPad) { p.x = bPad; p.vx = Math.abs(p.vx) * 0.75; }
+                        else if (p.x > w - bPad) { p.x = w - bPad; p.vx = -Math.abs(p.vx) * 0.75; }
+                        if (p.y < bPad) { p.y = bPad; p.vy = Math.abs(p.vy) * 0.75; }
+                        else if (p.y > h - bPad) { p.y = h - bPad; p.vy = -Math.abs(p.vy) * 0.75; }
+                    } else {
+                        const pad = p.radius + 20;
+                        if (p.x < -pad) p.x = w + pad; else if (p.x > w + pad) p.x = -pad;
+                        if (p.y < -pad) p.y = h + pad; else if (p.y > h + pad) p.y = -pad;
+                    }
 
                     p.rotation += p.isBlackHole ? 0.03 : p.rotSpeed;
 
-                    // Moon
                     if (p.moon) {
                         p.moon.prevX = p.moon.x; p.moon.prevY = p.moon.y;
                         p.moon.x = p.x + Math.cos(p.moon.angle) * p.moon.dist;
@@ -2038,15 +2133,12 @@
                         p.moon.angle += p.moon.speed;
                     }
 
-                    // Timers
                     if (p.pulseTimer > 0) p.pulseTimer -= 0.008;
                     if (p.skillCooldown > 0) p.skillCooldown -= 0.016;
                     if (p.orbitActive) {
                         if (p.skillTimer <= 0) {
                             p.orbitActive = false; p.skillActive = false;
-                            if (rocket.mode === 'orbit' && rocket.orbitPlanet === p) {
-                                rocket.mode = 'wander'; rocket.orbitPlanet = null; pickWander();
-                            }
+                            if (rocket.mode === 'orbit' && rocket.orbitPlanet === p) { rocket.mode = 'wander'; rocket.orbitPlanet = null; pickWander(); }
                         } else p.skillTimer -= 0.016;
                     }
                     if (p.skill === 'warp' && p.skillActive && p.skillTimer <= 0) p.skillActive = false;
@@ -2056,7 +2148,6 @@
                         if (p.firewallRadius > p.gravRange * 6) { p.firewallActive = false; p.skillActive = false; }
                     }
 
-                    // Glow intensity
                     let tg = p.baseGlow;
                     const rdx = rocket.x - p.x, rdy = rocket.y - p.y;
                     const rd = Math.sqrt(rdx * rdx + rdy * rdy);
@@ -2064,6 +2155,7 @@
                     if (p.pulseTimer > 0) tg += p.pulseTimer * 0.1;
                     if (p === hoveredPlanet) tg += 0.12;
                     if (p.skillActive || p.shockwaveRing > 0) tg += 0.15;
+                    if (p._burpTimer > 0) tg += 0.2;
                     p.glowIntensity += (tg - p.glowIntensity) * 0.06;
                 }
             }
@@ -2071,8 +2163,6 @@
             function drawPlanets() {
                 const w = plCtx.canvas.width, h = plCtx.canvas.height;
                 plCtx.clearRect(0, 0, w, h);
-
-                // Gravity lines (batched dashed state)
                 plCtx.save();
                 plCtx.setLineDash([3, 7]);
                 plCtx.lineWidth = 0.5;
@@ -2081,22 +2171,17 @@
                     const dSq = distSq(rocket.x, rocket.y, p.x, p.y);
                     if (dSq < p.gravRange * p.gravRange && dSq > p.safeZone * p.safeZone) {
                         const dist = Math.sqrt(dSq);
-                        plCtx.beginPath();
-                        plCtx.moveTo(p.x, p.y);
-                        plCtx.lineTo(rocket.x, rocket.y);
+                        plCtx.beginPath(); plCtx.moveTo(p.x, p.y); plCtx.lineTo(rocket.x, rocket.y);
                         plCtx.strokeStyle = `rgba(${p.colorKey},${((1 - dist / p.gravRange) * 0.1).toFixed(4)})`;
                         plCtx.stroke();
                     }
                 }
                 plCtx.restore();
 
-                // Draw each planet
                 for (const p of planets) {
                     if (p.consumed) continue;
                     const r = Math.max(0.01, p.radius);
                     const ck = p.colorKey;
-
-                    // Black hole
                     if (p.isBlackHole) {
                         const bhI = (blackHole.active && blackHole.planet === p) ? blackHole.intensity : 0;
                         const bhR = Math.max(0.01, p.radius * (1 + bhI * 2));
@@ -2105,10 +2190,7 @@
                         plCtx.strokeStyle = 'rgba(255,255,255,0.06)'; plCtx.lineWidth = 1; plCtx.stroke();
                         continue;
                     }
-
                     if (!isFinite(p.x) || !isFinite(p.y)) continue;
-
-                    // Shockwave ring
                     if (p.shockwaveRing > 0) {
                         const swR = (1 - p.shockwaveRing) * p.gravRange * 1.8;
                         plCtx.beginPath(); plCtx.arc(p.x, p.y, swR, 0, Math.PI * 2);
@@ -2117,8 +2199,6 @@
                         plCtx.strokeStyle = `rgba(255,200,150,${(p.shockwaveRing * 0.3).toFixed(3)})`;
                         plCtx.lineWidth = 8 * p.shockwaveRing; plCtx.stroke();
                     }
-
-                    // Firewall
                     if (p.firewallActive) {
                         const fwLife = 1 - (p.firewallRadius / (p.gravRange * 6));
                         plCtx.save(); plCtx.setLineDash([10, 6]);
@@ -2127,16 +2207,12 @@
                         plCtx.strokeStyle = `rgba(6,182,212,${(fwLife * 0.2).toFixed(3)})`; plCtx.lineWidth = 8; plCtx.stroke();
                         plCtx.restore();
                     }
-
-                    // Orbit indicator
                     if (p.orbitActive && rocket.orbitPlanet === p) {
                         plCtx.save(); plCtx.setLineDash([2, 6]);
                         plCtx.beginPath(); plCtx.arc(p.x, p.y, rocket.orbitDist, 0, Math.PI * 2);
                         plCtx.strokeStyle = 'rgba(6,182,212,0.15)'; plCtx.lineWidth = 1; plCtx.stroke();
                         plCtx.restore();
                     }
-
-                    // Ambient glow
                     const gR = r * 1.8;
                     const aG = plCtx.createRadialGradient(p.x, p.y, r * 0.4, p.x, p.y, gR);
                     aG.addColorStop(0, `rgba(${ck},${p.glowIntensity.toFixed(4)})`);
@@ -2144,15 +2220,11 @@
                     aG.addColorStop(1, `rgba(${ck},0)`);
                     plCtx.fillStyle = aG;
                     plCtx.beginPath(); plCtx.arc(p.x, p.y, gR, 0, Math.PI * 2); plCtx.fill();
-
-                    // Pulse ring
                     if (p.pulseTimer > 0) {
                         plCtx.beginPath(); plCtx.arc(p.x, p.y, p.gravRange, 0, Math.PI * 2);
                         plCtx.strokeStyle = `rgba(${ck},${(p.pulseTimer * 0.08).toFixed(4)})`;
                         plCtx.lineWidth = 0.5; plCtx.stroke();
                     }
-
-                    // Planet rings
                     if (p.hasRing) {
                         const rk = p.ringColorKey;
                         plCtx.beginPath(); plCtx.ellipse(p.x, p.y, r * 1.85, r * 0.42, p.ringTilt, 0, Math.PI * 2);
@@ -2160,8 +2232,6 @@
                         plCtx.beginPath(); plCtx.ellipse(p.x, p.y, r * 2.15, r * 0.5, p.ringTilt, 0, Math.PI * 2);
                         plCtx.strokeStyle = `rgba(${rk},0.08)`; plCtx.lineWidth = Math.max(0.5, r * 0.035); plCtx.stroke();
                     }
-
-                    // Planet body
                     const bG = plCtx.createRadialGradient(p.x - r * 0.3, p.y - r * 0.3, r * 0.05, p.x, p.y, r);
                     bG.addColorStop(0, `rgba(${ck},0.18)`);
                     bG.addColorStop(0.6, `rgba(${ck},0.07)`);
@@ -2169,8 +2239,6 @@
                     plCtx.beginPath(); plCtx.arc(p.x, p.y, r, 0, Math.PI * 2);
                     plCtx.fillStyle = bG; plCtx.fill();
                     plCtx.strokeStyle = `rgba(${ck},0.3)`; plCtx.lineWidth = 0.8; plCtx.stroke();
-
-                    // Hover highlight
                     if (p === hoveredPlanet) {
                         const hG = plCtx.createRadialGradient(p.x, p.y, r * 0.5, p.x, p.y, r * 2.5);
                         hG.addColorStop(0, `rgba(${ck},0.1)`);
@@ -2180,15 +2248,11 @@
                         plCtx.beginPath(); plCtx.arc(p.x, p.y, r + 5, 0, Math.PI * 2);
                         plCtx.strokeStyle = `rgba(${ck},0.3)`; plCtx.lineWidth = 1; plCtx.stroke();
                     }
-
-                    // Cooldown arc
                     if (p.skillCooldown > 0) {
                         plCtx.beginPath();
                         plCtx.arc(p.x, p.y, r + 8, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (1 - p.skillCooldown / SKILL_COOLDOWN));
                         plCtx.strokeStyle = 'rgba(100,100,100,0.3)'; plCtx.lineWidth = 2; plCtx.stroke();
                     }
-
-                    // Surface bands
                     plCtx.save();
                     plCtx.translate(p.x, p.y); plCtx.rotate(p.rotation);
                     plCtx.globalAlpha = 0.12;
@@ -2198,49 +2262,29 @@
                     if (r > 20) { plCtx.beginPath(); plCtx.ellipse(0, r * 0.55, r * 0.75, Math.max(1, r * 0.08), 0, 0, Math.PI * 2); plCtx.stroke(); }
                     plCtx.globalAlpha = 1;
                     plCtx.restore();
-
-                    // Moon
                     if (p.moon) {
                         const m = p.moon, mk = m.colorKey;
-                        if (m.prevX) {
-                            plCtx.beginPath(); plCtx.moveTo(m.prevX, m.prevY); plCtx.lineTo(m.x, m.y);
-                            plCtx.strokeStyle = `rgba(${mk},0.15)`; plCtx.lineWidth = 1; plCtx.stroke();
-                        }
+                        if (m.prevX) { plCtx.beginPath(); plCtx.moveTo(m.prevX, m.prevY); plCtx.lineTo(m.x, m.y); plCtx.strokeStyle = `rgba(${mk},0.15)`; plCtx.lineWidth = 1; plCtx.stroke(); }
                         plCtx.beginPath(); plCtx.ellipse(p.x, p.y, m.dist, m.dist * 0.38, 0, 0, Math.PI * 2);
                         plCtx.strokeStyle = `rgba(${mk},0.04)`; plCtx.lineWidth = 0.5; plCtx.stroke();
                         plCtx.beginPath(); plCtx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
                         const mG = plCtx.createRadialGradient(m.x - m.radius * 0.3, m.y - m.radius * 0.3, 0, m.x, m.y, m.radius);
-                        mG.addColorStop(0, `rgba(${mk},0.3)`);
-                        mG.addColorStop(1, `rgba(${mk},0.08)`);
+                        mG.addColorStop(0, `rgba(${mk},0.3)`); mG.addColorStop(1, `rgba(${mk},0.08)`);
                         plCtx.fillStyle = mG; plCtx.fill();
-                        plCtx.strokeStyle = `rgba(${mk},0.35)`; plCtx.lineWidth = 0.5;
-                        plCtx.stroke();
+                        plCtx.strokeStyle = `rgba(${mk},0.35)`; plCtx.lineWidth = 0.5; plCtx.stroke();
                     }
                 }
             }
 
-            // ═══════════════════════════════════════════════
-            //  PLANET HOVER
-            // ═══════════════════════════════════════════════
             function checkPlanetHover() {
                 const prev = hoveredPlanet;
                 hoveredPlanet = null;
                 for (const p of planets) {
                     if (p.consumed) continue;
-                    if (distSq(mouseX, mouseY, p.x, p.y) < Math.pow(Math.max(p.radius * 2.5, 30), 2)) {
-                        hoveredPlanet = p;
-                        break;
-                    }
+                    if (distSq(mouseX, mouseY, p.x, p.y) < Math.pow(Math.max(p.radius * 2.5, 30), 2)) { hoveredPlanet = p; break; }
                 }
-                if (hoveredPlanet && !prev) {
-                    dom.dot.classList.add('hovering');
-                    dom.ring.classList.add('hovering');
-                    dom.cross.classList.add('hovering');
-                } else if (!hoveredPlanet && prev) {
-                    dom.dot.classList.remove('hovering');
-                    dom.ring.classList.remove('hovering');
-                    dom.cross.classList.remove('hovering');
-                }
+                if (hoveredPlanet && !prev) { dom.dot.classList.add('hovering'); dom.ring.classList.add('hovering'); dom.cross.classList.add('hovering'); }
+                else if (!hoveredPlanet && prev) { dom.dot.classList.remove('hovering'); dom.ring.classList.remove('hovering'); dom.cross.classList.remove('hovering'); }
                 if (hoveredPlanet) {
                     dom.planetLabel.classList.add('visible');
                     dom.plName.textContent = hoveredPlanet.name;
@@ -2255,9 +2299,7 @@
                     ly = clamp(ly, 10, window.innerHeight - 66);
                     dom.planetLabel.style.left = lx + 'px';
                     dom.planetLabel.style.top = ly + 'px';
-                } else {
-                    dom.planetLabel.classList.remove('visible');
-                }
+                } else { dom.planetLabel.classList.remove('visible'); }
             }
 
             // ═══════════════════════════════════════════════
@@ -2282,8 +2324,7 @@
             function exitWarp() {
                 if (rocket.mode !== 'warp') return;
                 rocket.mode = 'wander';
-                rocket.warpTo = null;
-                rocket.warpFrom = null;
+                rocket.warpTo = null; rocket.warpFrom = null;
                 dom.warpFlash.classList.remove('active');
                 dom.gridLayer.classList.remove('warp');
                 dom.gridLayer.style.filter = '';
@@ -2292,13 +2333,58 @@
             }
 
             function updateRocket(now) {
-                // ── Black Hole Rocket Suction ──
+                // Decrement rocket gravity immunity
+                if (rocket._gravityImmune > 0) rocket._gravityImmune -= 0.016;
+                const rocketImmune = rocket._gravityImmune > 0;
+
+                // ── Rocket burp chaotic motion ──
+                if (rocket.burpTimer > 0) {
+                    rocket.burpTimer -= 0.016;
+                    rocket.vx *= 0.982;
+                    rocket.vy *= 0.982;
+
+                    const burpStrength = clamp(rocket.burpTimer / 2.0, 0, 1);
+                    const seed = rocket.burpSeed;
+                    const t = frameCount * 0.1;
+
+                    const rSpd = Math.sqrt(rocket.vx * rocket.vx + rocket.vy * rocket.vy);
+                    if (rSpd > 0.1) {
+                        const rPerpX = -rocket.vy / rSpd;
+                        const rPerpY = rocket.vx / rSpd;
+                        const randJitter = burpStrength * 0.3;
+                        rocket.vx += rPerpX * (Math.random() - 0.5) * randJitter * 2;
+                        rocket.vy += rPerpY * (Math.random() - 0.5) * randJitter * 2;
+                        const wobbleAmp = burpStrength * 0.15;
+                        rocket.vx += rPerpX * Math.sin(t * 2.7 + seed) * wobbleAmp;
+                        rocket.vy += rPerpY * Math.cos(t * 1.9 + seed * 0.6) * wobbleAmp;
+                        const wobble2 = burpStrength * 0.08;
+                        rocket.vx += rPerpX * Math.sin(t * 6.3 + seed * 1.7) * wobble2;
+                        rocket.vy += rPerpY * Math.cos(t * 5.1 + seed * 1.1) * wobble2;
+                    }
+
+                    const spd = Math.sqrt(rocket.vx * rocket.vx + rocket.vy * rocket.vy);
+                    if (spd > 0.3 && frameCount % 2 === 0) {
+                        for (let bi = 0; bi < 3; bi++) {
+                            addFxParticle(
+                                rocket.x + (Math.random() - 0.5) * 14,
+                                rocket.y + (Math.random() - 0.5) * 14,
+                                -rocket.vx * 0.15 + (Math.random() - 0.5) * 2,
+                                -rocket.vy * 0.15 + (Math.random() - 0.5) * 2,
+                                0.5 + Math.random() * 0.4,
+                                1.5 + Math.random() * 2.5,
+                                '196,181,253'
+                            );
+                        }
+                    }
+
+                    if (rocket.burpTimer <= 0) rocket.burpTimer = 0;
+                }
+
                 if (blackHole.active && blackHole.planet && !blackHole.rocketConsumed) {
                     const bhP = blackHole.planet;
                     const dx = bhP.x - rocket.x, dy = bhP.y - rocket.y;
                     const bhDist = Math.sqrt(dx * dx + dy * dy);
                     const consumeR = Math.max(window.innerWidth, window.innerHeight) * (0.2 + blackHole.intensity * 0.4);
-
                     if (bhDist < consumeR && bhDist > 0.001) {
                         exitOrbit(); exitWarp();
                         const rNd = bhDist / consumeR;
@@ -2308,23 +2394,18 @@
                         rocket.vx += (dx * invD) * rInward + (-dy * invD) * rTangential;
                         rocket.vy += (dy * invD) * rInward + (dx * invD) * rTangential;
                         rocket.boostFuel = 0; rocket.mode = 'wander';
-
                         const bhR = bhP.radius * (1 + blackHole.intensity * 2);
                         const eventHorizon = bhR * 1.1;
                         const fadeStart = eventHorizon * 2.5;
-
                         if (bhDist < fadeStart) {
                             const progress = clamp(1 - ((bhDist - eventHorizon) / (fadeStart - eventHorizon)), 0, 1);
                             rocket.spaghetti = progress;
                             dom.rocketEl.style.opacity = (1 - progress * 0.9).toString();
                         }
-
                         if (bhDist < eventHorizon * 0.9) {
-                            blackHole.rocketConsumed = true;
-                            blackHole.rocketTimer = 0;
+                            blackHole.rocketConsumed = true; blackHole.rocketTimer = 0;
                             rocket.speed = 0; rocket.vx = 0; rocket.vy = 0;
-                            dom.rocketEl.style.opacity = '0';
-                            dom.tooltipEl.style.opacity = '0';
+                            dom.rocketEl.style.opacity = '0'; dom.tooltipEl.style.opacity = '0';
                         }
                     }
                 }
@@ -2337,7 +2418,6 @@
 
                 rocket.speedMult += (1.0 - rocket.speedMult) * 0.01;
 
-                // ── Keyboard Input ──
                 let kx = 0, ky = 0;
                 if (keysDown['w'] || keysDown['arrowup']) ky = -1;
                 if (keysDown['s'] || keysDown['arrowdown']) ky = 1;
@@ -2346,11 +2426,8 @@
                 if (kx !== 0 || ky !== 0) {
                     exitOrbit(); exitWarp();
                     const kl = Math.sqrt(kx * kx + ky * ky);
-                    rocket.vx += (kx / kl) * 0.04;
-                    rocket.vy += (ky / kl) * 0.04;
+                    rocket.vx += (kx / kl) * 0.04; rocket.vy += (ky / kl) * 0.04;
                 }
-
-                // ── Warp Mode ──
                 if (rocket.mode === 'warp') {
                     if (rocket.warpTo && rocket.warpFrom) {
                         rocket.warpProgress += Math.min(0.15, 0.045 * rocket.speedMult);
@@ -2365,18 +2442,15 @@
                         if (rocket.warpProgress >= 1) {
                             rocket.mode = 'wander'; rocket.warpTo = null; rocket.warpFrom = null;
                             rocket.vx = 0; rocket.vy = 0;
-                            dom.warpFlash.classList.remove('active');
-                            dom.gridLayer.classList.remove('warp');
+                            dom.warpFlash.classList.remove('active'); dom.gridLayer.classList.remove('warp');
                             setTimeout(() => dom.gridLayer.style.filter = '', 500);
-                            addSparkBurst(rocket.x, rocket.y, 20, '245,158,11');
-                            playSpark(); pickWander();
+                            addSparkBurst(rocket.x, rocket.y, 20, '245,158,11'); playSpark(); pickWander();
                         }
                         return;
                     }
                     exitWarp(); return;
                 }
 
-                // ── Orbit Mode ──
                 if (rocket.mode === 'orbit') {
                     if (!rocket.orbitPlanet) { rocket.mode = 'wander'; pickWander(); }
                     else {
@@ -2394,11 +2468,9 @@
                     }
                 }
 
-                // ── Wander / Seek ──
                 if (now - lastWander > 4000 + Math.random() * 3000) { pickWander(); lastWander = now; }
                 let accel = 0.01 * rocket.speedMult;
                 let tx, ty;
-
                 if (rocket.boostFuel > 0) {
                     tx = rocket.boostX; ty = rocket.boostY;
                     accel = (0.06 + rocket.boostFuel * 0.04) * rocket.speedMult;
@@ -2423,39 +2495,35 @@
                 rocket.vx += (dx / dist) * accel;
                 rocket.vy += (dy / dist) * accel;
 
-                // ── Planet Forces ──
-                for (const p of planets) {
-                    if (p.consumed) continue;
-                    const pdx = p.x - rocket.x, pdy = p.y - rocket.y;
-                    const pd = Math.sqrt(pdx * pdx + pdy * pdy);
-                    if (pd === 0) continue;
-                    const nx = pdx / pd, ny = pdy / pd;
-
-                    if (pd < p.safeZone) {
-                        const rs = Math.min(0.25 * (1 - pd / p.safeZone), 0.08);
-                        rocket.vx -= nx * rs; rocket.vy -= ny * rs;
-                        if (pd < p.radius * 1.8 && rocket.speed > 0.3 && frameCount % 6 === 0) {
-                            addSparkBurst(rocket.x - nx * 10, rocket.y - ny * 10, 4, p.colorKey);
-                            playSpark();
+                // ── Planet gravity on rocket (skip if gravity immune) ──
+                if (!rocketImmune) {
+                    for (const p of planets) {
+                        if (p.consumed || p._gravityImmune > 0) continue;
+                        const pdx = p.x - rocket.x, pdy = p.y - rocket.y;
+                        const pd = Math.sqrt(pdx * pdx + pdy * pdy);
+                        if (pd === 0) continue;
+                        const nx = pdx / pd, ny = pdy / pd;
+                        if (pd < p.safeZone) {
+                            const rs = Math.min(0.25 * (1 - pd / p.safeZone), 0.08);
+                            rocket.vx -= nx * rs; rocket.vy -= ny * rs;
+                            if (pd < p.radius * 1.8 && rocket.speed > 0.3 && frameCount % 6 === 0) { addSparkBurst(rocket.x - nx * 10, rocket.y - ny * 10, 4, p.colorKey); playSpark(); }
+                        } else if (p.firewallActive) {
+                            const fwDist = Math.abs(pd - p.firewallRadius);
+                            if (fwDist < 25) {
+                                rocket.vx = -nx * rocket.speed * 1.8; rocket.vy = -ny * rocket.speed * 1.8;
+                                addSparkBurst(rocket.x, rocket.y, 15, '6,182,212'); shakeBody(6); playShockwave();
+                                p.firewallActive = false; p.skillActive = false;
+                            }
+                        } else if (pd < p.gravRange) {
+                            const nd = (pd - p.safeZone) / (p.gravRange - p.safeZone);
+                            const gc = Math.sin(nd * Math.PI) * 0.7 + Math.sin(nd * Math.PI * 0.5) * 0.3;
+                            const gf = Math.min(p.mass * 0.012 * cfg.gravMult * gc, 0.03);
+                            rocket.vx += nx * gf; rocket.vy += ny * gf;
                         }
-                    } else if (p.firewallActive) {
-                        const fwDist = Math.abs(pd - p.firewallRadius);
-                        if (fwDist < 25) {
-                            rocket.vx = -nx * rocket.speed * 1.8;
-                            rocket.vy = -ny * rocket.speed * 1.8;
-                            addSparkBurst(rocket.x, rocket.y, 15, '6,182,212');
-                            shakeBody(6); playShockwave();
-                            p.firewallActive = false; p.skillActive = false;
-                        }
-                    } else if (pd < p.gravRange) {
-                        const nd = (pd - p.safeZone) / (p.gravRange - p.safeZone);
-                        const gc = Math.sin(nd * Math.PI) * 0.7 + Math.sin(nd * Math.PI * 0.5) * 0.3;
-                        const gf = Math.min(p.mass * 0.012 * cfg.gravMult * gc, 0.03);
-                        rocket.vx += nx * gf; rocket.vy += ny * gf;
                     }
                 }
 
-                const damp = rocket.boostFuel > 0 ? 0.975 : 0.985;
+                const damp = rocket.burpTimer > 0 ? 0.96 : (rocket.boostFuel > 0 ? 0.975 : 0.985);
                 rocket.vx *= damp; rocket.vy *= damp;
                 rocket.speed = Math.sqrt(rocket.vx * rocket.vx + rocket.vy * rocket.vy);
                 const maxSpd = (rocket.boostFuel > 0 ? 5 : 1.6) * rocket.speedMult;
@@ -2466,20 +2534,31 @@
                 }
 
                 rocket.x += rocket.vx; rocket.y += rocket.vy;
-                const pad = cfg.rocketPad;
-                if (rocket.x < -pad) rocket.x = window.innerWidth + pad;
-                else if (rocket.x > window.innerWidth + pad) rocket.x = -pad;
-                if (rocket.y < -pad) rocket.y = window.innerHeight + pad;
-                else if (rocket.y > window.innerHeight + pad) rocket.y = -pad;
+
+                // Bounce off edges during burp
+                if (rocket.burpTimer > 0) {
+                    const rPad = cfg.rocketPad;
+                    if (rocket.x < rPad) { rocket.x = rPad; rocket.vx = Math.abs(rocket.vx) * 0.7; }
+                    else if (rocket.x > window.innerWidth - rPad) { rocket.x = window.innerWidth - rPad; rocket.vx = -Math.abs(rocket.vx) * 0.7; }
+                    if (rocket.y < rPad) { rocket.y = rPad; rocket.vy = Math.abs(rocket.vy) * 0.7; }
+                    else if (rocket.y > window.innerHeight - rPad) { rocket.y = window.innerHeight - rPad; rocket.vy = -Math.abs(rocket.vy) * 0.7; }
+                } else {
+                    const pad = cfg.rocketPad;
+                    if (rocket.x < -pad) rocket.x = window.innerWidth + pad;
+                    else if (rocket.x > window.innerWidth + pad) rocket.x = -pad;
+                    if (rocket.y < -pad) rocket.y = window.innerHeight + pad;
+                    else if (rocket.y > window.innerHeight + pad) rocket.y = -pad;
+                }
 
                 rocket.angle += shortAngle(rocket.angle, Math.atan2(rocket.vy, rocket.vx) * RAD2DEG + 90) * (rocket.boostFuel > 0 ? 0.12 : 0.06);
                 updateRocketTransform();
             }
 
             function updateRocketTransform() {
-                dom.rocketEl.classList.remove('boosting', 'cruising', 'warping', 'orbiting');
+                dom.rocketEl.classList.remove('boosting', 'cruising', 'warping', 'orbiting', 'burping', 'idle');
                 if (rocket.mode === 'warp') dom.rocketEl.classList.add('warping');
                 else if (rocket.mode === 'orbit') dom.rocketEl.classList.add('orbiting');
+                else if (rocket.burpTimer > 0) dom.rocketEl.classList.add('burping');
                 else if (rocket.boostFuel > 0) dom.rocketEl.classList.add('boosting');
                 else if (rocket.speedMult < 0.95) dom.rocketEl.classList.add('idle');
                 else if (rocket.speed > 0.8) dom.rocketEl.classList.add('cruising');
@@ -2490,7 +2569,8 @@
                 dom.rocketEl.style.transform = `translate(-50%,-50%) rotate(${rocket.angle}deg) scale(${scale})`;
 
                 const baseFlame = rocket.mode === 'warp' ? 1.8 : (0.4 + Math.min(rocket.speed / 1.6, 1) * 0.6);
-                const fs = baseFlame * Math.pow(rocket.speedMult, 0.6);
+                const burpFlame = rocket.burpTimer > 0 ? 2.2 : 1;
+                const fs = baseFlame * Math.pow(rocket.speedMult, 0.6) * burpFlame;
                 dom.rocketEl.querySelector('.flame-group').style.transform = `scale(1,${fs})`;
             }
 
@@ -2522,14 +2602,19 @@
                 dom.ttPwr.textContent = pwrPct.toFixed(0) + '%';
                 dom.ttBar.style.width = pwrPct + '%';
 
-                if (rocket.mode === 'warp') {
-                    dom.ttPwr.className = 'tt-val amber'; dom.ttBar.style.background = '#F59E0B'; dom.ttBar.style.boxShadow = '0 0 6px rgba(245,158,11,0.5)';
+                if (rocket.burpTimer > 0) {
+                    dom.ttPwr.className = 'tt-val active';
+                    dom.ttPwr.style.color = '#C4B5FD';
+                    dom.ttBar.style.background = '#C4B5FD';
+                    dom.ttBar.style.boxShadow = '0 0 6px rgba(196,181,253,0.5)';
+                } else if (rocket.mode === 'warp') {
+                    dom.ttPwr.className = 'tt-val amber'; dom.ttPwr.style.color = ''; dom.ttBar.style.background = '#F59E0B'; dom.ttBar.style.boxShadow = '0 0 6px rgba(245,158,11,0.5)';
                 } else if (rocket.mode === 'orbit') {
-                    dom.ttPwr.className = 'tt-val cyan'; dom.ttBar.style.background = '#06B6D4'; dom.ttBar.style.boxShadow = '0 0 6px rgba(6,182,212,0.5)';
+                    dom.ttPwr.className = 'tt-val cyan'; dom.ttPwr.style.color = ''; dom.ttBar.style.background = '#06B6D4'; dom.ttBar.style.boxShadow = '0 0 6px rgba(6,182,212,0.5)';
                 } else if (pwrPct > 10) {
-                    dom.ttPwr.className = 'tt-val active'; dom.ttBar.style.background = 'var(--accent)'; dom.ttBar.style.boxShadow = '0 0 6px rgba(var(--accent-rgb),0.5)';
+                    dom.ttPwr.className = 'tt-val active'; dom.ttPwr.style.color = ''; dom.ttBar.style.background = 'var(--accent)'; dom.ttBar.style.boxShadow = '0 0 6px rgba(var(--accent-rgb),0.5)';
                 } else {
-                    dom.ttPwr.className = 'tt-val'; dom.ttBar.style.background = '#333'; dom.ttBar.style.boxShadow = 'none';
+                    dom.ttPwr.className = 'tt-val'; dom.ttPwr.style.color = ''; dom.ttBar.style.background = '#333'; dom.ttBar.style.boxShadow = 'none';
                 }
 
                 let maxGrv = 0, closestName = '---';
@@ -2557,13 +2642,17 @@
                     dom.hudSpdVal.textContent = rocket.speed.toFixed(2);
                     dom.hudSpdFill.style.width = clamp((rocket.speed / 5) * 100, 0, 100) + '%';
 
-                    if (rocket.mode === 'warp') { dom.hudSpdFill.style.background = '#F59E0B'; dom.hudSpdFill.style.boxShadow = '0 0 4px rgba(245,158,11,0.5)'; }
+                    if (rocket.burpTimer > 0) {
+                        dom.hudSpdFill.style.background = '#C4B5FD';
+                        dom.hudSpdFill.style.boxShadow = '0 0 4px rgba(196,181,253,0.5)';
+                    } else if (rocket.mode === 'warp') { dom.hudSpdFill.style.background = '#F59E0B'; dom.hudSpdFill.style.boxShadow = '0 0 4px rgba(245,158,11,0.5)'; }
                     else if (rocket.mode === 'orbit') { dom.hudSpdFill.style.background = '#06B6D4'; dom.hudSpdFill.style.boxShadow = '0 0 4px rgba(6,182,212,0.5)'; }
                     else { dom.hudSpdFill.style.background = 'var(--accent)'; dom.hudSpdFill.style.boxShadow = '0 0 4px rgba(var(--accent-rgb),0.3)'; }
 
                     dom.hudMode.className = 'hud-mode visible';
                     const mult = rocket.speedMult.toFixed(1);
-                    if (rocket.mode === 'warp') { dom.hudMode.textContent = 'HYPERJUMP'; dom.hudMode.classList.add('warp'); }
+                    if (rocket.burpTimer > 0) { dom.hudMode.textContent = 'EJECTING'; dom.hudMode.classList.add('burp'); }
+                    else if (rocket.mode === 'warp') { dom.hudMode.textContent = 'HYPERJUMP'; dom.hudMode.classList.add('warp'); }
                     else if (rocket.mode === 'orbit') { dom.hudMode.textContent = 'ORBIT LOCK'; dom.hudMode.classList.add('orbit'); }
                     else if (rocket.boostFuel > 0) { dom.hudMode.textContent = 'BOOST'; dom.hudMode.classList.add('boost'); }
                     else if (rocket.speedMult > 1.05) { dom.hudMode.textContent = `BOOST x${mult}`; dom.hudMode.classList.add('boost'); }
@@ -2579,7 +2668,6 @@
                 if (!initDismissed || planet.skillCooldown > 0 || planet.consumed) return;
                 planet.skillCooldown = SKILL_COOLDOWN;
                 planet.skillActive = true;
-
                 switch (planet.skill) {
                     case 'orbit':
                         planet.orbitActive = true; planet.skillTimer = 4.0;
@@ -2629,7 +2717,6 @@
                 setTimeout(() => document.body.style.transform = '', 150);
             }
 
-            // Generic BH suction to avoid duplicating the 4 near-identical loops
             function applyBHForce(item, bhX, bhY, suckRange, eventHorizon, fadeStart, opts) {
                 const dx = bhX - item.x, dy = bhY - item.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
@@ -2640,7 +2727,6 @@
                     const tangential = Math.pow(1 - nd, 2.0) * (opts.tanB + blackHole.intensity * opts.tanS);
                     item.vx += (dx * invD) * inward; item.vy += (dy * invD) * inward;
                     item.vx += (-dy * invD) * tangential; item.vy += (dx * invD) * tangential;
-
                     if (opts.sizeKey && dist < fadeStart) {
                         const fade = clamp((dist - eventHorizon) / (fadeStart - eventHorizon), 0, 1);
                         item[opts.sizeKey] *= (0.95 + fade * 0.05);
@@ -2661,7 +2747,6 @@
                 const eventHorizon = bhR * 1.1;
                 const fadeStart = eventHorizon * 2.5;
 
-                // FX particles
                 for (let i = 0; i < fxParticles.count; i++) {
                     const idx = (fxParticles.head - fxParticles.count + i + fxParticles.max) % fxParticles.max;
                     const pt = fxParticles.data[idx];
@@ -2671,7 +2756,6 @@
                     }
                 }
 
-                // Background particles (special: respawn at edges instead of dying)
                 for (const pt of bgParticles) {
                     const dx = p.x - pt.x, dy = p.y - pt.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
@@ -2699,7 +2783,6 @@
                     }
                 }
 
-                // Other planets
                 const consumeRange = maxDim * (0.15 + blackHole.intensity * 0.35);
                 for (const op of planets) {
                     if (op.isBlackHole || op.consumed) continue;
@@ -2712,7 +2795,6 @@
                         const tangential = Math.pow(1 - nd, 2.0) * (0.06 + blackHole.intensity * 0.1);
                         op.vx -= (dx * invD) * inward; op.vy -= (dy * invD) * inward;
                         op.vx += (-dy * invD) * tangential; op.vy += (dx * invD) * tangential;
-
                         if (dist < fadeStart) {
                             const progress = clamp(1 - ((dist - eventHorizon) / (fadeStart - eventHorizon)), 0, 1);
                             op.radius = op.baseRadius * cfg.planetScale * (1 - progress * 0.9);
@@ -2730,13 +2812,11 @@
                 blackHole.active = true; blackHole.intensity = 0; blackHole.planet = planet;
                 blackHole.consumed = []; blackHole.rocketConsumed = false; blackHole.rocketTimer = 0;
                 planet.glowIntensity = 1.0;
-
                 blackHole.shakeTimer = setInterval(() => {
                     blackHole.intensity = Math.min(blackHole.intensity + 0.002, 3);
                     const shake = Math.min(blackHole.intensity * 12, 12);
                     document.body.style.transform = `translate(${(Math.random() * shake - shake / 2)}px,${(Math.random() * shake - shake / 2)}px)`;
                 }, 50);
-
                 const suckInterval = setInterval(() => {
                     if (!blackHole.active) { clearInterval(suckInterval); return; }
                     for (let i = 0; i < 3; i++) {
@@ -2750,35 +2830,127 @@
                 }, 60);
             }
 
+            // ═══════════════════════════════════════════════
+            //  BLACK HOLE BURP — Cosmic Ejection
+            // ═══════════════════════════════════════════════
             function stopBlackHole() {
-                blackHole.active = false;
+                const bhPos = { x: blackHole.planet ? blackHole.planet.x : window.innerWidth / 2, y: blackHole.planet ? blackHole.planet.y : window.innerHeight / 2 };
+
                 stopBlackHoleAudio();
                 if (blackHole.shakeTimer) { clearInterval(blackHole.shakeTimer); blackHole.shakeTimer = null; }
+                blackHole.active = false;
 
-                // Restore consumed planets gracefully
-                for (const cp of blackHole.consumed) {
-                    cp.consumed = false;
-                    cp.radius = cp.baseRadius * cfg.planetScale;
-                    cp.vx = 0; cp.vy = 0; // Fix: prevent jump from accumulated drift velocity
+                playBurp();
+                shakeBody(14);
+
+                // Expanding shockwave rings
+                const maxDim = Math.max(window.innerWidth, window.innerHeight);
+                burpRings.push({ x: bhPos.x, y: bhPos.y, radius: 5, maxRadius: maxDim * 0.7, life: 1.0, color: '167,139,250' });
+                burpRings.push({ x: bhPos.x, y: bhPos.y, radius: 5, maxRadius: maxDim * 0.5, life: 0.9, color: '196,181,253' });
+                burpRings.push({ x: bhPos.x, y: bhPos.y, radius: 5, maxRadius: maxDim * 0.35, life: 0.8, color: '255,255,255' });
+
+                // Spark bursts at center
+                addSparkBurst(bhPos.x, bhPos.y, 50, '196,181,253');
+                addSparkBurst(bhPos.x, bhPos.y, 30, '255,255,255');
+                addSparkBurst(bhPos.x, bhPos.y, 20, '167,139,250');
+
+                // Radiant particle spray
+                for (let ri = 0; ri < 40; ri++) {
+                    const angle = (ri / 40) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
+                    const speed = 3 + Math.random() * 5;
+                    addFxParticle(bhPos.x, bhPos.y, Math.cos(angle) * speed, Math.sin(angle) * speed, 0.8 + Math.random() * 0.6, 1 + Math.random() * 3, '196,181,253');
                 }
+
+                // ── Eject consumed planets with evenly spread angles ──
+                const consumedCopy = [...blackHole.consumed];
                 blackHole.consumed = [];
+                const numPlanets = consumedCopy.length;
 
-                blackHole.rocketConsumed = false; blackHole.rocketTimer = 0; rocket.spaghetti = 0;
-                dom.rocketEl.style.opacity = ''; dom.tooltipEl.style.opacity = ''; dom.rocketEl.style.transform = '';
-                rocket.vx = 0; rocket.vy = 0; rocket.speed = 0; rocket.mode = 'wander'; rocket.boostFuel = 0;
-                pickWander();
+                for (let i = 0; i < numPlanets; i++) {
+                    const cp = consumedCopy[i];
+                    cp.consumed = false;
 
+                    // Evenly spread ejection angles so planets fly apart, not into each other
+                    const ejectAngle = (i / numPlanets) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+
+                    // Start with meaningful separation from BH center (stagger outward)
+                    const staggerDist = 20 + i * 15;
+                    cp.x = bhPos.x + Math.cos(ejectAngle) * staggerDist;
+                    cp.y = bhPos.y + Math.sin(ejectAngle) * staggerDist;
+
+                    const ejectSpeed = 7.0 + Math.random() * 5.0;
+                    cp.vx = Math.cos(ejectAngle) * ejectSpeed;
+                    cp.vy = Math.sin(ejectAngle) * ejectSpeed;
+
+                    const targetRadius = cp.baseRadius * cfg.planetScale;
+                    cp._burpTargetRadius = targetRadius;
+                    cp._burpTimer = 1.0 + Math.random() * 0.3;
+                    cp._burpDuration = cp._burpTimer;
+                    cp.radius = 1;
+                    cp.glowIntensity = 0.3;
+
+                    cp._gravityImmune = 3.5;
+
+                    addSparkBurst(cp.x, cp.y, 12, cp.colorKey);
+                }
+
+                // ── Eject the rocket on its own angle ──
+                blackHole.rocketConsumed = false;
+                blackHole.rocketTimer = 0;
+                rocket.spaghetti = 0;
+                dom.rocketEl.style.opacity = '';
+                dom.tooltipEl.style.opacity = '';
+
+                // Pick an angle that avoids the planet ejection扇区
+                const rocketBaseAngle = numPlanets > 0
+                    ? ((0.5 / numPlanets) * Math.PI * 2) + (Math.random() - 0.5) * 0.3
+                    : Math.random() * Math.PI * 2;
+                                const rocketEjectSpeed = 9 + Math.random() * 5;
+
+                rocket.x = bhPos.x + Math.cos(rocketBaseAngle) * 25;
+                rocket.y = bhPos.y + Math.sin(rocketBaseAngle) * 25;
+                rocket.vx = Math.cos(rocketBaseAngle) * rocketEjectSpeed;
+                rocket.vy = Math.sin(rocketBaseAngle) * rocketEjectSpeed;
+                rocket.speed = Math.sqrt(rocket.vx * rocket.vx + rocket.vy * rocket.vy);
+                rocket.angle = Math.atan2(rocket.vy, rocket.vx) * RAD2DEG + 90;
+                rocket.mode = 'wander';
+                rocket.boostFuel = 0;
+                rocket.burpTimer = 1.2;
+                rocket.burpSeed = Math.random() * 1000;
+
+                rocket._gravityImmune = 3.0;
+
+                addSparkBurst(rocket.x, rocket.y, 15, '196,181,253');
+
+                // ── Restore background particles: scatter from BH center ──
+                bgRecoveryTimer = 3.0;
+                burpOrigin.x = bhPos.x;
+                burpOrigin.y = bhPos.y;
+
+                for (const pt of bgParticles) {
+                    pt.r = 0.1 + Math.random() * 0.3;
+                    pt.a = 0;
+                    const scatterAngle = Math.random() * Math.PI * 2;
+                    const scatterSpeed = 1.5 + Math.random() * 4;
+                    pt.x = bhPos.x + (Math.random() - 0.5) * 8;
+                    pt.y = bhPos.y + (Math.random() - 0.5) * 8;
+                    pt.vx = Math.cos(scatterAngle) * scatterSpeed;
+                    pt.vy = Math.sin(scatterAngle) * scatterSpeed;
+                }
+
+                // ── Remove BH planet ──
                 if (blackHole.planet) {
                     const idx = planets.indexOf(blackHole.planet);
                     if (idx > -1) planets.splice(idx, 1);
                 }
                 blackHole.planet = null;
 
+                // ── Intensity decay with shake ──
                 const decayStart = performance.now();
                 (function decayShake() {
                     const elapsed = (performance.now() - decayStart) / 1000;
-                    if (elapsed >= 1) { blackHole.intensity = 0; document.body.style.transform = ''; return; }
-                    blackHole.intensity *= 0.9;
+                    if (elapsed >= 1.2) { blackHole.intensity = 0; document.body.style.transform = ''; return; }
+                    blackHole.intensity *= 0.88;
                     if (blackHole.intensity < 0.01) { blackHole.intensity = 0; document.body.style.transform = ''; return; }
                     const shake = blackHole.intensity * 12;
                     document.body.style.transform = shake > 0.2 ? `translate(${(Math.random() * shake - shake / 2)}px,${(Math.random() * shake - shake / 2)}px)` : '';
@@ -2801,7 +2973,7 @@
                     skillCooldown: 0, skillActive: false, skillTimer: 0,
                     orbitActive: false, shockwaveRing: 0,
                     firewallRadius: 0, firewallActive: false, consumed: false,
-                    isBlackHole: true
+                    isBlackHole: true, _gravityImmune: 0
                 };
                 planets.unshift(newBH);
                 blackHole.planet = newBH;
@@ -3010,13 +3182,11 @@
             function mainLoop(now) {
                 frameCount++;
 
-                // Smooth cursor follow
                 ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
                 crossX += (mouseX - crossX) * 0.25; crossY += (mouseY - crossY) * 0.25;
                 dom.ring.style.left = ringX + 'px'; dom.ring.style.top = ringY + 'px';
                 dom.cross.style.left = crossX + 'px'; dom.cross.style.top = crossY + 'px';
 
-                // Parallax
                 const halfW = window.innerWidth * 0.5, halfH = window.innerHeight * 0.5;
                 for (let pi = 0; pi < parallaxLayers.length; pi++) {
                     if (!parallaxLayers[pi]) continue;
