@@ -409,10 +409,6 @@
             z-index: 3;
         }
 
-        #thrustTrail {
-            z-index: 4;
-        }
-
         .scanlines {
             position: fixed;
             inset: 0;
@@ -1246,7 +1242,6 @@
 
     <canvas id="particles"></canvas>
     <canvas id="planets"></canvas>
-    <canvas id="thrustTrail"></canvas>
     <canvas id="fx"></canvas>
     <div class="warp-flash" id="warpFlash"></div>
 
@@ -1345,7 +1340,6 @@
             const FULL_NAME = 'Bishal Gharti Chhetri';
             const CTA_SCRAMBLE = '> open -p --t linkedin';
             const SKILL_COOLDOWN = 5;
-            const TRAIL_MAX = 250;
             const FX_MAX = 450;
             const RIPPLE_POOL_SIZE = 4;
             const DEG2RAD = Math.PI / 180;
@@ -1381,16 +1375,15 @@
                 hudCompass: $('hudCompass'), hudSpeed: $('hudSpeed')
             };
             const parallaxLayers = [
-                $('particles'), $('planets'), $('thrustTrail'), $('fx'),
+                $('particles'), $('planets'), $('fx'),
                 dom.planetLabel, dom.tooltipEl
             ];
-            const parallaxSpeeds = [0.015, 0.025, 0.032, 0.028, 0.025, 0.032];
+            const parallaxSpeeds = [0.015, 0.025, 0.028, 0.025, 0.032];
 
             // ═══════════════════════════════════════════════
             //  CANVAS CONTEXTS
             // ═══════════════════════════════════════════════
             const plCtx = $('planets').getContext('2d');
-            const tCtx = $('thrustTrail').getContext('2d');
             const bgCtx = $('particles').getContext('2d');
             const fxCtx = $('fx').getContext('2d');
 
@@ -1420,7 +1413,7 @@
                 vx: 0, vy: 0, angle: 0,
                 wanderX: window.innerWidth * 0.5, wanderY: window.innerHeight * 0.4,
                 boostFuel: 0, boostX: 0, boostY: 0,
-                speed: 0, trailTick: 0, mode: 'wander',
+                 speed: 0, mode: 'wander',
                 orbitPlanet: null, orbitAngle: 0, orbitDist: 0,
                 warpFrom: null, warpTo: null, warpProgress: 0,
                 speedMult: 1.0, spaghetti: 0
@@ -1458,7 +1451,6 @@
                 };
             }
 
-            const trail = createRingBuffer(TRAIL_MAX);
             const fxParticles = createRingBuffer(FX_MAX);
             let lightningBolts = [];
             let bgParticles = [];
@@ -1812,7 +1804,7 @@
             function resizeAll() {
                 cfg = getResponsiveConfig();
                 const w = window.innerWidth, h = window.innerHeight;
-                [tCtx.canvas, bgCtx.canvas, plCtx.canvas, fxCtx.canvas].forEach(c => { c.width = w; c.height = h; });
+                [bgCtx.canvas, plCtx.canvas, fxCtx.canvas].forEach(c => { c.width = w; c.height = h; });
                 rocketHalfH = dom.rocketEl.getBoundingClientRect().height / 2 || 30;
                 for (const p of planets) {
                     p.radius = p.baseRadius * cfg.planetScale;
@@ -1898,42 +1890,7 @@
             // ═══════════════════════════════════════════════
             //  TRAIL SYSTEM
             // ═══════════════════════════════════════════════
-            function spawnTrail(heavy) {
-                const rad = rocket.angle * DEG2RAD;
-                const sinA = Math.sin(rad), cosA = Math.cos(rad);
-                const fdx = -sinA, fdy = cosA, ppx = cosA, ppy = -sinA;
-                const ex = rocket.x + fdx * rocketHalfH, ey = rocket.y + fdy * rocketHalfH;
-                const sm = rocket.speedMult;
-                const count = heavy ? Math.min(10, Math.ceil(3 * sm)) : Math.max(1, Math.ceil(sm));
-                const col = rocket.mode === 'warp' ? '245,158,11' : (rocket.mode === 'orbit' ? '6,182,212' : '167,139,250');
-                for (let i = 0; i < count; i++) {
-                    const sp = (Math.random() - 0.5) * 2, fw = 2 + Math.random() * 6;
-                    trail.push({
-                        x: ex + fdx * fw + ppx * sp * 6,
-                        y: ey + fdy * fw + ppy * sp * 6,
-                        vx: (fdx * (0.4 + Math.random() * 0.8) + ppx * sp * 0.15) * sm,
-                        vy: (fdy * (0.4 + Math.random() * 0.8) + ppy * sp * 0.15) * sm,
-                        life: 1, decay: 0.012 + Math.random() * 0.018,
-                        size: heavy ? (1.5 + Math.random() * 3) * Math.min(sm, 2) : (0.8 + Math.random() * 2),
-                        color: col
-                    });
-                }
-            }
 
-            function drawTrail() {
-                tCtx.clearRect(0, 0, tCtx.canvas.width, tCtx.canvas.height);
-                trail.forEach(p => {
-                    if (!p) return;
-                    p.x += p.vx; p.y += p.vy;
-                    p.vx *= 0.97; p.vy *= 0.97;
-                    p.life -= p.decay; p.size *= 0.985;
-                    if (p.life <= 0) return false; // signal: kill slot
-                    tCtx.beginPath();
-                    tCtx.arc(p.x, p.y, Math.max(0.1, p.size), 0, Math.PI * 2);
-                    tCtx.fillStyle = `rgba(${p.color},${(p.life * 0.4).toFixed(3)})`;
-                    tCtx.fill();
-                });
-            }
 
             // ═══════════════════════════════════════════════
             //  FX SYSTEM
@@ -2373,7 +2330,6 @@
                 }
 
                 if (blackHole.rocketConsumed) {
-                    rocket.trailTick++;
                     blackHole.rocketTimer++;
                     if (blackHole.rocketTimer > 1000) stopBlackHole();
                     return;
@@ -2406,7 +2362,6 @@
                         rocket.angle += shortAngle(rocket.angle, wa) * 0.2;
                         rocket.speed = 5;
                         updateRocketTransform();
-                        rocket.trailTick++; if (rocket.trailTick % 2 === 0) spawnTrail(true);
                         if (rocket.warpProgress >= 1) {
                             rocket.mode = 'wander'; rocket.warpTo = null; rocket.warpFrom = null;
                             rocket.vx = 0; rocket.vy = 0;
@@ -2434,10 +2389,8 @@
                         rocket.vx = nextX - rocket.x; rocket.vy = nextY - rocket.y;
                         rocket.speed = Math.sqrt(rocket.vx * rocket.vx + rocket.vy * rocket.vy);
                         rocket.angle += shortAngle(rocket.angle, Math.atan2(rocket.vy, rocket.vx) * RAD2DEG + 90) * 0.15;
-                        if (rocket.trailTick % 8 === 0) addFxParticle(rocket.x + (Math.random() - 0.5) * 10, rocket.y + (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5, 0.6, 1.5, '6,182,212');
+                        if (frameCount % 8 === 0) addFxParticle(rocket.x + (Math.random() - 0.5) * 10, rocket.y + (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5, 0.6, 1.5, '6,182,212');
                         updateRocketTransform();
-                        rocket.trailTick++; if (rocket.trailTick % 3 === 0) spawnTrail(false);
-                        return;
                     }
                 }
 
@@ -2481,7 +2434,7 @@
                     if (pd < p.safeZone) {
                         const rs = Math.min(0.25 * (1 - pd / p.safeZone), 0.08);
                         rocket.vx -= nx * rs; rocket.vy -= ny * rs;
-                        if (pd < p.radius * 1.8 && rocket.speed > 0.3 && rocket.trailTick % 6 === 0) {
+                        if (pd < p.radius * 1.8 && rocket.speed > 0.3 && frameCount % 6 === 0) {
                             addSparkBurst(rocket.x - nx * 10, rocket.y - ny * 10, 4, p.colorKey);
                             playSpark();
                         }
@@ -2521,12 +2474,6 @@
 
                 rocket.angle += shortAngle(rocket.angle, Math.atan2(rocket.vy, rocket.vx) * RAD2DEG + 90) * (rocket.boostFuel > 0 ? 0.12 : 0.06);
                 updateRocketTransform();
-
-                rocket.trailTick++;
-                const sr = rocket.boostFuel > 0 ? 1 : Math.max(1, Math.floor(2 / rocket.speedMult));
-                if (rocket.trailTick % sr === 0) {
-                    spawnTrail(rocket.boostFuel > 0 || rocket.speedMult > 2);
-                }
             }
 
             function updateRocketTransform() {
@@ -2713,16 +2660,6 @@
                 const bhR = p.radius * (1 + blackHole.intensity * 2);
                 const eventHorizon = bhR * 1.1;
                 const fadeStart = eventHorizon * 2.5;
-
-                // Trail particles
-                for (let i = 0; i < trail.count; i++) {
-                    const idx = (trail.head - trail.count + i + trail.max) % trail.max;
-                    const pt = trail.data[idx];
-                    if (!pt) continue;
-                    if (applyBHForce(pt, p.x, p.y, suckRange, eventHorizon, fadeStart, { inB: 0.8, inS: 1.5, tanB: 0.6, tanS: 1.0, sizeKey: 'size', fadeKey: 'life', killFactor: 0.8 })) {
-                        trail.data[idx] = null;
-                    }
-                }
 
                 // FX particles
                 for (let i = 0; i < fxParticles.count; i++) {
@@ -3091,7 +3028,6 @@
                 if (blackHole.active) updateBlackHoleSuction();
                 drawPlanets();
                 updateRocket(now);
-                drawTrail();
                 drawBg();
                 drawFx();
                 updateAudio();
