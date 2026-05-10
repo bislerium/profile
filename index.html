@@ -1584,6 +1584,122 @@
                 }
             }
 
+            var bhNodes = null;
+            var bhSoundInterval = null;
+
+            function startBlackHoleSound() {
+                if (!audioCtx || !soundOn || bhNodes) return;
+                var t = audioCtx.currentTime;
+
+                var boom = audioCtx.createOscillator(); boom.type = 'sine';
+                boom.frequency.setValueAtTime(120, t); boom.frequency.setValueAtTime(120, t + 0.001); boom.frequency.exponentialRampToValueAtTime(18, t + 1.5);
+                var boomG = audioCtx.createGain();
+                boomG.gain.setValueAtTime(0.8, t);
+                boomG.gain.exponentialRampToValueAtTime(0.4, t + 0.4);
+                boomG.gain.exponentialRampToValueAtTime(0.001, t + 1.5);
+                boom.connect(boomG); boomG.connect(masterGain); boom.start(t); boom.stop(t + 1.6);
+
+                var hit = audioCtx.createOscillator(); hit.type = 'triangle';
+                hit.frequency.setValueAtTime(300, t); hit.frequency.setValueAtTime(300, t + 0.001); hit.frequency.exponentialRampToValueAtTime(20, t + 0.8);
+                var hitFilt = audioCtx.createBiquadFilter(); hitFilt.type = 'lowpass';
+                hitFilt.frequency.setValueAtTime(800, t); hitFilt.frequency.exponentialRampToValueAtTime(50, t + 0.8);
+                var hitG = audioCtx.createGain(); hitG.gain.setValueAtTime(0.4, t); hitG.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+                hit.connect(hitFilt); hitFilt.connect(hitG); hitG.connect(masterGain); hit.start(t); hit.stop(t + 0.9);
+
+                var pulse = audioCtx.createOscillator(); pulse.type = 'sine'; pulse.frequency.value = 25;
+                var pulseG = audioCtx.createGain(); pulseG.gain.value = 0.25;
+                pulse.connect(pulseG); pulseG.connect(masterGain); pulse.start(t);
+
+                var sub = audioCtx.createOscillator(); sub.type = 'sine'; sub.frequency.value = 18;
+                var subG = audioCtx.createGain(); subG.gain.value = 0.3;
+                sub.connect(subG); subG.connect(masterGain); sub.start(t);
+
+                var harm1 = audioCtx.createOscillator(); harm1.type = 'sawtooth'; harm1.frequency.value = 36;
+                var harm1Filt = audioCtx.createBiquadFilter(); harm1Filt.type = 'lowpass'; harm1Filt.frequency.value = 50;
+                var harm1G = audioCtx.createGain(); harm1G.gain.value = 0.08;
+                harm1.connect(harm1Filt); harm1Filt.connect(harm1G); harm1G.connect(masterGain); harm1.start(t);
+
+                var harm2 = audioCtx.createOscillator(); harm2.type = 'square'; harm2.frequency.value = 54;
+                var harm2Filt = audioCtx.createBiquadFilter(); harm2Filt.type = 'lowpass'; harm2Filt.frequency.value = 70;
+                var harm2G = audioCtx.createGain(); harm2G.gain.value = 0.05;
+                harm2.connect(harm2Filt); harm2Filt.connect(harm2G); harm2G.connect(masterGain); harm2.start(t);
+
+                var roarLen = audioCtx.sampleRate * 2;
+                var roarBuf = audioCtx.createBuffer(1, roarLen, audioCtx.sampleRate);
+                var roarData = roarBuf.getChannelData(0);
+                for (var i = 0; i < roarLen; i++) roarData[i] = Math.random() * 2 - 1;
+                var roarSrc = audioCtx.createBufferSource(); roarSrc.buffer = roarBuf; roarSrc.loop = true;
+                var roarFilt = audioCtx.createBiquadFilter(); roarFilt.type = 'bandpass';
+                roarFilt.frequency.value = 80; roarFilt.Q.value = 1;
+                var roarG = audioCtx.createGain(); roarG.gain.value = 0.1;
+                roarSrc.connect(roarFilt); roarFilt.connect(roarG); roarG.connect(masterGain); roarSrc.start(t);
+
+                var breatheLFO = audioCtx.createOscillator(); breatheLFO.type = 'sine'; breatheLFO.frequency.value = 0.15; // ~6.6s cycle
+                var breatheGain = audioCtx.createGain(); breatheGain.gain.value = 15;
+                breatheLFO.connect(breatheGain); breatheGain.connect(pulse.frequency); breatheLFO.start(t);
+
+                var spinLFO = audioCtx.createOscillator(); spinLFO.type = 'sine'; spinLFO.frequency.value = 0.4;
+                var spinGain = audioCtx.createGain(); spinGain.gain.value = 30;
+                spinLFO.connect(spinGain); spinGain.connect(roarFilt.frequency); spinLFO.start(t);
+
+                bhNodes = {
+                    pulse: pulse, pulseG: pulseG, sub: sub, subG: subG,
+                    harm1: harm1, harm1G: harm1G, harm1Filt: harm1Filt,
+                    harm2: harm2, harm2G: harm2G, harm2Filt: harm2Filt,
+                    roarSrc: roarSrc, roarG: roarG, roarFilt: roarFilt,
+                    breatheLFO: breatheLFO, breatheGain: breatheGain,
+                    spinLFO: spinLFO, spinGain: spinGain
+                };
+
+                bhSoundInterval = setInterval(function () {
+                    if (!bhNodes || !audioCtx || !blackHoleActive) return;
+                    var vol = Math.min(blackHoleIntensity / 3 + 0.1, 1); // 0.0 to 1.0
+                    var t2 = audioCtx.currentTime + 0.2;
+
+                    bhNodes.pulseG.gain.linearRampToValueAtTime(0.25 + vol * 0.55, t2);
+                    bhNodes.subG.gain.linearRampToValueAtTime(0.3 + vol * 0.6, t2);
+
+                    bhNodes.harm1G.gain.linearRampToValueAtTime(0.08 + vol * 0.25, t2);
+                    bhNodes.harm2G.gain.linearRampToValueAtTime(0.05 + vol * 0.2, t2);
+
+                    bhNodes.harm1Filt.frequency.linearRampToValueAtTime(50 + vol * 40, t2);
+                    bhNodes.harm2Filt.frequency.linearRampToValueAtTime(70 + vol * 30, t2);
+
+                    bhNodes.roarG.gain.linearRampToValueAtTime(0.1 + vol * 0.5, t2);
+                    bhNodes.roarFilt.Q.linearRampToValueAtTime(1 + vol * 3, t2);
+
+                    bhNodes.breatheGain.gain.linearRampToValueAtTime(15 + vol * 25, t2);
+                    bhNodes.spinGain.gain.linearRampToValueAtTime(30 + vol * 80, t2);
+                }, 100);
+            }
+
+            function stopBlackHoleSound() {
+                if (bhSoundInterval) { clearInterval(bhSoundInterval); bhSoundInterval = null; }
+                if (!bhNodes || !audioCtx) return;
+                var t = audioCtx.currentTime, fade = 1.5;
+
+                bhNodes.pulseG.gain.setValueAtTime(bhNodes.pulseG.gain.value, t);
+                bhNodes.pulseG.gain.linearRampToValueAtTime(bhNodes.pulseG.gain.value * 0.3, t + 0.2);
+                bhNodes.pulseG.gain.linearRampToValueAtTime(0, t + fade);
+
+                bhNodes.subG.gain.linearRampToValueAtTime(0, t + fade);
+                bhNodes.harm1G.gain.linearRampToValueAtTime(0, t + fade);
+                bhNodes.harm2G.gain.linearRampToValueAtTime(0, t + fade);
+                bhNodes.roarG.gain.linearRampToValueAtTime(0, t + fade);
+
+                var refs = bhNodes;
+                setTimeout(function () {
+                    try { refs.pulse.stop(); } catch (e) { }
+                    try { refs.sub.stop(); } catch (e) { }
+                    try { refs.harm1.stop(); } catch (e) { }
+                    try { refs.harm2.stop(); } catch (e) { }
+                    try { refs.roarSrc.stop(); } catch (e) { }
+                    try { refs.breatheLFO.stop(); } catch (e) { }
+                    try { refs.spinLFO.stop(); } catch (e) { }
+                }, fade * 1000 + 100);
+                bhNodes = null;
+            }
+
             function updateAudio() {
                 if (!audioCtx || !soundOn) return;
                 var t = audioCtx.currentTime + 0.05;
@@ -2349,11 +2465,6 @@
                     case 'firewall':
                         planet.firewallRadius = planet.radius; planet.firewallActive = true;
                         playShockwave(); addSparkBurst(planet.x, planet.y, 12, '6,182,212'); break;
-                    case 'blackhole':
-                        planet.skillActive = false; planet.shockwaveRing = 0.6;
-                        addSparkBurst(planet.x, planet.y, 8, '167,139,250');
-                        addSparkBurst(planet.x, planet.y, 5, '244,63,94');
-                        playShockwave(); blackHoleImplosion(planet); break;
                 }
             }
 
@@ -2462,6 +2573,7 @@
 
             function stopBlackHole() {
                 blackHoleActive = false;
+                stopBlackHoleSound();
                 if (blackHoleShakeTimer) { clearInterval(blackHoleShakeTimer); blackHoleShakeTimer = null; }
                 for (var i = 0; i < blackHoleConsumed.length; i++) {
                     blackHoleConsumed[i].consumed = false;
@@ -2494,7 +2606,7 @@
                 })();
             }
 
-            function triggerClearScreen() {
+            function spawnBlackHole() {
                 if (!initDismissed || blackHoleActive) return;
                 var newBH = {
                     x: window.innerWidth * 0.15 + Math.random() * window.innerWidth * 0.7,
@@ -2506,7 +2618,7 @@
                     safeZone: 38 * cfg.planetScale * 2.2,
                     hasRing: false, baseGlow: 0.04, glowIntensity: 0.04,
                     pulseTimer: 0, rotation: 0, rotSpeed: 0.03,
-                    moon: null, skill: 'blackhole', skillLabel: 'EVENT HORIZON', skClass: 'sk-mine',
+                    moon: null, skill: 'none', skillLabel: 'EVENT HORIZON', skClass: 'sk-mine',
                     skillCooldown: 0, skillActive: false, skillTimer: 0,
                     orbitActive: false, shockwaveRing: 0,
                     firewallRadius: 0, firewallActive: false, consumed: false,
@@ -2514,7 +2626,8 @@
                 };
                 planets.push(newBH);
                 blackHolePlanet = newBH;
-                activatePlanetSkill(newBH);
+                startBlackHoleSound();
+                blackHoleImplosion(newBH);
             }
 
             // ===== CLICK / TOUCH HANDLERS =====
@@ -2594,7 +2707,7 @@
                 keysDown[e.key.toLowerCase()] = true;
                 if (e.key === 'Escape') { exitOrbit(); exitWarp(); stopBlackHole(); }
                 if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey && !e.metaKey && initDismissed) {
-                    e.preventDefault(); triggerClearScreen();
+                    e.preventDefault(); spawnBlackHole();
                 }
                 if (e.key === 'Shift' && !shiftBoostUsed && initDismissed && !rocketConsumed) {
                     shiftBoostUsed = true; e.preventDefault();
