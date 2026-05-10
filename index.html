@@ -1334,7 +1334,6 @@
         (function () {
             'use strict';
 
-            // ===== CONFIG =====
             function getResponsiveConfig() {
                 var w = window.innerWidth;
                 if (w < 500) return { particles: 15, connectDist: 0, maxTrail: 80, rocketPad: 40, wanderMargin: 40, proxRange: 0, planetScale: 0.55, gravMult: 0.4 };
@@ -1343,7 +1342,6 @@
                 return { particles: 55, connectDist: 140, maxTrail: 200, rocketPad: 70, wanderMargin: 100, proxRange: 130, planetScale: 1.0, gravMult: 1.0 };
             }
 
-            // ===== DOM REFS =====
             var dot = document.getElementById('cursorDot');
             var ring = document.getElementById('cursorRing');
             var cross = document.getElementById('cursorCross');
@@ -1378,7 +1376,6 @@
             var hudCompass = document.getElementById('hudCompass');
             var hudSpeed = document.getElementById('hudSpeed');
 
-            // Parallax layers (cached array)
             var parallaxLayers = [
                 document.getElementById('particles'),
                 document.getElementById('planets'),
@@ -1389,13 +1386,11 @@
             ];
             var parallaxSpeeds = [0.015, 0.025, 0.032, 0.028, 0.025, 0.032];
 
-            // ===== CANVAS SETUP =====
             var plCanvas = document.getElementById('planets'), plCtx = plCanvas.getContext('2d');
             var tCanvas = document.getElementById('thrustTrail'), tCtx = tCanvas.getContext('2d');
             var bgCanvas = document.getElementById('particles'), bgCtx = bgCanvas.getContext('2d');
             var fxC = document.getElementById('fx'), fxX = fxC.getContext('2d');
 
-            // ===== STATE =====
             var cfg = getResponsiveConfig();
             var planets = [];
             var trail = [];
@@ -1405,13 +1400,11 @@
             var keysDown = {};
             var frameCount = 0;
 
-            // Cursor state
             var mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
             var ringX = mouseX, ringY = mouseY;
             var crossX = mouseX, crossY = mouseY;
             var mouseActive = false, cursorReady = false;
 
-            // Rocket state
             var rocket = {
                 x: window.innerWidth * 0.7, y: window.innerHeight * 0.35,
                 vx: 0, vy: 0, angle: 0,
@@ -1420,25 +1413,22 @@
                 speed: 0, trailTick: 0, mode: 'wander',
                 orbitPlanet: null, orbitAngle: 0, orbitDist: 0,
                 warpFrom: null, warpTo: null, warpProgress: 0,
-                speedMult: 1.0
+                speedMult: 1.0,
+                spaghetti: 0
             };
 
-            // Cached rocket element half-height (avoids getBoundingClientRect per trail spawn)
             var rocketHalfH = 30;
 
-            // Black hole state
             var blackHoleActive = false, blackHoleIntensity = 0, blackHolePlanet = null;
             var blackHoleShakeTimer = null, blackHoleConsumed = [];
             var rocketConsumed = false, rocketConsumedTimer = 0;
 
-            // UI state
             var ctaVisible = false, initDismissed = false, skipNextBoost = false, shiftBoostUsed = false;
             var hoveredPlanet = null;
             var lastWander = performance.now(), lastClickTime = 0;
             var ci = 0, fullName = 'Bishal Gharti Chhetri';
             var helpTimeout;
 
-            // ===== AUDIO =====
             var soundOn = false, audioCtx = null, masterGain = null;
             var thrustFilter, thrustGain;
             var planetHumOsc, planetHumGain, planetHumFilter;
@@ -1452,7 +1442,6 @@
                 masterGain.gain.value = 0;
                 masterGain.connect(audioCtx.destination);
 
-                // Drone
                 var droneFilter = audioCtx.createBiquadFilter();
                 droneFilter.type = 'lowpass'; droneFilter.frequency.value = 180; droneFilter.Q.value = 1.5;
                 var droneGain = audioCtx.createGain(); droneGain.gain.value = 0.12;
@@ -1468,7 +1457,6 @@
                 var lfoG = audioCtx.createGain(); lfoG.gain.value = 60;
                 lfo.connect(lfoG); lfoG.connect(droneFilter.frequency); lfo.start();
 
-                // Thrust noise
                 var bufLen = audioCtx.sampleRate * 2;
                 var nb = audioCtx.createBuffer(1, bufLen, audioCtx.sampleRate);
                 var nd = nb.getChannelData(0);
@@ -1481,7 +1469,6 @@
                 thrustSource.connect(thrustFilter); thrustFilter.connect(thrustGain); thrustGain.connect(masterGain);
                 thrustSource.start();
 
-                // Planet hum
                 planetHumFilter = audioCtx.createBiquadFilter();
                 planetHumFilter.type = 'lowpass'; planetHumFilter.frequency.value = 200;
                 planetHumGain = audioCtx.createGain(); planetHumGain.gain.value = 0;
@@ -1634,7 +1621,7 @@
                 var roarG = audioCtx.createGain(); roarG.gain.value = 0.1;
                 roarSrc.connect(roarFilt); roarFilt.connect(roarG); roarG.connect(masterGain); roarSrc.start(t);
 
-                var breatheLFO = audioCtx.createOscillator(); breatheLFO.type = 'sine'; breatheLFO.frequency.value = 0.15; // ~6.6s cycle
+                var breatheLFO = audioCtx.createOscillator(); breatheLFO.type = 'sine'; breatheLFO.frequency.value = 0.15;
                 var breatheGain = audioCtx.createGain(); breatheGain.gain.value = 15;
                 breatheLFO.connect(breatheGain); breatheGain.connect(pulse.frequency); breatheLFO.start(t);
 
@@ -1653,7 +1640,7 @@
 
                 bhSoundInterval = setInterval(function () {
                     if (!bhNodes || !audioCtx || !blackHoleActive) return;
-                    var vol = Math.min(blackHoleIntensity / 3 + 0.1, 1); // 0.0 to 1.0
+                    var vol = Math.min(blackHoleIntensity / 3 + 0.1, 1);
                     var t2 = audioCtx.currentTime + 0.2;
 
                     bhNodes.pulseG.gain.linearRampToValueAtTime(0.25 + vol * 0.55, t2);
@@ -1741,7 +1728,6 @@
                 }
             }
 
-            // ===== RESIZE =====
             function resizeAll() {
                 cfg = getResponsiveConfig();
                 tCanvas.width = window.innerWidth; tCanvas.height = window.innerHeight;
@@ -1760,7 +1746,6 @@
             resizeAll();
             window.addEventListener('resize', resizeAll);
 
-            // ===== PLANETS =====
             function initPlanets() {
                 var w = window.innerWidth, h = window.innerHeight;
                 var templates = [
@@ -1795,7 +1780,6 @@
             }
             initPlanets();
 
-            // ===== BACKGROUND PARTICLES =====
             function initBgParticles() {
                 bgParticles = [];
                 for (var i = 0; i < cfg.particles; i++) {
@@ -1817,7 +1801,7 @@
                     if (mouseActive) {
                         pdx = mouseX - p.x; pdy = mouseY - p.y;
                         pd = pdx * pdx + pdy * pdy;
-                        if (pd < 40000 && pd > 25) { // 200^2, 5^2
+                        if (pd < 40000 && pd > 25) {
                             pull = 0.003 * (1 - Math.sqrt(pd) / 200);
                             p.vx += (pdx / Math.sqrt(pd)) * pull;
                             p.vy += (pdy / Math.sqrt(pd)) * pull;
@@ -1832,7 +1816,7 @@
                     bgCtx.fillStyle = 'rgba(167,139,250,' + p.a + ')';
                     bgCtx.fill();
                 }
-                // Connection lines (squared distance comparison, batched lineWidth)
+
                 if (cfg.connectDist > 0) {
                     var cSq = cfg.connectDist * cfg.connectDist;
                     bgCtx.lineWidth = 0.5;
@@ -1845,7 +1829,7 @@
                                 bgCtx.beginPath();
                                 bgCtx.moveTo(bgParticles[i].x, bgParticles[i].y);
                                 bgCtx.lineTo(bgParticles[j].x, bgParticles[j].y);
-                                // Quadratic falloff (close enough to linear for faint lines, saves sqrt)
+
                                 bgCtx.strokeStyle = 'rgba(167,139,250,' + ((1 - dSq / cSq) * 0.08) + ')';
                                 bgCtx.stroke();
                             }
@@ -1854,7 +1838,6 @@
                 }
             }
 
-            // ===== TRAIL =====
             function spawnTrail(heavy) {
                 var rad = rocket.angle * (Math.PI / 180);
                 var sinA = Math.sin(rad), cosA = Math.cos(rad);
@@ -1873,7 +1856,6 @@
                         color: col
                     });
                 }
-                // Amortized trim instead of per-spawn shift
                 if (trail.length > cfg.maxTrail + 20) trail.splice(0, trail.length - cfg.maxTrail);
             }
 
@@ -1891,7 +1873,6 @@
                 }
             }
 
-            // ===== FX PARTICLES =====
             function addFxParticle(x, y, vx, vy, life, size, color) {
                 fxParticles.push({ x: x, y: y, vx: vx, vy: vy, life: life, maxLife: life, size: size, color: color });
             }
@@ -1916,7 +1897,6 @@
             function drawFx() {
                 fxX.clearRect(0, 0, fxC.width, fxC.height);
                 var l, bolt, p, i;
-                // Lightning
                 for (l = lightningBolts.length - 1; l >= 0; l--) {
                     bolt = lightningBolts[l]; bolt.life -= 0.02;
                     if (bolt.life <= 0) { lightningBolts.splice(l, 1); continue; }
@@ -1928,9 +1908,7 @@
                     fxX.strokeStyle = 'rgba(' + bolt.color + ',' + (bolt.life * 0.2) + ')';
                     fxX.lineWidth = bolt.life * 6; fxX.stroke();
                 }
-                // Amortized trim
                 if (fxParticles.length > 420) fxParticles.splice(0, fxParticles.length - 400);
-                // FX particles
                 for (i = fxParticles.length - 1; i >= 0; i--) {
                     p = fxParticles[i];
                     p.x += p.vx; p.y += p.vy; p.vx *= 0.96; p.vy *= 0.96; p.life -= 0.016;
@@ -1942,7 +1920,6 @@
                 }
             }
 
-            // ===== PLANET LOGIC =====
             function updatePlanets() {
                 var w = window.innerWidth, h = window.innerHeight, cx = w / 2, cy = h / 2;
                 var minCD = Math.min(w, h) * 0.22;
@@ -1975,7 +1952,6 @@
                         p.firewallRadius += 10;
                         if (p.firewallRadius > p.gravRange * 6) { p.firewallActive = false; p.skillActive = false; }
                     }
-                    // Glow intensity
                     var tg = p.baseGlow;
                     var rdx = rocket.x - p.x, rdy = rocket.y - p.y, rd = Math.sqrt(rdx * rdx + rdy * rdy);
                     if (rd < p.gravRange) tg += (1 - rd / p.gravRange) * 0.12;
@@ -1988,7 +1964,6 @@
 
             function drawPlanets() {
                 plCtx.clearRect(0, 0, plCanvas.width, plCanvas.height);
-                // Gravity tethers
                 plCtx.save(); plCtx.setLineDash([3, 7]); plCtx.lineWidth = 0.5;
                 for (var i = 0; i < planets.length; i++) {
                     var p = planets[i]; if (p.consumed) continue;
@@ -2002,13 +1977,11 @@
                 }
                 plCtx.restore();
 
-                // Draw each planet
                 for (var i = 0; i < planets.length; i++) {
                     var p = planets[i], r = Math.max(0.01, p.radius);
                     if (p.consumed) continue;
                     var cr = p.color[0], cg = p.color[1], cb = p.color[2];
 
-                    // Black hole special rendering
                     if (p.isBlackHole) {
                         var bhI = (blackHoleActive && blackHolePlanet === p) ? blackHoleIntensity : 0;
                         var bhR = Math.max(0.01, p.radius * (1 + bhI * 2));
@@ -2019,7 +1992,6 @@
                         continue;
                     }
 
-                    // Shockwave ring
                     if (p.shockwaveRing > 0) {
                         var swR = (1 - p.shockwaveRing) * p.gravRange * 1.8;
                         plCtx.beginPath(); plCtx.arc(p.x, p.y, swR, 0, Math.PI * 2);
@@ -2029,7 +2001,6 @@
                         plCtx.lineWidth = 8 * p.shockwaveRing; plCtx.stroke();
                     }
 
-                    // Firewall ring
                     if (p.firewallActive) {
                         var fwLife = 1 - (p.firewallRadius / (p.gravRange * 6));
                         plCtx.save(); plCtx.setLineDash([10, 6]);
@@ -2039,7 +2010,6 @@
                         plCtx.restore();
                     }
 
-                    // Orbit path
                     if (p.orbitActive && rocket.orbitPlanet === p) {
                         plCtx.save(); plCtx.setLineDash([2, 6]);
                         plCtx.beginPath(); plCtx.arc(p.x, p.y, rocket.orbitDist, 0, Math.PI * 2);
@@ -2047,7 +2017,6 @@
                         plCtx.restore();
                     }
 
-                    // Glow
                     if (!isFinite(p.x) || !isFinite(p.y)) continue;
                     var gR = r * 1.8;
                     var aG = plCtx.createRadialGradient(p.x, p.y, r * 0.4, p.x, p.y, gR);
@@ -2056,14 +2025,12 @@
                     aG.addColorStop(1, 'rgba(' + cr + ',' + cg + ',' + cb + ',0)');
                     plCtx.fillStyle = aG; plCtx.beginPath(); plCtx.arc(p.x, p.y, gR, 0, Math.PI * 2); plCtx.fill();
 
-                    // Pulse range
                     if (p.pulseTimer > 0) {
                         plCtx.beginPath(); plCtx.arc(p.x, p.y, p.gravRange, 0, Math.PI * 2);
                         plCtx.strokeStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (p.pulseTimer * 0.08) + ')';
                         plCtx.lineWidth = 0.5; plCtx.stroke();
                     }
 
-                    // Ring
                     if (p.hasRing) {
                         var rr = p.ringColor[0], rg = p.ringColor[1], rb = p.ringColor[2];
                         plCtx.beginPath(); plCtx.ellipse(p.x, p.y, r * 1.85, r * 0.42, p.ringTilt, 0, Math.PI * 2);
@@ -2072,7 +2039,6 @@
                         plCtx.strokeStyle = 'rgba(' + rr + ',' + rg + ',' + rb + ',0.08)'; plCtx.lineWidth = Math.max(0.5, r * 0.035); plCtx.stroke();
                     }
 
-                    // Body
                     var bG = plCtx.createRadialGradient(p.x - r * 0.3, p.y - r * 0.3, r * 0.05, p.x, p.y, r);
                     bG.addColorStop(0, 'rgba(' + cr + ',' + cg + ',' + cb + ',0.18)');
                     bG.addColorStop(0.6, 'rgba(' + cr + ',' + cg + ',' + cb + ',0.07)');
@@ -2081,7 +2047,6 @@
                     plCtx.fillStyle = bG; plCtx.fill();
                     plCtx.strokeStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',0.3)'; plCtx.lineWidth = 0.8; plCtx.stroke();
 
-                    // Hover highlight
                     if (p === hoveredPlanet) {
                         var hG = plCtx.createRadialGradient(p.x, p.y, r * 0.5, p.x, p.y, r * 2.5);
                         hG.addColorStop(0, 'rgba(' + cr + ',' + cg + ',' + cb + ',0.1)');
@@ -2091,13 +2056,11 @@
                         plCtx.strokeStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',0.3)'; plCtx.lineWidth = 1; plCtx.stroke();
                     }
 
-                    // Cooldown arc
                     if (p.skillCooldown > 0) {
                         plCtx.beginPath(); plCtx.arc(p.x, p.y, r + 8, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (1 - p.skillCooldown / 5));
                         plCtx.strokeStyle = 'rgba(100,100,100,0.3)'; plCtx.lineWidth = 2; plCtx.stroke();
                     }
 
-                    // Surface bands
                     plCtx.save(); plCtx.translate(p.x, p.y); plCtx.rotate(p.rotation); plCtx.globalAlpha = 0.12;
                     plCtx.strokeStyle = 'rgb(' + cr + ',' + cg + ',' + cb + ')'; plCtx.lineWidth = 0.6;
                     plCtx.beginPath(); plCtx.ellipse(0, -r * 0.3, r * 0.88, Math.max(1, r * 0.12), 0, 0, Math.PI * 2); plCtx.stroke();
@@ -2105,7 +2068,6 @@
                     if (r > 20) { plCtx.beginPath(); plCtx.ellipse(0, r * 0.55, r * 0.75, Math.max(1, r * 0.08), 0, 0, Math.PI * 2); plCtx.stroke(); }
                     plCtx.globalAlpha = 1; plCtx.restore();
 
-                    // Moon
                     if (p.moon) {
                         var m = p.moon;
                         if (m.prevX) { plCtx.beginPath(); plCtx.moveTo(m.prevX, m.prevY); plCtx.lineTo(m.x, m.y); plCtx.strokeStyle = 'rgba(' + m.color[0] + ',' + m.color[1] + ',' + m.color[2] + ',0.15)'; plCtx.lineWidth = 1; plCtx.stroke(); }
@@ -2144,7 +2106,6 @@
                 } else { planetLabel.classList.remove('visible'); }
             }
 
-            // ===== ROCKET LOGIC =====
             function pickWander() {
                 var m = cfg.wanderMargin;
                 rocket.wanderX = m + Math.random() * (window.innerWidth - m * 2);
@@ -2168,18 +2129,32 @@
             }
 
             function updateRocket(now) {
-                // Black hole consumption
                 if (blackHoleActive && blackHolePlanet && !rocketConsumed) {
                     var bhdx = blackHolePlanet.x - rocket.x, bhdy = blackHolePlanet.y - rocket.y;
                     var bhDist = Math.sqrt(bhdx * bhdx + bhdy * bhdy);
                     var consumeR = Math.max(window.innerWidth, window.innerHeight) * (0.2 + blackHoleIntensity * 0.4);
                     if (bhDist < consumeR && bhDist > 0.001) {
                         exitOrbit(); exitWarp();
-                        var force = (1 - bhDist / consumeR) * (0.05 + blackHoleIntensity * 0.15);
-                        rocket.vx += (bhdx / bhDist) * force; rocket.vy += (bhdy / bhDist) * force;
-                        rocket.vx += (-bhdy / bhDist) * force * 0.8; rocket.vy += (bhdx / bhDist) * force * 0.8;
+                        var rNd = bhDist / consumeR;
+                        var rInward = Math.pow(1 - rNd, 1.2) * (0.05 + blackHoleIntensity * 0.15);
+                        var rTangential = Math.pow(1 - rNd, 2.0) * (0.04 + blackHoleIntensity * 0.12);
+
+                        rocket.vx += (bhdx / bhDist) * rInward; rocket.vy += (bhdy / bhDist) * rInward;
+                        rocket.vx += (-bhdy / bhDist) * rTangential; rocket.vy += (bhdx / bhDist) * rTangential;
                         rocket.boostFuel = 0; rocket.mode = 'wander';
-                        if (bhDist < blackHolePlanet.radius * 1.5) {
+
+                        var rBhR = blackHolePlanet.radius * (1 + blackHoleIntensity * 2);
+                        var rEventHorizon = rBhR * 1.1;
+                        var rFadeStart = rEventHorizon * 2.5;
+
+                        if (bhDist < rFadeStart) {
+                            var rProgress = 1 - ((bhDist - rEventHorizon) / (rFadeStart - rEventHorizon));
+                            rProgress = Math.max(0, Math.min(1, rProgress));
+                            rocket.spaghetti = rProgress;
+                            rocketEl.style.opacity = (1 - rProgress * 0.9).toString();
+                        }
+
+                        if (bhDist < rEventHorizon * 0.9) {
                             rocketConsumed = true; rocketConsumedTimer = 0;
                             rocket.speed = 0; rocket.vx = 0; rocket.vy = 0;
                             rocketEl.style.opacity = '0'; tooltipEl.style.opacity = '0';
@@ -2194,7 +2169,6 @@
 
                 rocket.speedMult += (1.0 - rocket.speedMult) * 0.01;
 
-                // WASD steering
                 var kx = 0, ky = 0;
                 if (keysDown['w'] || keysDown['arrowup']) ky = -1;
                 if (keysDown['s'] || keysDown['arrowdown']) ky = 1;
@@ -2206,7 +2180,6 @@
                     rocket.vx += (kx / kl) * 0.04; rocket.vy += (ky / kl) * 0.04;
                 }
 
-                // Warp mode
                 if (rocket.mode === 'warp') {
                     if (rocket.warpTo && rocket.warpFrom) {
                         rocket.warpProgress += Math.min(0.15, 0.045 * rocket.speedMult);
@@ -2231,7 +2204,6 @@
                     exitWarp(); return;
                 }
 
-                // Orbit mode
                 if (rocket.mode === 'orbit') {
                     if (!rocket.orbitPlanet) { rocket.mode = 'wander'; pickWander(); }
                     else {
@@ -2250,7 +2222,6 @@
                     }
                 }
 
-                // Normal physics
                 if (now - lastWander > 4000 + Math.random() * 3000) { pickWander(); lastWander = now; }
                 var accel = 0.01 * rocket.speedMult;
                 var tx, ty;
@@ -2276,7 +2247,6 @@
                 var dx = tx - rocket.x, dy = ty - rocket.y, dist = Math.sqrt(dx * dx + dy * dy) || 1;
                 rocket.vx += (dx / dist) * accel; rocket.vy += (dy / dist) * accel;
 
-                // Planet gravity & collision
                 for (var i = 0; i < planets.length; i++) {
                     var p = planets[i]; if (p.consumed) continue;
                     var pdx = p.x - rocket.x, pdy = p.y - rocket.y;
@@ -2323,21 +2293,20 @@
                 if (rocket.trailTick % sr === 0 && rocket.speed > 0.05) spawnTrail(rocket.boostFuel > 0);
             }
 
-            // Only updates position/visual class (called every frame)
             function updateRocketTransform() {
                 rocketEl.classList.remove('boosting', 'cruising', 'warping', 'orbiting');
                 if (rocket.mode === 'warp') rocketEl.classList.add('warping');
                 else if (rocket.mode === 'orbit') rocketEl.classList.add('orbiting');
                 else if (rocket.boostFuel > 0) rocketEl.classList.add('boosting');
                 else if (rocket.speed > 0.8) rocketEl.classList.add('cruising');
+                var scale = 1 - (rocket.spaghetti || 0) * 0.8;
                 rocketEl.style.left = rocket.x + 'px';
                 rocketEl.style.top = rocket.y + 'px';
-                rocketEl.style.transform = 'translate(-50%,-50%) rotate(' + rocket.angle + 'deg)';
+                rocketEl.style.transform = 'translate(-50%,-50%) rotate(' + rocket.angle + 'deg) scale(' + scale + ')';
                 var fs = rocket.mode === 'warp' ? 1.8 : (0.6 + Math.min(rocket.speed / 1.6, 1) * 0.8);
                 rocketEl.querySelector('.flame-group').style.transform = 'scale(1,' + fs + ')';
             }
 
-            // Tooltip + HUD (throttled to every 3 frames)
             function updateTooltipAndHUD() {
                 if (window.innerWidth < 480) { tooltipEl.classList.remove('visible', 'dim'); return; }
                 var tdi = Math.sqrt((rocket.x - mouseX) * (rocket.x - mouseX) + (rocket.y - mouseY) * (rocket.y - mouseY));
@@ -2377,7 +2346,6 @@
                     ttPwr.className = 'tt-val'; ttBar.style.background = '#333'; ttBar.style.boxShadow = 'none';
                 }
 
-                // Nearest gravity source
                 var maxGrv = 0, closestName = '---';
                 for (var i = 0; i < planets.length; i++) {
                     var p = planets[i]; if (p.consumed) continue;
@@ -2402,7 +2370,6 @@
                     ttGrv.textContent = '---'; ttGrv.className = 'tt-val';
                 }
 
-                // HUD compass + speed
                 if (window.innerWidth >= 480) {
                     compassNeedle.style.transform = 'rotate(' + rocket.angle + 'deg)';
                     hudSpdVal.textContent = rocket.speed.toFixed(2);
@@ -2427,7 +2394,6 @@
                 return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(d / 45) % 8];
             }
 
-            // ===== PLANET SKILLS =====
             function activatePlanetSkill(planet) {
                 if (!initDismissed || planet.skillCooldown > 0 || planet.consumed) return;
                 planet.skillCooldown = 1.5; planet.skillActive = true;
@@ -2468,7 +2434,6 @@
                 }
             }
 
-            // ===== BLACK HOLE =====
             function blackHoleImplosion(planet) {
                 blackHoleActive = true; blackHoleIntensity = 0; blackHolePlanet = planet;
                 blackHoleConsumed = []; rocketConsumed = false; rocketConsumedTimer = 0;
@@ -2478,7 +2443,7 @@
                     var shake = Math.min(blackHoleIntensity * 12, 12);
                     document.body.style.transform = 'translate(' + (Math.random() * shake - shake / 2) + 'px,' + (Math.random() * shake - shake / 2) + 'px)';
                 }, 50);
-                // Spiral FX
+
                 var suckInterval = setInterval(function () {
                     if (!blackHoleActive) { clearInterval(suckInterval); return; }
                     for (var i = 0; i < 3; i++) {
@@ -2498,29 +2463,51 @@
                 var maxDim = Math.max(window.innerWidth, window.innerHeight);
                 var suckRange = maxDim * (0.4 + blackHoleIntensity * 0.6);
                 var consumeRange = maxDim * (0.15 + blackHoleIntensity * 0.35);
-                var i, pt, dx, dy, dist, force;
 
-                // Suck trail particles
+                var bhR = p.radius * (1 + blackHoleIntensity * 2);
+                var eventHorizon = bhR * 1.1;
+                var fadeStart = eventHorizon * 2.5;
+
+                var i, pt, dx, dy, dist, nd, inward, tangential;
+
                 for (i = trail.length - 1; i >= 0; i--) {
                     pt = trail[i]; dx = p.x - pt.x; dy = p.y - pt.y;
                     dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < suckRange && dist > 0.001) {
-                        force = (1 - dist / suckRange) * (0.8 + blackHoleIntensity * 1.5);
-                        pt.vx += (dx / dist) * force; pt.vy += (dy / dist) * force;
-                        pt.decay += 0.005 + blackHoleIntensity * 0.02;
+                        nd = dist / suckRange;
+                        inward = Math.pow(1 - nd, 1.2) * (0.8 + blackHoleIntensity * 1.5);
+                        tangential = Math.pow(1 - nd, 2.0) * (0.6 + blackHoleIntensity * 1.0);
+
+                        pt.vx += (dx / dist) * inward; pt.vy += (dy / dist) * inward;
+                        pt.vx += (-dy / dist) * tangential; pt.vy += (dx / dist) * tangential;
+
+                        if (dist < fadeStart) {
+                            var fade = Math.max(0, (dist - eventHorizon) / (fadeStart - eventHorizon));
+                            pt.size *= (0.95 + fade * 0.05);
+                            pt.life -= (1 - fade) * 0.1;
+                        }
                     }
-                    if (dist < p.radius * 1.2) trail.splice(i, 1);
+                    if (dist < eventHorizon * 0.8) trail.splice(i, 1);
                 }
 
-                // Suck background particles (respawn at edges)
                 for (i = bgParticles.length - 1; i >= 0; i--) {
                     pt = bgParticles[i]; dx = p.x - pt.x; dy = p.y - pt.y;
                     dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < suckRange && dist > 0.001) {
-                        force = (1 - dist / suckRange) * (0.2 + blackHoleIntensity * 0.6);
-                        pt.vx += (dx / dist) * force; pt.vy += (dy / dist) * force;
+                        nd = dist / suckRange;
+                        inward = Math.pow(1 - nd, 1.2) * (0.2 + blackHoleIntensity * 0.6);
+                        tangential = Math.pow(1 - nd, 2.0) * (0.15 + blackHoleIntensity * 0.5);
+
+                        pt.vx += (dx / dist) * inward; pt.vy += (dy / dist) * inward;
+                        pt.vx += (-dy / dist) * tangential; pt.vy += (dx / dist) * tangential;
+
+                        if (dist < fadeStart) {
+                            var fade = Math.max(0, (dist - eventHorizon) / (fadeStart - eventHorizon));
+                            pt.r *= (0.95 + fade * 0.05);
+                            pt.a = pt.ba * fade;
+                        }
                     }
-                    if (dist < p.radius * 1.5) {
+                    if (dist < eventHorizon * 0.8) {
                         var edge = Math.floor(Math.random() * 4);
                         var w = window.innerWidth, h = window.innerHeight;
                         if (edge === 0) { pt.x = Math.random() * w; pt.y = -10; }
@@ -2531,42 +2518,50 @@
                     }
                 }
 
-                // Suck FX particles with spiral
                 for (i = fxParticles.length - 1; i >= 0; i--) {
                     pt = fxParticles[i]; dx = p.x - pt.x; dy = p.y - pt.y;
                     dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < suckRange && dist > 0.001) {
-                        force = (1 - dist / suckRange) * (1.2 + blackHoleIntensity * 2);
-                        pt.vx += (dx / dist) * force; pt.vy += (dy / dist) * force;
-                        pt.vx += (-dy / dist) * force * 0.3; pt.vy += (dx / dist) * force * 0.3;
+                        nd = dist / suckRange;
+                        inward = Math.pow(1 - nd, 1.2) * (1.2 + blackHoleIntensity * 2);
+                        tangential = Math.pow(1 - nd, 2.0) * (0.8 + blackHoleIntensity * 1.6);
+
+                        pt.vx += (dx / dist) * inward; pt.vy += (dy / dist) * inward;
+                        pt.vx += (-dy / dist) * tangential; pt.vy += (dx / dist) * tangential;
+
+                        if (dist < fadeStart) {
+                            var fade = Math.max(0, (dist - eventHorizon) / (fadeStart - eventHorizon));
+                            pt.size *= (0.95 + fade * 0.05);
+                            pt.life -= (1 - fade) * 0.1;
+                        }
                     }
-                    if (dist < p.radius * 1.2) fxParticles.splice(i, 1);
+                    if (dist < eventHorizon * 0.8) fxParticles.splice(i, 1);
                 }
 
-                // Pull in normal planets
                 for (i = 0; i < planets.length; i++) {
                     var otherP = planets[i];
                     if (otherP.isBlackHole || otherP.consumed) continue;
                     dx = otherP.x - p.x; dy = otherP.y - p.y;
                     dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < consumeRange && dist > 0.001) {
-                        force = (1 - dist / consumeRange) * (0.03 + blackHoleIntensity * 0.12);
-                        otherP.vx -= (dx / dist) * force; otherP.vy -= (dy / dist) * force;
-                        if (dist < p.radius * 2.5) {
+                        nd = dist / consumeRange;
+                        inward = Math.pow(1 - nd, 1.2) * (0.04 + blackHoleIntensity * 0.15);
+                        tangential = Math.pow(1 - nd, 2.0) * (0.06 + blackHoleIntensity * 0.1);
+
+                        otherP.vx -= (dx / dist) * inward; otherP.vy -= (dy / dist) * inward;
+                        otherP.vx += (-dy / dist) * tangential; otherP.vy += (dx / dist) * tangential;
+
+                        if (dist < fadeStart) {
+                            var progress = 1 - ((dist - eventHorizon) / (fadeStart - eventHorizon));
+                            progress = Math.max(0, Math.min(1, progress));
+                            otherP.radius = otherP.baseRadius * cfg.planetScale * (1 - progress * 0.9);
+                            otherP.glowIntensity = otherP.baseGlow * (1 - progress);
+                        }
+
+                        if (dist < eventHorizon * 0.9) {
                             otherP.consumed = true; otherP.radius = 0;
                             blackHoleConsumed.push(otherP);
                         }
-                    }
-                }
-
-                // Screen shake (only if rocket not already consumed)
-                if (blackHoleIntensity > 0.1 && !rocketConsumed) {
-                    var bhdx = rocket.x - p.x, bhdy = rocket.y - p.y;
-                    var bhDist = Math.sqrt(bhdx * bhdx + bhdy * bhdy);
-                    if (bhDist < maxDim * 0.5) {
-                        var shakeI = (1 - bhDist / (maxDim * 0.5)) * blackHoleIntensity;
-                        var shake = shakeI * 10;
-                        document.body.style.transform = 'translate(' + (Math.random() * shake - shake / 2) + 'px,' + (Math.random() * shake - shake / 2) + 'px)';
                     }
                 }
             }
@@ -2580,18 +2575,20 @@
                     blackHoleConsumed[i].radius = blackHoleConsumed[i].baseRadius * cfg.planetScale;
                 }
                 blackHoleConsumed = [];
-                // Release rocket
+
                 rocketConsumed = false; rocketConsumedTimer = 0;
-                rocketEl.style.opacity = ''; tooltipEl.style.opacity = '';
+                rocket.spaghetti = 0;
+                rocketEl.style.opacity = ''; tooltipEl.style.opacity = ''; rocketEl.style.transform = '';
+
                 rocket.vx = 0; rocket.vy = 0; rocket.speed = 0; rocket.mode = 'wander'; rocket.boostFuel = 0;
                 pickWander();
-                // Remove spawned black hole
+
                 if (blackHolePlanet) {
                     var idx = planets.indexOf(blackHolePlanet);
                     if (idx > -1) planets.splice(idx, 1);
                 }
                 blackHolePlanet = null;
-                // Decay shake
+
                 var decayStart = performance.now();
                 (function decayShake() {
                     var elapsed = (performance.now() - decayStart) / 1000;
@@ -2624,13 +2621,12 @@
                     firewallRadius: 0, firewallActive: false, consumed: false,
                     isBlackHole: true
                 };
-                planets.push(newBH);
+                planets.unshift(newBH);
                 blackHolePlanet = newBH;
                 startBlackHoleSound();
                 blackHoleImplosion(newBH);
             }
 
-            // ===== CLICK / TOUCH HANDLERS =====
             function spawnRipple(x, y) {
                 var rip = document.createElement('div');
                 rip.className = 'click-ripple'; rip.style.left = x + 'px'; rip.style.top = y + 'px';
@@ -2692,7 +2688,6 @@
                 handleBoost(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
             }, { passive: true });
 
-            // Scroll = speed control
             document.addEventListener('wheel', function (e) {
                 if (!initDismissed || rocketConsumed) return;
                 e.preventDefault(); exitOrbit();
@@ -2702,7 +2697,6 @@
                 spawnRipple(rocket.x, rocket.y);
             }, { passive: false });
 
-            // Keyboard
             document.addEventListener('keydown', function (e) {
                 keysDown[e.key.toLowerCase()] = true;
                 if (e.key === 'Escape') { exitOrbit(); exitWarp(); stopBlackHole(); }
@@ -2731,12 +2725,11 @@
             });
             document.addEventListener('keyup', function (e) { keysDown[e.key.toLowerCase()] = false; if (e.key === 'Shift') shiftBoostUsed = false; });
 
-            // ===== CURSOR =====
             document.addEventListener('mousemove', function (e) {
                 if (!cursorReady) { cursorReady = true; dot.style.opacity = '1'; ring.style.opacity = '1'; cross.style.opacity = '1'; }
                 mouseActive = true; mouseX = e.clientX; mouseY = e.clientY;
                 dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
-                // CTA magnetic pull
+
                 if (ctaVisible) {
                     var rect = ctaEl.getBoundingClientRect();
                     var cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
@@ -2748,14 +2741,12 @@
             document.addEventListener('mouseleave', function () { dot.style.opacity = ring.style.opacity = cross.style.opacity = '0'; mouseActive = false; });
             document.addEventListener('mouseenter', function () { if (cursorReady) { dot.style.opacity = ring.style.opacity = cross.style.opacity = '1'; mouseActive = true; } });
 
-            // Hover effects for interactive elements
             function addHoverEffects(el) {
                 el.addEventListener('mouseenter', function () { dot.classList.add('hovering'); ring.classList.add('hovering'); cross.classList.add('hovering'); });
                 el.addEventListener('mouseleave', function () { dot.classList.remove('hovering'); ring.classList.remove('hovering'); cross.classList.remove('hovering'); });
             }
             document.querySelectorAll('a, .sound-toggle').forEach(addHoverEffects);
 
-            // ===== TYPING EFFECT =====
             var glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?!';
             var ctaScrambleText = '> open -p --t linkedin';
 
@@ -2777,7 +2768,6 @@
                 }
             }
 
-            // Init overlay interactions
             initPromptEl.addEventListener('mouseenter', function () {
                 var baseText = '> ClientHello', r = 0;
                 var iv = setInterval(function () {
@@ -2787,7 +2777,6 @@
             });
             initPromptEl.addEventListener('mouseleave', function () { initPromptEl.textContent = '[ PING ]'; initSubEl.textContent = 'AWAITING HANDSHAKE'; initSubEl.style.color = '#333'; });
 
-            // CTA hover scramble
             ctaEl.addEventListener('mouseenter', function () {
                 var r = 0;
                 var iv = setInterval(function () {
@@ -2800,11 +2789,9 @@
             titleEl.addEventListener('mouseenter', function () { titleEl.classList.remove('glitch-active'); void titleEl.offsetWidth; titleEl.classList.add('glitch-active'); });
             titleEl.addEventListener('animationend', function () { titleEl.classList.remove('glitch-active'); });
 
-            // Sound toggle
             soundToggle.addEventListener('click', function (e) { e.stopPropagation(); toggleSound(); });
             soundToggle.addEventListener('touchend', function (e) { e.stopPropagation(); toggleSound(); }, { passive: true });
 
-            // ===== INIT DISMISS =====
             function dismissInit() {
                 if (initDismissed) return;
                 initDismissed = true; skipNextBoost = true;
@@ -2825,16 +2812,13 @@
             document.addEventListener('touchstart', dismissInit, { passive: true });
             document.addEventListener('keydown', dismissKeyHandler);
 
-            // ===== HUD POSITION =====
             hudCompass.style.top = 'clamp(14px,3vw,24px)'; hudCompass.style.left = 'clamp(14px,3vw,24px)';
             hudSpeed.style.top = 'clamp(90px,10vw,100px)'; hudSpeed.style.left = 'clamp(14px,3vw,24px)';
             hudMode.style.top = 'clamp(120px,14vw,134px)'; hudMode.style.left = 'clamp(14px,3vw,24px)';
 
-            // ===== MAIN LOOP =====
             function mainLoop(now) {
                 frameCount++;
 
-                // Cursor interpolation + parallax (runs every frame regardless)
                 ringX += (mouseX - ringX) * 0.12;
                 ringY += (mouseY - ringY) * 0.12;
                 crossX += (mouseX - crossX) * 0.25;
@@ -2842,7 +2826,6 @@
                 ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
                 cross.style.left = crossX + 'px'; cross.style.top = crossY + 'px';
 
-                // Parallax on canvas layers only (grid excluded, terminal excluded)
                 var halfW = window.innerWidth * 0.5, halfH = window.innerHeight * 0.5;
                 for (var pi = 0; pi < parallaxLayers.length; pi++) {
                     if (!parallaxLayers[pi]) continue;
@@ -2851,7 +2834,6 @@
                     parallaxLayers[pi].style.transform = 'translate(' + pdx + 'px,' + pdy + 'px)';
                 }
 
-                // Core updates
                 checkPlanetHover();
                 updatePlanets();
                 if (blackHoleActive) updateBlackHoleSuction();
@@ -2862,7 +2844,6 @@
                 drawFx();
                 updateAudio();
 
-                // Tooltip + HUD at reduced rate
                 if (frameCount % 3 === 0) updateTooltipAndHUD();
 
                 requestAnimationFrame(mainLoop);
