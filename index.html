@@ -1432,7 +1432,7 @@
             var rocketConsumed = false, rocketConsumedTimer = 0;
 
             // UI state
-            var ctaVisible = false, initDismissed = false, skipNextBoost = false;
+            var ctaVisible = false, initDismissed = false, skipNextBoost = false, shiftBoostUsed = false;
             var hoveredPlanet = null;
             var lastWander = performance.now(), lastClickTime = 0;
             var ci = 0, fullName = 'Bishal Gharti Chhetri';
@@ -2596,6 +2596,19 @@
                 if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey && !e.metaKey && initDismissed) {
                     e.preventDefault(); triggerClearScreen();
                 }
+                if (e.key === 'Shift' && !shiftBoostUsed && initDismissed && !rocketConsumed) {
+                    shiftBoostUsed = true; e.preventDefault();
+                    exitOrbit(); if (rocket.mode === 'warp') return;
+                    spawnRipple(rocket.x, rocket.y); playBoost();
+                    rocket.boostFuel = 1.0;
+                    var sRad = rocket.angle * (Math.PI / 180);
+                    rocket.boostX = rocket.x + Math.sin(sRad) * 500;
+                    rocket.boostY = rocket.y - Math.cos(sRad) * 500;
+                    for (var sk = 0; sk < 8; sk++) {
+                        var sa = Math.random() * Math.PI * 2;
+                        addFxParticle(rocket.x, rocket.y, Math.cos(sa) * (1 + Math.random() * 2), Math.sin(sa) * (1 + Math.random() * 2), 1, 1.5 + Math.random() * 2, '167,139,250');
+                    }
+                }
                 if (e.key === '/' && initDismissed) {
                     e.preventDefault(); clearTimeout(helpTimeout);
                     termLogBody.innerHTML = '<span class="log-key">CLICK</span> boost to target<br><span class="log-key">DBLCLK</span> hyperjump<br><span class="log-key">SHIFT</span> forward boost<br><span class="log-key">SCROLL</span> speed 0.1x-10x<br><span class="log-key">WASD</span> manual steer<br><span class="log-key">PLANET</span> use skill<br><span class="log-key">B</span> spawn black hole<br><span class="log-key">ESC</span> cancel<span class="log-cursor"></span>';
@@ -2603,7 +2616,7 @@
                     helpTimeout = setTimeout(function () { termLog.classList.remove('visible'); }, 5000);
                 }
             });
-            document.addEventListener('keyup', function (e) { keysDown[e.key.toLowerCase()] = false; });
+            document.addEventListener('keyup', function (e) { keysDown[e.key.toLowerCase()] = false; if (e.key === 'Shift') shiftBoostUsed = false; });
 
             // ===== CURSOR =====
             document.addEventListener('mousemove', function (e) {
