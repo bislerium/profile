@@ -4,7 +4,7 @@ Personal portfolio site built with [Astro](https://astro.build), TypeScript, and
 
 ## Stack
 
-- **Framework:** Astro 5 (static generation)
+- **Framework:** Astro 7 (static generation)
 - **Language:** TypeScript (strict)
 - **Styling:** Vanilla CSS with `@layer` architecture
 - **CI/CD:** GitHub Actions → GitHub Pages
