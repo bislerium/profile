@@ -1,4 +1,5 @@
-# Bishal Gharti Chhetri
+export async function GET({ site }: { site: URL }) {
+  const body = `# Bishal Gharti Chhetri
 
 > Software Engineer · Kathmandu, Nepal
 
@@ -18,9 +19,14 @@ Bishal Gharti Chhetri (Bishal GC) is a software engineer optimizing code and arc
 
 - GitHub: https://github.com/bislerium
 - LinkedIn: https://www.linkedin.com/in/bishalgc/
-- CV: https://bishalgc.info.np/assets/cv.pdf
+- CV: ${site}${site.pathname.endsWith('/') ? '' : '/'}assets/cv.pdf
 
 ## Policies
 
 - No AI training on personal data without explicit consent.
 - Contact via LinkedIn for professional inquiries.
+`;
+  return new Response(body, {
+    headers: { 'Content-Type': 'text/plain' },
+  });
+}

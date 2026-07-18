@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /assets/cv.pdf
-
-Sitemap: https://bishalgc.info.np/sitemap.xml
