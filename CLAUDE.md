@@ -4,56 +4,79 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Single-page personal portfolio site for Bishal Gharti Chhetri, deployed at `bishalgc.info.np` via GitHub Pages. Static HTML with embedded CSS and vanilla JS — no build tools, frameworks, or package manager.
+Personal portfolio site for Bishal Gharti Chhetri, deployed at `bishalgc.info.np` via GitHub Pages with Cloudflare CDN.
+
+**Stack:** Astro 5 + TypeScript (strict), Vanilla CSS, static generation, GitHub Actions deploy.
+
+## Commands
+
+```bash
+npm run dev       # Start dev server
+npm run build     # Build static site to dist/
+npm run preview   # Preview the built site locally
+```
+
+No linter or test runner configured — this is a single-page portfolio.
 
 ## Repository structure
 
-```text
-index.html        # The entire site: HTML, CSS, and JS in one file
-assets/
-  cv.pdf          # Downloadable CV
-  icons/          # Favicon and PWA icons
-  logo/           # Logo variants (square, circle) in PNG, SVG, and drawio source
-  og-image.png    # Open Graph / Twitter card image
-CNAME             # Custom domain: bishalgc.info.np
-llms.txt          # AI crawler info (llmstxt.org spec)
-robots.txt        # Disallows /assets/cv.pdf from crawlers
-sitemap.xml       # Single-entry sitemap for the root URL
+```
+src/
+  layouts/BaseLayout.astro    # <head>, SEO/OG/JSON-LD, fonts, global CSS import
+  components/                 # 9 Astro components (SkipLink through Footer)
+  pages/
+    index.astro               # Composes all components in BaseLayout
+    404.astro                 # Simple 404 page
+  styles/
+    index.css                 # Imports all layers in order
+    01-reset.css — 07-overrides.css  # @layer split (see CSS architecture)
+  scripts/
+    text-scramble.ts          # TextScramble class
+    kathmandu-clock.ts        # KathmanduClock class
+    init.ts                   # DOM init: selects .name-line, #kathmandu-clock
+public/                       # Static files copied verbatim to dist/
+  CNAME                       # bishalgc.info.np
+  robots.txt                  # Disallows /assets/cv.pdf
+  sitemap.xml
+  llms.txt                    # AI crawler info (llmstxt.org spec)
+  .nojekyll                   # Prevents GitHub Pages from ignoring _-prefix dirs
+  assets/                     # CV PDF, OG image, favicons, logo PNGs/SVGs
+design/                       # Source .drawio files (not deployed)
+.github/workflows/deploy.yml  # GitHub Actions → GitHub Pages
+astro.config.mjs              # site URL, trailingSlash, build format/assets
 ```
 
 ## CSS architecture
 
-CSS is organized in `@layer` order within `index.html`:
+7 `@layer` files imported globally in `BaseLayout.astro` frontmatter (`import '../styles/index.css'`):
 
 | Layer         | Purpose                                                    |
 |---------------|------------------------------------------------------------|
-| `reset`       | Minimal CSS reset (box-sizing, margin/padding zero)        |
-| `base`        | Custom properties (colors, fonts, spacing), `:root`/`body` |
+| `reset`       | Box-sizing, margin/padding zero                            |
+| `base`        | Custom properties (colors, fonts, fluid `clamp()` spacing), `:root`/`body` |
 | `theme`       | Reusable utility classes (`.highlight`, `.label`)          |
-| `layout`      | CSS Grid layout (`.page`, header, name block, footer, etc.)|
+| `layout`      | 12-column CSS Grid layout, named grid rows, responsive     |
 | `components`  | Self-contained widgets (`.progress-bar`, `.status-dot`)    |
-| `motion`      | `@keyframes` and animation application rules               |
-| `overrides`   | Container queries, media queries, print styles             |
+| `motion`      | `@keyframes` and staggered animation rules, respects `prefers-reduced-motion` |
+| `overrides`   | Container queries (`@container page`), media queries (768/480/360px), print styles |
 
-The grid uses a 12-column layout via `grid-template-columns: repeat(12, 1fr)` with named grid rows. Responsive breakpoints collapse to a single-column layout at 768px.
-
-Custom properties use fluid typography via `clamp()` and viewport-relative spacing via `dvh`/`dvw` units.
+**Important:** CSS must be imported in frontmatter (`import`), NOT inside a `<style>` tag — Astro scopes `<style>` selectors with `[data-astro-cid]` which breaks matching on child elements.
 
 ## JavaScript
 
-Two self-contained ES module classes in the embedded `<script type="module">`:
+Two vanilla classes in `src/scripts/`, typed with TypeScript, bundled by Astro:
 
-- **`TextScramble`** — Animated text reveal effect. Scrambles characters between random symbols before settling on the target text. Respects `prefers-reduced-motion`. Used for the name lines on load.
+- **`TextScramble`** — Animated text reveal effect using random character scrambling. Respects `prefers-reduced-motion`. Applied to `.name-line` elements on load.
+- **`KathmanduClock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset. Updates every 60s via `Intl.DateTimeFormat`.
 
-- **`KathmanduClock`** — Live clock in the footer displaying current time in Asia/Kathmandu timezone with UTC offset. Updates every 60 seconds.
+Init in `init.ts` is loaded via a `<script>` tag in `index.astro`.
 
 ## Deployment
 
-Deployed via GitHub Pages on the `main` branch. The `CNAME` file configures the custom domain `bishalgc.info.np`. No build step — push to `main` and GitHub Pages serves the files directly.
-
-## SEO / metadata
-
-- Structured data (JSON-LD `Person` schema) embedded in `<head>`
-- Open Graph and Twitter Card meta tags
-- `llms.txt` follows the [llmstxt.org](https://llmstxt.org) spec for AI crawler guidance
-- Canonical URL set to `https://bishalgc.info.np`
+GitHub Actions (`.github/workflows/deploy.yml`):
+- **Trigger:** push to `main` (ignores `design/`, `CLAUDE.md`, `LICENSE`, `.vscode/`, `.gitignore`)
+- **Build:** `npm ci` → `npm run build` → upload `dist/` artifact
+- **Deploy:** `actions/deploy-pages@v4` to GitHub Pages
+- **Concurrency:** cancels in-progress runs on subsequent pushes
+- **Custom domain:** `CNAME` in `public/` → ends up in `dist/`
+- **Cache:** Cloudflare sits in front; `build.assets: 'astro'` avoids underscore prefix that GitHub Pages would block
