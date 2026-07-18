@@ -1,4 +1,6 @@
-export async function GET({ site }: { site: URL }) {
+import { SITE, GITHUB, LINKEDIN } from '../constants';
+
+export async function GET() {
   const body = `# Bishal Gharti Chhetri
 
 > Software Engineer · Kathmandu, Nepal
@@ -17,9 +19,9 @@ Bishal Gharti Chhetri (Bishal GC) is a software engineer optimizing code and arc
 
 ## Connect
 
-- GitHub: https://github.com/bislerium
-- LinkedIn: https://www.linkedin.com/in/bishalgc/
-- CV: ${site}${site.pathname.endsWith('/') ? '' : '/'}assets/cv.pdf
+- GitHub: ${GITHUB}
+- LinkedIn: ${LINKEDIN}
+- CV: ${SITE}/assets/cv.pdf
 
 ## Policies
 

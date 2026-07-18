@@ -1,9 +1,11 @@
-export async function GET({ site }: { site: URL }) {
+import { SITE } from '../constants';
+
+export async function GET() {
   const body = `User-agent: *
 Allow: /
 Disallow: /assets/cv.pdf
 
-Sitemap: ${site}${site.pathname.endsWith('/') ? '' : '/'}sitemap.xml
+Sitemap: ${SITE}/sitemap.xml
 `;
   return new Response(body, {
     headers: { 'Content-Type': 'text/plain' },
