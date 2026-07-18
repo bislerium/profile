@@ -97,12 +97,16 @@
 
   .tech-item {
     color: var(--text-dim);
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, opacity 0.3s ease;
     cursor: default;
 
     &:hover {
       color: var(--violet-bright);
     }
+  }
+
+  .tech-list:has(.tech-item:hover) .tech-item:not(:hover) {
+    opacity: 0.4;
   }
 
   /* ─── Rule ─── */

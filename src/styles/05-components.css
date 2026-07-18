@@ -18,8 +18,8 @@
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 8px #22c55e;
+    background: oklch(72.3% 0.192 149.6);
+    box-shadow: 0 0 8px oklch(72.3% 0.192 149.6);
     flex-shrink: 0;
     animation: breathe 4s ease-in-out infinite;
   }
