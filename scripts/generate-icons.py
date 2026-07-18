@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-Generate all favicons, app icons, maskable icons, and OG image
+Generate all favicons, app icons, and maskable icons
 from the source logo-square.svg for bishalgc.info.np.
+
+Does NOT touch og-image.png — that is managed separately.
 """
 
 import subprocess
-import os
 from pathlib import Path
 from PIL import Image
 
@@ -41,21 +42,23 @@ def create_favicon_svg():
 def create_favicon_ico():
     """Create multi-resolution favicon.ico (16, 32, 48px)."""
     sizes = [16, 32, 48]
-    pngs = []
+    frames = []
+
     for size in sizes:
-        tmp = ICONS_DIR / f"_tmp_favicon_{size}.png"
+        tmp = ICONS_DIR / f"_tmp_ico_{size}.png"
         rsvg_to_png(SOURCE_SVG, tmp, size, size)
-        pngs.append(Image.open(tmp).convert("RGBA"))
+        frames.append(Image.open(tmp).convert("RGBA"))
+        tmp.unlink()
 
     ico_path = ICONS_DIR / "favicon.ico"
-    pngs[0].save(
+    frames[0].save(
         ico_path,
         format="ICO",
         sizes=[(s, s) for s in sizes],
-        append_images=pngs[1:],
+        append_images=frames[1:],
     )
-    for size in sizes:
-        (ICONS_DIR / f"_tmp_favicon_{size}.png").unlink(missing_ok=True)
+    for f in frames:
+        f.close()
     print(f"✓ favicon.ico (16×16, 32×32, 48×48)")
 
 def create_favicon_png(name: str, size: int):
@@ -75,12 +78,6 @@ def create_apple_touch_icons():
     for name, size in sizes.items():
         rsvg_to_png(SOURCE_SVG, ICONS_DIR / name, size, size)
         print(f"✓ {name} ({size}×{size})")
-    # Also create the default one (180x180) without size suffix for <link>
-    src = ICONS_DIR / "apple-touch-icon-180x180.png"
-    dst = ICONS_DIR / "apple-touch-icon.png"
-    import shutil
-    shutil.copy2(src, dst)
-    print(f"✓ apple-touch-icon.png (180×180, copy)")
 
 def create_app_icons():
     """Create PWA / Android Chrome icons."""
@@ -121,70 +118,24 @@ def create_maskable_icon(size: int):
 
 def create_mstile():
     """Create Windows 8/10 tile icon."""
-    # mstile should be a transparent PNG (or solid) at 150x150
     rsvg_to_png(SOURCE_SVG, ICONS_DIR / "mstile-150x150.png", 150, 150)
     print(f"✓ mstile-150x150.png")
-
-def create_og_image():
-    """
-    Create OG image (1200×630) with the logo centered on a dark card.
-    Layout: dark background → purple accent band → logo centered.
-    """
-    w, h = 1200, 630
-    logo_size = 320  # prominent but leaves breathing room
-
-    tmp_logo = ROOT / "public/assets/logo/square/_tmp_og_logo.png"
-    rsvg_to_png(SOURCE_SVG, tmp_logo, logo_size, logo_size)
-
-    canvas = Image.new("RGBA", (w, h), BG_DARK + "ff")
-    logo = Image.open(tmp_logo).convert("RGBA")
-
-    # Center the logo
-    logo_x = (w - logo_size) // 2
-    logo_y = (h - logo_size) // 2
-    canvas.paste(logo, (logo_x, logo_y), logo)
-
-    # Convert to RGB for PNG (smaller file)
-    canvas_rgb = Image.new("RGB", (w, h), BG_DARK)
-    canvas_rgb.paste(canvas, (0, 0), canvas)
-
-    out = ROOT / "public/assets/og-image.png"
-    canvas_rgb.save(out, "PNG", optimize=True)
-    tmp_logo.unlink(missing_ok=True)
-    print(f"✓ og-image.png ({w}×{w})")
 
 def main():
     print("Generating icons from logo-square.svg …\n")
 
-    # SVG favicon (modern browsers: Firefox, Chrome 80+)
     create_favicon_svg()
-
-    # Traditional favicon.ico (multi-res)
     create_favicon_ico()
-
-    # PNG favicons
     create_favicon_png("favicon-16x16.png", 16)
     create_favicon_png("favicon-32x32.png", 32)
     create_favicon_png("favicon-96x96.png", 96)
-
-    # Apple touch icons
     create_apple_touch_icons()
-
-    # PWA / Android icons
     create_app_icons()
-
-    # Maskable icons (adaptive / safe-zone)
     create_maskable_icon(192)
     create_maskable_icon(512)
-
-    # Windows tile
     create_mstile()
 
-    # OG image
-    create_og_image()
-
     print(f"\n✅ All icons generated in {ICONS_DIR}")
-    print(f"✅ OG image in {ROOT / 'public/assets/og-image.png'}")
 
 if __name__ == "__main__":
     main()

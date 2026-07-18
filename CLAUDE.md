@@ -10,6 +10,56 @@ Personal portfolio site for Bishal Gharti Chhetri, deployed at `bishalgc.info.np
 
 No linter or test runner configured — this is a single-page portfolio.
 
+## Project structure
+
+```
+src/
+  constants.ts          # SITE, GITHUB, LINKEDIN — single source of truth for all URLs
+  layouts/
+    BaseLayout.astro    # <head> with all meta, OG, Twitter, favicons, JSON-LD
+  pages/
+    index.astro          # Single-page site — composes components into <main>
+    sitemap.xml.ts       # Dynamic sitemap endpoint (lastmod + changefreq)
+    robots.txt.ts        # Robots endpoint (disallows /assets/cv.pdf)
+    llms.txt.ts          # LLMs.txt endpoint for AI crawlers
+  components/
+    IndexHeader.astro   # Decorative div (not a landmark)
+    NameBlock.astro     # h1 — name with TextScramble effect
+    TechStack.astro     # aside — stack list
+    SectionDivider.astro # hr
+    MetaBlock.astro     # section — role + description
+    LinksBlock.astro    # nav — GitHub, LinkedIn, CV links
+    Footer.astro        # footer — KathmanduClock + availability dot
+    SkipLink.astro      # Skip-to-main accessibility link
+    ProgressBar.astro   # Decorative scroll indicator
+  scripts/
+    init.ts             # Boots TextScramble + KathmanduClock
+    TextScramble.ts     # Animated text reveal (respects prefers-reduced-motion)
+    KathmanduClock.ts   # Live Asia/Kathmandu clock footer widget
+  styles/               # 7 @layer CSS files (see CSS architecture below)
+design/
+  logo/square/          # Source logo files (logo-square.svg, .png, .graphite)
+public/
+  assets/
+    icons/              # 16 generated favicon/app-icon files + site.webmanifest
+    logo/square/        # Public logo (used by og:logo meta tag)
+    og-image.png        # 1200×630 OG card image
+scripts/
+  generate-icons.py     # Reproducible icon generation from design/logo/square/logo-square.svg
+```
+
+## Centralized constants
+
+`src/constants.ts` is the **single source of truth** for all site URLs. Every file imports from here — never hardcode the domain, GitHub, or LinkedIn URLs anywhere else.
+
+```ts
+export const SITE = 'https://bishalgc.info.np';
+export const GITHUB = 'https://github.com/bislerium';
+export const LINKEDIN = 'https://www.linkedin.com/in/bishalgc/';
+```
+
+To change the domain or social links, edit only this file. The Astro config `site` field in `astro.config.mjs` must match `SITE` (used by Astro for build-time URL resolution, but all our code uses the import).
+
 ## CSS architecture
 
 7 `@layer` files imported globally in `BaseLayout.astro` frontmatter (`import '../styles/index.css'`):
@@ -35,6 +85,41 @@ Two vanilla classes in `src/scripts/`, typed with TypeScript, bundled by Astro:
 
 Init in `init.ts` is loaded via a `<script>` tag in `index.astro`.
 
+## Icons and favicons
+
+16 icon files in `public/assets/icons/` covering all platforms:
+
+| Files | Platform |
+|---|---|
+| `favicon.svg` | Modern SVG favicon (Firefox, Chrome 80+) |
+| `favicon.ico` | Multi-res ICO (16×16, 32×32, 48×48) — legacy IE |
+| `favicon-{16,32,96}.png` | PNG fallbacks |
+| `apple-touch-icon-{120,152,167,180}.png` | iOS home screen (all sizes) |
+| `icon-{192,384,512}.png` | Android Chrome / PWA |
+| `maskable-icon-{192,512}.png` | Android adaptive icons (80% safe zone) |
+| `mstile-150x150.png` | Windows 8/10 tile |
+
+Regenerate all icons from the source logo by running:
+
+```bash
+python3 scripts/generate-icons.py
+```
+
+This reads `design/logo/square/logo-square.svg` and outputs all sizes to `public/assets/icons/` plus the OG image to `public/assets/og-image.png`.
+
+**Note:** Pillow 12.3.0's ICO reader reports only 1 frame, but the generated `favicon.ico` actually contains 3 frames — verify with the `file` command instead.
+
+## Logo
+
+Source files live in `design/logo/square/`:
+- `logo-square.graphite` — editable source (Graphite app)
+- `logo-square.svg` — vector export (8 KB)
+- `logo-square.png` — raster export (16 KB)
+
+Public copies are in `public/assets/logo/square/` as `logo.svg` and `logo.png`. The circle variant has been removed — only the square logo is used site-wide.
+
 ## Deployment
 
 GitHub Actions deploys to GitHub Pages. Cloudflare sits in front. `build.assets: 'astro'` in `astro.config.mjs` avoids underscore prefix that GitHub Pages would otherwise block.
+
+`.nojekyll` in `public/` prevents GitHub Pages from running Jekyll on the built output (which would ignore `_astro/` prefixed directories).
