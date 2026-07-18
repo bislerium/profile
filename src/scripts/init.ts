@@ -9,7 +9,7 @@ const init = () => {
   setTimeout(() => scramblers[1]?.setText('Gharti'), 500);
   setTimeout(() => scramblers[2]?.setText('Chhetri'), 700);
 
-  const clockEl = document.getElementById('kathmandu-clock');
+  const clockEl = document.getElementById('kathmandu-clock') as HTMLTimeElement | null;
   if (clockEl) new KathmanduClock(clockEl);
 };
 

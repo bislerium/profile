@@ -1,10 +1,10 @@
 export class KathmanduClock {
-  #el: HTMLElement;
+  #el: HTMLTimeElement;
   #formatter: Intl.DateTimeFormat;
   #zoneFormatter: Intl.DateTimeFormat;
   #interval: ReturnType<typeof setInterval> | null = null;
 
-  constructor(el: HTMLElement) {
+  constructor(el: HTMLTimeElement) {
     this.#el = el;
     this.#formatter = new Intl.DateTimeFormat('en-US', {
       timeZone: 'Asia/Kathmandu',
