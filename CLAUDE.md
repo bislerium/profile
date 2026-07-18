@@ -6,45 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal portfolio site for Bishal Gharti Chhetri, deployed at `bishalgc.info.np` via GitHub Pages with Cloudflare CDN.
 
-**Stack:** Astro 5 + TypeScript (strict), Vanilla CSS, static generation, GitHub Actions deploy.
-
-## Commands
-
-```bash
-npm run dev       # Start dev server
-npm run build     # Build static site to dist/
-npm run preview   # Preview the built site locally
-```
+**Stack:** Astro 7 + TypeScript (strict), Vanilla CSS, static generation, GitHub Actions deploy.
 
 No linter or test runner configured — this is a single-page portfolio.
-
-## Repository structure
-
-```
-src/
-  layouts/BaseLayout.astro    # <head>, SEO/OG/JSON-LD, fonts, global CSS import
-  components/                 # 9 Astro components (SkipLink through Footer)
-  pages/
-    index.astro               # Composes all components in BaseLayout
-    404.astro                 # Simple 404 page
-  styles/
-    index.css                 # Imports all layers in order
-    01-reset.css — 07-overrides.css  # @layer split (see CSS architecture)
-  scripts/
-    text-scramble.ts          # TextScramble class
-    kathmandu-clock.ts        # KathmanduClock class
-    init.ts                   # DOM init: selects .name-line, #kathmandu-clock
-public/                       # Static files copied verbatim to dist/
-  CNAME                       # bishalgc.info.np
-  robots.txt                  # Disallows /assets/cv.pdf
-  sitemap.xml
-  llms.txt                    # AI crawler info (llmstxt.org spec)
-  .nojekyll                   # Prevents GitHub Pages from ignoring _-prefix dirs
-  assets/                     # CV PDF, OG image, favicons, logo PNGs/SVGs
-design/                       # Source .drawio files (not deployed)
-.github/workflows/deploy.yml  # GitHub Actions → GitHub Pages
-astro.config.mjs              # site URL, trailingSlash, build format/assets
-```
 
 ## CSS architecture
 
@@ -73,10 +37,4 @@ Init in `init.ts` is loaded via a `<script>` tag in `index.astro`.
 
 ## Deployment
 
-GitHub Actions (`.github/workflows/deploy.yml`):
-- **Trigger:** push to `main` (ignores `design/`, `CLAUDE.md`, `LICENSE`, `.vscode/`, `.gitignore`)
-- **Build:** `npm ci` → `npm run build` → upload `dist/` artifact
-- **Deploy:** `actions/deploy-pages@v4` to GitHub Pages
-- **Concurrency:** cancels in-progress runs on subsequent pushes
-- **Custom domain:** `CNAME` in `public/` → ends up in `dist/`
-- **Cache:** Cloudflare sits in front; `build.assets: 'astro'` avoids underscore prefix that GitHub Pages would block
+GitHub Actions deploys to GitHub Pages. Cloudflare sits in front. `build.assets: 'astro'` in `astro.config.mjs` avoids underscore prefix that GitHub Pages would otherwise block.
