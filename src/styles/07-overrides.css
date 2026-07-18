@@ -27,7 +27,7 @@
       font-weight: 500;
       font-family: var(--font-sans);
       border-radius: 2px;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 24px oklch(0% 0 0 / 0.15);
     }
   }
 
@@ -307,7 +307,7 @@
       position: static;
       height: auto;
       overflow: visible;
-      background: #fff !important;
+      background: oklch(100% 0 0) !important;
     }
 
     .page {
@@ -322,7 +322,7 @@
     }
 
     .name-line {
-      color: #000 !important;
+      color: oklch(0% 0 0) !important;
       font-size: 3rem !important;
       line-height: 0.9 !important;
       padding-left: 0 !important;
@@ -334,17 +334,17 @@
     .tech-item,
     .footer-left,
     .footer-right {
-      color: #333 !important;
+      color: oklch(36% 0 0) !important;
     }
 
     .highlight {
-      background: #eee !important;
-      color: #000 !important;
+      background: oklch(94% 0 0) !important;
+      color: oklch(0% 0 0) !important;
       padding: 0.1em 0.2em;
     }
 
     .rule {
-      background: #000 !important;
+      background: oklch(0% 0 0) !important;
       opacity: 1 !important;
       transform: none !important;
     }
@@ -352,7 +352,7 @@
     .link-item::after {
       content: " (" attr(href) ")";
       font-size: 0.75em;
-      color: #666;
+      color: oklch(48% 0 0);
       font-family: var(--font-mono);
       margin-left: 0.3em;
     }
