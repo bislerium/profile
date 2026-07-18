@@ -1,0 +1,153 @@
+@layer motion {
+  @keyframes progressFill {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes progressFade {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(var(--space-4));
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleX {
+    from {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    to {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes slideRight {
+    from {
+      opacity: 0;
+      transform: translateX(calc(var(--space-1) * -2));
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes breathe {
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .index-num {
+      opacity: 0;
+      animation: fadeIn 0.8s ease forwards;
+      animation-delay: 0.2s;
+    }
+
+    .name-line {
+      opacity: 0.01;
+      animation: fadeUp 0.8s ease forwards;
+      will-change: transform, opacity;
+
+      &:nth-child(1) {
+        animation-delay: 0.3s;
+      }
+
+      &:nth-child(2) {
+        animation-delay: 0.5s;
+      }
+
+      &:nth-child(3) {
+        animation-delay: 0.7s;
+      }
+    }
+
+    .tech-stack {
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 1.6s;
+      will-change: transform, opacity;
+    }
+
+    .rule {
+      opacity: 0;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: scaleX 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+      animation-delay: 1.0s;
+      will-change: transform, opacity;
+    }
+
+    .meta-block {
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 1.2s;
+      will-change: transform, opacity;
+    }
+
+    .links-block {
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 1.4s;
+      will-change: transform, opacity;
+    }
+
+    .links-list > li:nth-child(1) .link-item {
+      animation-delay: 1.5s;
+    }
+
+    .links-list > li:nth-child(2) .link-item {
+      animation-delay: 1.6s;
+    }
+
+    .links-list > li:nth-child(3) .link-item {
+      animation-delay: 1.7s;
+    }
+
+    .page-footer {
+      .footer-left,
+      .footer-right {
+        opacity: 0;
+        animation: fadeIn 0.6s ease forwards;
+        animation-delay: 1.9s;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-bar {
+      display: none !important;
+    }
+  }
+}

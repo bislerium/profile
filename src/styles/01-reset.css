@@ -1,0 +1,24 @@
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  ul[role="list"] {
+    list-style: none;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6) {
+    text-wrap: balance;
+    font-weight: inherit;
+    font-size: inherit;
+  }
+
+  :where(p, li) {
+    text-wrap: pretty;
+    overflow-wrap: break-word;
+  }
+}

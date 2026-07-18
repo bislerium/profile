@@ -1,0 +1,26 @@
+@layer components {
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--violet-bright);
+    z-index: 100;
+    transform: scaleX(0);
+    transform-origin: left;
+    opacity: 0.8;
+    animation: progressFill 1.8s cubic-bezier(0.23, 1, 0.32, 1) forwards,
+      progressFade 0.4s ease 1.8s forwards;
+  }
+
+  .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+    flex-shrink: 0;
+    animation: breathe 4s ease-in-out infinite;
+  }
+}

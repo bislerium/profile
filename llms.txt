@@ -18,7 +18,7 @@ Bishal Gharti Chhetri (Bishal GC) is a software engineer optimizing code and arc
 
 - GitHub: https://github.com/bislerium
 - LinkedIn: https://www.linkedin.com/in/bishalgc/
-- CV: https://bishalgc.info.np/cv.pdf
+- CV: https://bishalgc.info.np/assets/cv.pdf
 
 ## Policies
 
