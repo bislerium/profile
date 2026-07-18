@@ -2,7 +2,7 @@
   :root {
     color-scheme: light dark;
 
-    --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-sans: "Switzer", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
     --text-xs: clamp(0.6rem, 0.85vw, 0.75rem);
