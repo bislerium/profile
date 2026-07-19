@@ -40,24 +40,28 @@ export class TextScramble {
   }
 
   #update = () => {
-    let output = '';
+    const fragment = document.createDocumentFragment();
     let complete = 0;
 
     for (const item of this.#queue) {
       if (this.#frame >= item.end) {
         complete++;
-        output += item.to;
+        fragment.appendChild(document.createTextNode(item.to));
       } else if (this.#frame >= item.start) {
         if (!item.char || Math.random() < 0.28) {
           item.char = this.#randomChar();
         }
-        output += `<span style="color:var(--violet-bright);opacity:0.6">${item.char}</span>`;
+        const span = document.createElement('span');
+        span.style.color = 'var(--violet-bright)';
+        span.style.opacity = '0.6';
+        span.textContent = item.char;
+        fragment.appendChild(span);
       } else {
-        output += item.from;
+        fragment.appendChild(document.createTextNode(item.from));
       }
     }
 
-    this.#el.innerHTML = output;
+    this.#el.replaceChildren(fragment);
 
     if (complete === this.#queue.length) {
       this.#resolve?.();

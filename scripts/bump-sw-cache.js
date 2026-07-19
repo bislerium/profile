@@ -18,20 +18,26 @@ const root = resolve(__dirname, '..');
 const swPath = resolve(root, 'public', 'sw.js');
 const configPath = resolve(root, 'astro.config.mjs');
 
-const swContent = await readFile(swPath, 'utf-8');
-const configContent = await readFile(configPath, 'utf-8');
+try {
+  const swContent = await readFile(swPath, 'utf-8');
+  const configContent = await readFile(configPath, 'utf-8');
 
-// Hash SW logic (minus the current cache name) + astro config
-const strippedSW = swContent.replace(/^const CACHE_NAME = '.*';$/m, '');
-const hash = createHash('sha256')
-  .update(strippedSW)
-  .update(configContent)
-  .digest('hex');
+  // Hash SW logic (minus the current cache name) + astro config
+  const strippedSW = swContent.replace(/^const CACHE_NAME = '.*';$/m, '');
+  const hash = createHash('sha256')
+    .update(strippedSW)
+    .update(configContent)
+    .digest('hex');
 
-const updated = swContent.replace(
-  /^const CACHE_NAME = '.*';$/m,
-  `const CACHE_NAME = 'bishalgc-${hash}';`,
-);
+  const updated = swContent.replace(
+    /^const CACHE_NAME = '.*';$/m,
+    `const CACHE_NAME = 'bishalgc-${hash}';`,
+  );
 
-await writeFile(swPath, updated);
-console.log(`SW cache version → bishalgc-${hash}`);
+  await writeFile(swPath, updated);
+  console.log(`SW cache version → bishalgc-${hash}`);
+} catch (err) {
+  console.error('Failed to bump SW cache version:', err.message);
+  console.error('Make sure public/sw.js and astro.config.mjs exist.');
+  process.exit(1);
+}

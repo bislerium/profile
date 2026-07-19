@@ -23,7 +23,7 @@
     --bg-elevated: light-dark(oklch(94.2% 0.005 106.5), oklch(18.6% 0.016 284.7));
     --text: light-dark(oklch(22.8% 0.038 282.9), oklch(97.1% 0.003 286.4));
     --text-dim: light-dark(oklch(47.4% 0.026 285.4), oklch(63.9% 0.024 285.7));
-    --text-faint: light-dark(oklch(81.1% 0.017 286), oklch(35.5% 0.028 284.9));
+    --text-faint: light-dark(oklch(56% 0.02 286), oklch(62% 0.015 285.7));
     --rule: light-dark(oklch(88.5% 0.011 286.2), oklch(29.2% 0.029 284.5));
     --violet-soft: light-dark(
       oklch(46.2% 0.235 282.4 / 0.08),
@@ -55,7 +55,8 @@
     color: var(--text);
     height: 100dvh;
     width: 100dvw;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     position: fixed;
     inset: 0;
     accent-color: var(--violet);
