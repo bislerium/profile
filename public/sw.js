@@ -1,6 +1,17 @@
 // Service worker for bishalgc.info.np — enables PWA install + offline support
 // Cache version is auto-bumped by scripts/bump-sw-cache.js on each build.
-const CACHE_NAME = 'bishalgc-9b76dae51b5e5bcb5c1d9529797bcd7e9562fc46f1d19d8ecc2322b7435124b1';
+const CACHE_NAME = 'bishalgc-c983bd86c5ffcb2fb643016a8490d56345c6281d39906e8ab6ecf40d51f34512';
+const MAX_CACHE_ENTRIES = 50;
+
+// Trim cache to MAX_CACHE_ENTRIES, keeping most-recently-added entries.
+// Keys are ordered by insertion time, so we drop from the front (oldest).
+const trimCache = async (cache) => {
+  const keys = await cache.keys();
+  if (keys.length > MAX_CACHE_ENTRIES) {
+    const toDelete = keys.slice(0, keys.length - MAX_CACHE_ENTRIES);
+    await Promise.all(toDelete.map((req) => cache.delete(req)));
+  }
+};
 
 // Pre-cache the shell on install
 const PRECACHE_URLS = ['/'];
@@ -48,13 +59,21 @@ self.addEventListener('fetch', (event) => {
           // Only cache successful responses — don't cache 4xx/5xx
           if (response.ok) {
             const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+            caches.open(CACHE_NAME).then((cache) => { cache.put(request, clone); trimCache(cache); });
           }
           return response;
         })
         .catch(() =>
-          // Network failed — try cache for the exact URL, then fall back to root
-          caches.match(request).then((cached) => cached || caches.match('/')),
+          // Network failed — try cache for the exact URL, then fall back to root.
+          // When serving from cache, notify the page so it can show an offline indicator.
+          caches.match(request).then((cached) => {
+            if (cached) {
+              self.clients.matchAll().then((clients) =>
+                clients.forEach((client) => client.postMessage({ type: 'OFFLINE_FALLBACK' })),
+              );
+            }
+            return cached || caches.match('/');
+          }),
         ),
     );
     return;
@@ -71,7 +90,7 @@ self.addEventListener('fetch', (event) => {
           fetch(request).then((response) => {
             if (response.ok) {
               const clone = response.clone();
-              caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+              caches.open(CACHE_NAME).then((cache) => { cache.put(request, clone); trimCache(cache); });
             }
             return response;
           }),
@@ -88,7 +107,7 @@ self.addEventListener('fetch', (event) => {
         .then((response) => {
           if (response.ok) {
             const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+            caches.open(CACHE_NAME).then((cache) => { cache.put(request, clone); trimCache(cache); });
           }
           return response;
         })

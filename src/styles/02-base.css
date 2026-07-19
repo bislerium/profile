@@ -73,4 +73,20 @@
     outline-offset: 3px;
     border-radius: 2px;
   }
+
+  /* Offline indicator — shown when SW serves a cached navigation fallback */
+  html[data-offline]::before {
+    content: "You're offline";
+    display: block;
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 9999;
+    padding: var(--space-2) var(--space-4);
+    background: var(--violet);
+    color: oklch(100% 0 0);
+    font-size: var(--text-xs);
+    text-align: center;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
 }
