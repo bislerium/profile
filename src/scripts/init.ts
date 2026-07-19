@@ -1,7 +1,15 @@
 import { TextScramble } from './text-scramble';
 import { KathmanduClock } from './kathmandu-clock';
 
+const registerSW = () => {
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('/sw.js').catch((err) =>
+    console.error('SW registration failed:', err),
+  );
+};
+
 const init = () => {
+  registerSW();
   const nameLines = document.querySelectorAll('.name-line');
   const scramblers = Array.from(nameLines).map(el => new TextScramble(el as HTMLElement));
 

@@ -7,11 +7,16 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/bump-sw-cache.js",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
     "astro": "^7.1.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^6.0.3"
   }
 }
