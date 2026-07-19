@@ -9,12 +9,14 @@ const registerSW = () => {
 };
 
 const initOfflineBanner = () => {
+  // Only show in PWA standalone mode, not in regular browser tabs
+  if (!window.matchMedia('(display-mode: standalone)').matches) return;
+
+  const indicator = document.getElementById('offline-indicator');
+  if (!indicator) return;
+
   const toggle = () => {
-    if (navigator.onLine) {
-      delete document.documentElement.dataset.offline;
-    } else {
-      document.documentElement.dataset.offline = '';
-    }
+    indicator.hidden = navigator.onLine;
   };
   window.addEventListener('offline', toggle);
   window.addEventListener('online', toggle);
