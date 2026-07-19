@@ -1,6 +1,6 @@
 // Service worker for bishalgc.info.np — enables PWA install + offline support
 // Cache version is auto-bumped by scripts/bump-sw-cache.js on each build.
-const CACHE_NAME = 'bishalgc-c983bd86c5ffcb2fb643016a8490d56345c6281d39906e8ab6ecf40d51f34512';
+const CACHE_NAME = 'bishalgc-80bba2b845dc5bc1fef05940bc9253c5d8f883ebae47c5c0df927688c7c86737';
 const MAX_CACHE_ENTRIES = 50;
 
 // Trim cache to MAX_CACHE_ENTRIES, keeping most-recently-added entries.
@@ -64,16 +64,8 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() =>
-          // Network failed — try cache for the exact URL, then fall back to root.
-          // When serving from cache, notify the page so it can show an offline indicator.
-          caches.match(request).then((cached) => {
-            if (cached) {
-              self.clients.matchAll().then((clients) =>
-                clients.forEach((client) => client.postMessage({ type: 'OFFLINE_FALLBACK' })),
-              );
-            }
-            return cached || caches.match('/');
-          }),
+          // Network failed — try cache for the exact URL, then fall back to root
+          caches.match(request).then((cached) => cached || caches.match('/')),
         ),
     );
     return;

@@ -6,17 +6,24 @@ const registerSW = () => {
   navigator.serviceWorker.register('/sw.js').catch((err) =>
     console.warn('SW registration failed:', err),
   );
+};
 
-  // Listen for messages from the SW (e.g., offline fallback notification)
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    if (event.data?.type === 'OFFLINE_FALLBACK') {
+const initOfflineBanner = () => {
+  const toggle = () => {
+    if (navigator.onLine) {
+      delete document.documentElement.dataset.offline;
+    } else {
       document.documentElement.dataset.offline = '';
     }
-  });
+  };
+  window.addEventListener('offline', toggle);
+  window.addEventListener('online', toggle);
+  toggle();
 };
 
 const init = () => {
   registerSW();
+  initOfflineBanner();
   const nameLines = document.querySelectorAll('.name-line');
   const scramblers = Array.from(nameLines).map(el => new TextScramble(el as HTMLElement));
 
