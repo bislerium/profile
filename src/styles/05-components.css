@@ -33,6 +33,10 @@
     color: var(--text-dim);
   }
 
+  .status-offline[hidden] {
+    display: none;
+  }
+
   .status-offline-dot {
     width: 5px;
     height: 5px;
