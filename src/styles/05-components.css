@@ -24,12 +24,14 @@
     animation: breathe 4s ease-in-out infinite;
   }
 
-  .status-offline {
+  .status-offline,
+  .status-available {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    margin-right: var(--space-3);
-    font-size: var(--text-xs);
+  }
+
+  .status-offline {
     color: var(--text-dim);
   }
 
