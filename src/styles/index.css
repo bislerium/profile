@@ -1,3 +1,4 @@
+@import './00-fonts.css';
 @import './01-reset.css' layer(reset);
 @import './02-base.css' layer(base);
 @import './03-theme.css' layer(theme);

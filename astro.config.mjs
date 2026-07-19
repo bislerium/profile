@@ -8,5 +8,6 @@ export default defineConfig({
   build: {
     format: 'file',
     assets: 'astro',
+    inlineStylesheets: 'always',
   },
 });
