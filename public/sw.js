@@ -1,6 +1,6 @@
 // Service worker for bishalgc.info.np — enables PWA install + offline support
 // Cache version is auto-bumped by scripts/bump-sw-cache.js on each build.
-const CACHE_NAME = 'bishalgc-8706831afc2308a451fd58e5497d4c9d1e068bbcef6766546acb8b84febc4986';
+const CACHE_NAME = 'bishalgc-c42e547d1e3030fa37d9ac790eef325d0bd1e1e7f5f74c1205283bf006a0a58d';
 const MAX_CACHE_ENTRIES = 50;
 
 // Trim cache to MAX_CACHE_ENTRIES, keeping most-recently-added entries.
@@ -73,7 +73,7 @@ self.addEventListener('fetch', (event) => {
 
   // ── Hashed build assets (CSS, JS bundles): cache-first ──
   // These have content hashes in their filenames, so they are truly immutable.
-  // Path matches `astro/` because astro.config.mjs sets build.assets: 'astro'.
+  // Path matches `astro/` because astro.config.ts sets build.assets: 'astro'.
   if (url.pathname.startsWith('/astro/')) {
     event.respondWith(
       caches.match(request).then(

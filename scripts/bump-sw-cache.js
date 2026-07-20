@@ -3,7 +3,7 @@
 //
 // Files hashed:
 //   public/sw.js        – SW logic, strategies, precache URLs
-//   astro.config.mjs    – build.assets controls the path prefix the SW checks
+//   astro.config.ts     – build.assets controls the path prefix the SW checks
 //
 // Anything else (components, styles, pages) produces content-hashed filenames
 // via Astro and self-busts — no need to include them here.
@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
 const swPath = resolve(root, 'public', 'sw.js');
-const configPath = resolve(root, 'astro.config.mjs');
+const configPath = resolve(root, 'astro.config.ts');
 
 try {
   const swContent = await readFile(swPath, 'utf-8');
@@ -38,6 +38,6 @@ try {
   console.log(`SW cache version → bishalgc-${hash}`);
 } catch (err) {
   console.error('Failed to bump SW cache version:', err.message);
-  console.error('Make sure public/sw.js and astro.config.mjs exist.');
+  console.error('Make sure public/sw.js and astro.config.ts exist.');
   process.exit(1);
 }
