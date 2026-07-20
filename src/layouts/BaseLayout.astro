@@ -9,7 +9,7 @@ const structuredData = {
   alternateName: PERSON.shortName,
   jobTitle: PERSON.jobTitle,
   url: SITE.url,
-  image: `${SITE.url}/assets/og-image.png`,
+  image: `${SITE.url}/assets/logo/square/logo.png`,
   sameAs: [LINKS.github, LINKS.linkedin],
   address: { '@type': 'PostalAddress', addressLocality: PERSON.location, addressCountry: PERSON.country },
   knowsAbout: [
@@ -21,6 +21,16 @@ const structuredData = {
     { '@type': 'Thing', name: 'Git' },
   ],
   description: PAGE.description,
+};
+
+const webSiteData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: PERSON.fullName,
+  alternateName: PERSON.shortName,
+  url: SITE.url,
+  description: PAGE.description,
+  author: { '@type': 'Person', name: PERSON.fullName },
 };
 ---
 
@@ -79,6 +89,7 @@ const structuredData = {
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png" />
     <link rel="shortcut icon" href="/assets/icons/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon-180x180.png" />
     <link rel="apple-touch-icon" sizes="167x167" href="/assets/icons/apple-touch-icon-167x167.png" />
@@ -95,7 +106,7 @@ const structuredData = {
     <link rel="me" href={LINKS.linkedin} />
 
     <!-- Structured data -->
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify([structuredData, webSiteData])} />
 
     <!-- Fonts are self-hosted — zero external requests -->
 
