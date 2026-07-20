@@ -1,5 +1,5 @@
 import { TextScramble } from './text-scramble';
-import { KathmanduClock } from './kathmandu-clock';
+import { Clock } from './clock';
 import { PERSON } from '../constants';
 
 const registerSW = () => {
@@ -34,8 +34,8 @@ const init = () => {
   setTimeout(() => scramblers[1]?.setText(PERSON.nameParts[1]), 500);
   setTimeout(() => scramblers[2]?.setText(PERSON.nameParts[2]), 700);
 
-  const clockEl = document.getElementById('kathmandu-clock') as HTMLTimeElement | null;
-  if (clockEl) new KathmanduClock(clockEl);
+  const clockEl = document.getElementById('clock') as HTMLTimeElement | null;
+  if (clockEl) new Clock(clockEl);
 };
 
 if (document.readyState === 'loading') {

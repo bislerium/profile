@@ -1,6 +1,6 @@
 import { PERSON } from '../constants';
 
-export class KathmanduClock {
+export class Clock {
   #el: HTMLTimeElement;
   #formatter: Intl.DateTimeFormat;
   #zoneFormatter: Intl.DateTimeFormat;

@@ -30,13 +30,13 @@ src/
     SectionDivider.astro # hr
     MetaBlock.astro     # section — role + description
     LinksBlock.astro    # nav — GitHub, LinkedIn, CV links
-    Footer.astro        # footer — KathmanduClock + availability dot
+    Footer.astro        # footer — Clock + availability dot
     SkipLink.astro      # Skip-to-main accessibility link
     ProgressBar.astro   # Decorative scroll indicator
   scripts/
-    init.ts             # Boots TextScramble + KathmanduClock + SW + offline banner (imports PERSON.nameParts)
+    init.ts             # Boots TextScramble + Clock + SW + offline banner (imports PERSON.nameParts)
     text-scramble.ts    # Animated text reveal (respects prefers-reduced-motion)
-    kathmandu-clock.ts  # Live clock widget (imports PERSON.timezone, clockLabel)
+    clock.ts  # Live clock widget (imports PERSON.timezone, clockLabel)
   styles/               # 7 @layer CSS files (see CSS architecture below)
 design/
   logo/square/          # Source logo files (logo-square.svg, .png, .graphite)
@@ -131,7 +131,7 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 Two vanilla classes in `src/scripts/`, typed with TypeScript, bundled by Astro:
 
 - **`TextScramble`** — Animated text reveal effect using random character scrambling. Respects `prefers-reduced-motion`. Applied to `.name-line` elements on load. Source: `src/scripts/text-scramble.ts`.
-- **`KathmanduClock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset. Updates every 60s via `Intl.DateTimeFormat`. Source: `src/scripts/kathmandu-clock.ts`.
+- **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset. Updates every 60s via `Intl.DateTimeFormat`. Source: `src/scripts/clock.ts`.
 
 Init in `init.ts` is loaded via a `<script>` tag in `index.astro`.
 
