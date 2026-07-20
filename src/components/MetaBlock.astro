@@ -1,8 +1,13 @@
 ---
 import { PERSON, PAGE } from '../constants';
+
+let html: string = PAGE.tagline;
+for (const w of PAGE.taglineHighlights) {
+  html = html.replace(w, `<span class="highlight">${w}</span>`);
+}
 ---
 
 <section class="meta-block" aria-labelledby="role-heading">
   <h2 id="role-heading" class="label meta-title">{PERSON.jobTitle}</h2>
-  <p class="meta-desc">{PAGE.tagline}</p>
+  <p class="meta-desc" set:html={html} />
 </section>

@@ -37,6 +37,7 @@ export const PAGE = {
   title: `${PERSON.fullName} • ${PERSON.jobTitle}`,
   description: `${PERSON.jobTitle} based in ${PERSON.location}, ${PERSON.countryName}. ${TECH_STACK.join(', ')}. Building scalable systems with precision, performance, and purpose.`,
   tagline: 'Optimizing code and architecture. Building scalable systems with precision, performance, and purpose.',
+  taglineHighlights: ['code', 'architecture'],
 } as const;
 
 export const OG_IMAGE_ALT = `${PERSON.fullName} • ${PERSON.jobTitle} portfolio`;
