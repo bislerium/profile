@@ -1,5 +1,6 @@
 import { TextScramble } from './text-scramble';
 import { KathmanduClock } from './kathmandu-clock';
+import { PERSON } from '../constants';
 
 const registerSW = () => {
   if (!('serviceWorker' in navigator)) return;
@@ -29,9 +30,9 @@ const init = () => {
   const nameLines = document.querySelectorAll('.name-line');
   const scramblers = Array.from(nameLines).map(el => new TextScramble(el as HTMLElement));
 
-  setTimeout(() => scramblers[0]?.setText('Bishal'), 300);
-  setTimeout(() => scramblers[1]?.setText('Gharti'), 500);
-  setTimeout(() => scramblers[2]?.setText('Chhetri'), 700);
+  setTimeout(() => scramblers[0]?.setText(PERSON.nameParts[0]), 300);
+  setTimeout(() => scramblers[1]?.setText(PERSON.nameParts[1]), 500);
+  setTimeout(() => scramblers[2]?.setText(PERSON.nameParts[2]), 700);
 
   const clockEl = document.getElementById('kathmandu-clock') as HTMLTimeElement | null;
   if (clockEl) new KathmanduClock(clockEl);

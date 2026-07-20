@@ -1,9 +1,9 @@
-import { SITE } from '../constants';
+import { SITE, LINKS } from '../constants';
 
 export async function GET() {
   const body = `User-agent: *
 Allow: /
-Disallow: /assets/cv.pdf
+Disallow: ${LINKS.cv}
 
 Sitemap: ${SITE.url}/sitemap.xml
 `;

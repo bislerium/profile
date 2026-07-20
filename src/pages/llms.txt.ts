@@ -1,27 +1,23 @@
-import { SITE, LINKS, PERSON } from '../constants';
+import { SITE, LINKS, PERSON, PAGE, TECH_STACK } from '../constants';
 
 export async function GET() {
   const body = `# ${PERSON.fullName}
 
-> ${PERSON.jobTitle} · ${PERSON.location}, ${PERSON.country === 'NP' ? 'Nepal' : PERSON.country}
+> ${PERSON.jobTitle} · ${PERSON.location}, ${PERSON.countryName}
 
 ## About
 
-${PERSON.fullName} (${PERSON.shortName}) is a ${PERSON.jobTitle.toLowerCase()} optimizing code and architecture. Building scalable systems with precision, performance, and purpose.
+${PERSON.fullName} (${PERSON.shortName}) is a ${PERSON.jobTitle.toLowerCase()} — ${PAGE.tagline.toLowerCase()}.
 
 ## Stack
 
-- C#.NET
-- PostgreSQL
-- AWS
-- Docker
-- Git
+${TECH_STACK.map(t => `- ${t}`).join('\n')}
 
 ## Connect
 
 - GitHub: ${LINKS.github}
 - LinkedIn: ${LINKS.linkedin}
-- CV: ${SITE.url}/assets/cv.pdf
+- CV: ${SITE.url}${LINKS.cv}
 
 ## Policies
 

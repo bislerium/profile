@@ -1,9 +1,9 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
+import { SITE } from './src/constants';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://bishalgc.info.np',
+  site: SITE.url,
   trailingSlash: 'never',
   build: {
     format: 'file',

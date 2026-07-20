@@ -1,6 +1,6 @@
 ---
 import '../styles/index.css';
-import { SITE, LINKS, PERSON, PAGE, OG_IMAGE_ALT } from '../constants';
+import { SITE, LINKS, PERSON, PAGE, TECH_STACK, OG_IMAGE_ALT } from '../constants';
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -12,14 +12,7 @@ const structuredData = {
   image: `${SITE.url}/assets/logo/square/logo.png`,
   sameAs: [LINKS.github, LINKS.linkedin],
   address: { '@type': 'PostalAddress', addressLocality: PERSON.location, addressCountry: PERSON.country },
-  knowsAbout: [
-    { '@type': 'Thing', name: '.NET' },
-    { '@type': 'Thing', name: 'C#' },
-    { '@type': 'Thing', name: 'PostgreSQL' },
-    { '@type': 'Thing', name: 'AWS' },
-    { '@type': 'Thing', name: 'Docker' },
-    { '@type': 'Thing', name: 'Git' },
-  ],
+  knowsAbout: TECH_STACK.map(name => ({ '@type': 'Thing', name })),
   description: PAGE.description,
 };
 
@@ -98,7 +91,7 @@ const webSiteData = {
     <meta name="apple-mobile-web-app-title" content={PERSON.shortName} />
 
     <meta name="msapplication-TileImage" content="/assets/icons/mstile-150x150.png" />
-    <meta name="msapplication-TileColor" content="#512bd4" />
+    <meta name="msapplication-TileColor" content={SITE.themeColor} />
 
     <link rel="manifest" href="/site.webmanifest" />
 

@@ -83,7 +83,7 @@ export const PAGE = {
 
 All derived strings (`PAGE.title`, `PAGE.description`, `OG_IMAGE_ALT`) are template literals built from `PERSON` fields. Changing a value in `PERSON` cascades through `<meta>`, OG, Twitter, JSON-LD, `llms.txt`, and the PWA manifest automatically.
 
-The Astro config `site` field in `astro.config.mjs` must match `SITE.url` (Astro uses this for build-time URL resolution, but all our code imports from `constants.ts`).
+The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly — no manual sync needed.
 
 ## CSS architecture
 
@@ -145,6 +145,6 @@ Public copies are in `public/assets/logo/square/` as `logo.svg` and `logo.png`. 
 
 ## Deployment
 
-GitHub Actions deploys to GitHub Pages. Cloudflare sits in front. `build.assets: 'astro'` in `astro.config.mjs` avoids underscore prefix that GitHub Pages would otherwise block.
+GitHub Actions deploys to GitHub Pages. Cloudflare sits in front. `build.assets: 'astro'` in `astro.config.ts` avoids underscore prefix that GitHub Pages would otherwise block.
 
 `.nojekyll` in `public/` prevents GitHub Pages from running Jekyll on the built output (which would ignore `_astro/` prefixed directories).

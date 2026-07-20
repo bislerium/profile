@@ -1,4 +1,4 @@
-import { PERSON, PAGE } from '../constants';
+import { SITE, PERSON, PAGE } from '../constants';
 
 export async function GET() {
   const manifest = {
@@ -12,7 +12,7 @@ export async function GET() {
     lang: 'en',
     dir: 'ltr',
     categories: ['productivity', 'lifestyle'],
-    background_color: '#512bd4',
+    background_color: SITE.themeColor,
     icons: [
       { src: '/assets/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
       { src: '/assets/icons/icon-384x384.png', sizes: '384x384', type: 'image/png' },

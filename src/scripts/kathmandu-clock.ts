@@ -1,3 +1,5 @@
+import { PERSON } from '../constants';
+
 export class KathmanduClock {
   #el: HTMLTimeElement;
   #formatter: Intl.DateTimeFormat;
@@ -7,13 +9,13 @@ export class KathmanduClock {
   constructor(el: HTMLTimeElement) {
     this.#el = el;
     this.#formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'Asia/Kathmandu',
+      timeZone: PERSON.timezone,
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
     });
     this.#zoneFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'Asia/Kathmandu',
+      timeZone: PERSON.timezone,
       timeZoneName: 'shortOffset',
     });
 
@@ -35,7 +37,7 @@ export class KathmanduClock {
     const zonePart = this.#zoneFormatter.formatToParts(now).find(p => p.type === 'timeZoneName');
     const zone = zonePart?.value ?? 'GMT+5:45';
 
-    this.#el.textContent = `Kathmandu, Nepal · ${time} · ${zone}`;
+    this.#el.textContent = `${PERSON.clockLabel} · ${time} · ${zone}`;
     this.#el.dateTime = now.toISOString();
   }
 }
