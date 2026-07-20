@@ -34,13 +34,14 @@ src/
     SkipLink.astro      # Skip-to-main accessibility link
     ProgressBar.astro   # Decorative scroll indicator
   scripts/
-    init.ts             # Boots TextScramble + KathmanduClock + SW + offline banner
+    init.ts             # Boots TextScramble + KathmanduClock + SW + offline banner (imports PERSON.nameParts)
     text-scramble.ts    # Animated text reveal (respects prefers-reduced-motion)
-    kathmandu-clock.ts  # Live Asia/Kathmandu clock footer widget
+    kathmandu-clock.ts  # Live clock widget (imports PERSON.timezone, clockLabel)
   styles/               # 7 @layer CSS files (see CSS architecture below)
 design/
   logo/square/          # Source logo files (logo-square.svg, .png, .graphite)
 public/
+  favicon.ico            # Root favicon (Googlebot fallback, copied from assets/icons/)
   assets/
     icons/              # 16 generated favicon/app-icon files
     logo/square/        # Public logo (used by og:logo meta tag)
@@ -52,36 +53,60 @@ scripts/
 
 ## Centralized constants
 
-`src/constants.ts` is the **single source of truth** for all site metadata. Every string in the site derives from four grouped objects — never hardcode a name, URL, title, or description anywhere else.
+`src/constants.ts` is the **single source of truth** for all site metadata. There are 6 exports — never hardcode a name, URL, title, color, or tech item anywhere else.
 
 ```ts
+// Site-level config — URL, analytics, brand
 export const SITE = {
   url: 'https://bishalgc.info.np',
   gaId: 'G-CGXSWDPMTW',
+  themeColor: '#512bd4',
 } as const;
 
+// Outbound links — used in LinkBlock, LLMs.txt, robots.txt, JSON-LD
 export const LINKS = {
   github: 'https://github.com/bislerium',
   linkedin: 'https://www.linkedin.com/in/bishalgc/',
+  cv: '/assets/cv.pdf',
 } as const;
 
+// Personal info — cascades through every page, meta tag, schema, and endpoint
 export const PERSON = {
   fullName: 'Bishal Gharti Chhetri',
   firstName: 'Bishal',
   lastName: 'Gharti Chhetri',
+  nameParts: ['Bishal', 'Gharti', 'Chhetri'],
   shortName: 'Bishal GC',
   jobTitle: 'Software Engineer',
   location: 'Kathmandu',
   country: 'NP',
+  countryName: 'Nepal',
+  timezone: 'Asia/Kathmandu',
+  clockLabel: 'Kathmandu, Nepal',
 } as const;
 
+// Tech stack — one array drives TechStack.astro, JSON-LD knowsAbout, PAGE.description, llms.txt
+export const TECH_STACK = [
+  'C#',
+  '.NET',
+  'PostgreSQL',
+  'AWS',
+  'Docker',
+  'Git',
+] as const;
+
+// Page metadata — built from PERSON and TECH_STACK
 export const PAGE = {
   title: `${PERSON.fullName} • ${PERSON.jobTitle}`,
-  description: `${PERSON.jobTitle} based in ${PERSON.location}, Nepal. ...`,
+  description: `${PERSON.jobTitle} based in ${PERSON.location}, ${PERSON.countryName}. ${TECH_STACK.join(', ')}. ...`,
+  tagline: 'Optimizing code and architecture. ...',
+  taglineHighlights: ['code', 'architecture'],
 } as const;
+
+export const OG_IMAGE_ALT = `${PERSON.fullName} • ${PERSON.jobTitle} portfolio`;
 ```
 
-All derived strings (`PAGE.title`, `PAGE.description`, `OG_IMAGE_ALT`) are template literals built from `PERSON` fields. Changing a value in `PERSON` cascades through `<meta>`, OG, Twitter, JSON-LD, `llms.txt`, and the PWA manifest automatically.
+All derived strings are template literals built from `PERSON` and `TECH_STACK` fields. Changing a value in `PERSON` or `TECH_STACK` cascades through `<meta>`, OG, Twitter, JSON-LD, `llms.txt`, the PWA manifest, the service worker, the clock widget, and the TextScramble animation automatically.
 
 The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly — no manual sync needed.
 
