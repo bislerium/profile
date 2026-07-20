@@ -80,8 +80,8 @@ To change the domain or social links, edit only this file. The Astro config `sit
 
 Two vanilla classes in `src/scripts/`, typed with TypeScript, bundled by Astro:
 
-- **`TextScramble`** — Animated text reveal effect using random character scrambling. Respects `prefers-reduced-motion`. Applied to `.name-line` elements on load.
-- **`KathmanduClock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset. Updates every 60s via `Intl.DateTimeFormat`.
+- **`TextScramble`** — Animated text reveal effect using random character scrambling. Respects `prefers-reduced-motion`. Applied to `.name-line` elements on load. Source: `src/scripts/text-scramble.ts`.
+- **`KathmanduClock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset. Updates every 60s via `Intl.DateTimeFormat`. Source: `src/scripts/kathmandu-clock.ts`.
 
 Init in `init.ts` is loaded via a `<script>` tag in `index.astro`.
 

@@ -1,13 +1,13 @@
-import { SITE, GITHUB, LINKEDIN } from '../constants';
+import { SITE, LINKS, PERSON } from '../constants';
 
 export async function GET() {
-  const body = `# Bishal Gharti Chhetri
+  const body = `# ${PERSON.fullName}
 
-> Software Engineer · Kathmandu, Nepal
+> ${PERSON.jobTitle} · ${PERSON.location}, ${PERSON.country === 'NP' ? 'Nepal' : PERSON.country}
 
 ## About
 
-Bishal Gharti Chhetri (Bishal GC) is a software engineer optimizing code and architecture. Building scalable systems with precision, performance, and purpose.
+${PERSON.fullName} (${PERSON.shortName}) is a ${PERSON.jobTitle.toLowerCase()} optimizing code and architecture. Building scalable systems with precision, performance, and purpose.
 
 ## Stack
 
@@ -19,9 +19,9 @@ Bishal Gharti Chhetri (Bishal GC) is a software engineer optimizing code and arc
 
 ## Connect
 
-- GitHub: ${GITHUB}
-- LinkedIn: ${LINKEDIN}
-- CV: ${SITE}/assets/cv.pdf
+- GitHub: ${LINKS.github}
+- LinkedIn: ${LINKS.linkedin}
+- CV: ${SITE.url}/assets/cv.pdf
 
 ## Policies
 

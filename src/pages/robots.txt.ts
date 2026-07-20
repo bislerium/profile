@@ -5,7 +5,7 @@ export async function GET() {
 Allow: /
 Disallow: /assets/cv.pdf
 
-Sitemap: ${SITE}/sitemap.xml
+Sitemap: ${SITE.url}/sitemap.xml
 `;
   return new Response(body, {
     headers: { 'Content-Type': 'text/plain' },

@@ -45,18 +45,6 @@
     }
   }
 
-  @keyframes slideRight {
-    from {
-      opacity: 0;
-      transform: translateX(calc(var(--space-1) * -2));
-    }
-
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
   @keyframes breathe {
     0%,
     100% {
