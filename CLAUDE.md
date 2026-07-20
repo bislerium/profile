@@ -14,7 +14,7 @@ No linter or test runner configured — this is a single-page portfolio.
 
 ```
 src/
-  constants.ts          # SITE, GITHUB, LINKEDIN — single source of truth for all URLs
+  constants.ts          # SITE, LINKS, PERSON, PAGE — single source of truth for all metadata
   layouts/
     BaseLayout.astro    # <head> with all meta, OG, Twitter, favicons, JSON-LD
   pages/
@@ -22,6 +22,7 @@ src/
     sitemap.xml.ts       # Dynamic sitemap endpoint (lastmod + changefreq)
     robots.txt.ts        # Robots endpoint (disallows /assets/cv.pdf)
     llms.txt.ts          # LLMs.txt endpoint for AI crawlers
+    site.webmanifest.ts  # Dynamic PWA manifest endpoint
   components/
     IndexHeader.astro   # Decorative div (not a landmark)
     NameBlock.astro     # h1 — name with TextScramble effect
@@ -33,32 +34,56 @@ src/
     SkipLink.astro      # Skip-to-main accessibility link
     ProgressBar.astro   # Decorative scroll indicator
   scripts/
-    init.ts             # Boots TextScramble + KathmanduClock
-    TextScramble.ts     # Animated text reveal (respects prefers-reduced-motion)
-    KathmanduClock.ts   # Live Asia/Kathmandu clock footer widget
+    init.ts             # Boots TextScramble + KathmanduClock + SW + offline banner
+    text-scramble.ts    # Animated text reveal (respects prefers-reduced-motion)
+    kathmandu-clock.ts  # Live Asia/Kathmandu clock footer widget
   styles/               # 7 @layer CSS files (see CSS architecture below)
 design/
   logo/square/          # Source logo files (logo-square.svg, .png, .graphite)
 public/
   assets/
-    icons/              # 16 generated favicon/app-icon files + site.webmanifest
+    icons/              # 16 generated favicon/app-icon files
     logo/square/        # Public logo (used by og:logo meta tag)
     og-image.png        # 1200×630 OG card image
 scripts/
   generate-icons.py     # Reproducible icon generation from design/logo/square/logo-square.svg
+  bump-sw-cache.js      # Auto-bumps SW cache version before each build
 ```
 
 ## Centralized constants
 
-`src/constants.ts` is the **single source of truth** for all site URLs. Every file imports from here — never hardcode the domain, GitHub, or LinkedIn URLs anywhere else.
+`src/constants.ts` is the **single source of truth** for all site metadata. Every string in the site derives from four grouped objects — never hardcode a name, URL, title, or description anywhere else.
 
 ```ts
-export const SITE = 'https://bishalgc.info.np';
-export const GITHUB = 'https://github.com/bislerium';
-export const LINKEDIN = 'https://www.linkedin.com/in/bishalgc/';
+export const SITE = {
+  url: 'https://bishalgc.info.np',
+  gaId: 'G-CGXSWDPMTW',
+} as const;
+
+export const LINKS = {
+  github: 'https://github.com/bislerium',
+  linkedin: 'https://www.linkedin.com/in/bishalgc/',
+} as const;
+
+export const PERSON = {
+  fullName: 'Bishal Gharti Chhetri',
+  firstName: 'Bishal',
+  lastName: 'Gharti Chhetri',
+  shortName: 'Bishal GC',
+  jobTitle: 'Software Engineer',
+  location: 'Kathmandu',
+  country: 'NP',
+} as const;
+
+export const PAGE = {
+  title: `${PERSON.fullName} • ${PERSON.jobTitle}`,
+  description: `${PERSON.jobTitle} based in ${PERSON.location}, Nepal. ...`,
+} as const;
 ```
 
-To change the domain or social links, edit only this file. The Astro config `site` field in `astro.config.mjs` must match `SITE` (used by Astro for build-time URL resolution, but all our code uses the import).
+All derived strings (`PAGE.title`, `PAGE.description`, `OG_IMAGE_ALT`) are template literals built from `PERSON` fields. Changing a value in `PERSON` cascades through `<meta>`, OG, Twitter, JSON-LD, `llms.txt`, and the PWA manifest automatically.
+
+The Astro config `site` field in `astro.config.mjs` must match `SITE.url` (Astro uses this for build-time URL resolution, but all our code imports from `constants.ts`).
 
 ## CSS architecture
 
