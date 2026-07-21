@@ -57,12 +57,6 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .index-num {
-      opacity: 0;
-      animation: fadeIn 0.8s ease forwards;
-      animation-delay: 0.2s;
-    }
-
     .name-line {
       opacity: 0.01;
       animation: fadeUp 0.8s ease forwards;
