@@ -29,6 +29,10 @@
       oklch(46.2% 0.235 282.4 / 0.08),
       oklch(60.4% 0.194 285.5 / 0.12)
     );
+    --violet-soft-hover: light-dark(
+      oklch(46.2% 0.235 282.4 / 0.15),
+      oklch(60.4% 0.194 285.5 / 0.2)
+    );
 
     --selection-bg: var(--violet-bright);
     --selection-text: oklch(100% 0 0);

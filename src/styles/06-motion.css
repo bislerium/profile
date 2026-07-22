@@ -126,10 +126,6 @@
       animation-delay: 1.6s;
     }
 
-    .links-list > li:nth-child(3) .link-item {
-      animation-delay: 1.7s;
-    }
-
     .page-footer {
       .footer-left,
       .footer-right {
