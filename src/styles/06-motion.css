@@ -56,9 +56,9 @@
     }
   }
 
-  @keyframes ruleFlow {
+  @keyframes waveFlow {
     to {
-      stroke-dashoffset: -24;
+      transform: translateX(-300px);
     }
   }
 
@@ -95,11 +95,12 @@
       animation: scaleX 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
       animation-delay: 1.0s;
       will-change: transform, opacity;
+    }
 
-      path {
-        animation: ruleFlow 1s linear infinite;
-        animation-delay: 2.2s;
-      }
+    .rule path {
+      animation: waveFlow 3s linear infinite;
+      animation-delay: 2.2s;
+      will-change: transform;
     }
 
     .meta-block {
@@ -137,6 +138,10 @@
   @media (prefers-reduced-motion: reduce) {
     .progress-bar {
       display: none !important;
+    }
+
+    .rule path {
+      animation: none;
     }
   }
 }
