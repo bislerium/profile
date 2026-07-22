@@ -212,7 +212,7 @@
     align-self: end;
     text-align: right;
     padding-top: 4dvh;
-    padding-bottom: 2dvh;
+    padding-bottom: 3dvh;
   }
 
   .links-label {
@@ -277,9 +277,9 @@
   .footer-left {
     grid-column: 1 / 5;
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
+    font-size: 0.65rem;
     color: var(--text-faint);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
     line-height: 1;
@@ -294,9 +294,9 @@
     align-items: flex-end;
     gap: var(--space-1);
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
+    font-size: 0.65rem;
     color: var(--text-faint);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     line-height: 1;
     padding-bottom: var(--space-1);
