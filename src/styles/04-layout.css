@@ -168,10 +168,6 @@
     align-self: center;
     margin-block: 1dvh;
     color: var(--violet-bright);
-
-    path {
-      stroke-dasharray: 16 8;
-    }
   }
 
   /* ─── Meta ─── */

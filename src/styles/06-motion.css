@@ -85,7 +85,7 @@
     .rule path {
       stroke-dasharray: 1000;
       stroke-dashoffset: 1000;
-      animation: drawIn 1.4s cubic-bezier(0.23, 1, 0.32, 1) forwards, waveFlow 3s linear infinite;
+      animation: drawIn 1.8s cubic-bezier(0.23, 1, 0.32, 1) forwards, waveFlow 3s linear infinite;
       animation-delay: 1.0s;
       will-change: stroke-dashoffset, transform;
     }
