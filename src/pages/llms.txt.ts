@@ -1,4 +1,4 @@
-import { SITE, LINKS, PERSON, PAGE, ECOSYSTEM } from '../constants';
+import { SITE, LINKS, PERSON, PAGE, STACK } from '../constants';
 
 export async function GET() {
   const body = `# ${PERSON.fullName}
@@ -9,9 +9,9 @@ export async function GET() {
 
 ${PERSON.fullName} (${PERSON.shortName}) is a ${PERSON.jobTitle.toLowerCase()} — ${PAGE.tagline.toLowerCase()}.
 
-## Ecosystem
+## Stack
 
-${ECOSYSTEM.map(e => `- ${e.name}\n${e.items.map(s => `  - ${s}`).join('\n')}`).join('\n')}
+${STACK.map(e => `- ${e.name}\n${e.items.map(s => `  - ${s}`).join('\n')}`).join('\n')}
 
 ## Connect
 

@@ -24,39 +24,68 @@ export const PERSON = {
   clockLabel: 'Kathmandu, Nepal',
 } as const;
 
-// Ecosystem — hierarchical structure drives Ecosystem.astro, JSON-LD knowsAbout, PAGE.description, llms.txt
-export const ECOSYSTEM = [
+// Stack — hierarchical structure drives Ecosystem.astro, JSON-LD knowsAbout, PAGE.description, llms.txt
+export const STACK = [
   {
-    name: 'C#',
-    items: ['ASP.NET Core', 'Blazor', 'Entity Framework Core', 'LINQ', 'Async / Await', 'CQRS / MediatR'],
+    name: 'Backend',
+    items: [
+      'C#, .NET 6/7/8/9/10',
+      'ASP.NET Core (Web APIs, Minimal APIs)',
+      'gRPC, SignalR, .NET Aspire',
+    ],
   },
   {
-    name: '.NET',
-    items: ['.NET 9', 'CLR / GC Internals', 'Middleware Pipeline', 'Dependency Injection', 'Options Pattern', 'Minimal APIs'],
+    name: 'Databases',
+    items: [
+      'PostgreSQL, MongoDB',
+      'Common Table Expressions (CTEs), Recursive CTEs',
+      'Table-Valued Functions (TVFs), Stored Procedures',
+      'Views, Materialized Views',
+      'Full-Text Search (FTS: tsvector, tsquery), pg_trgm',
+      'Scheduled Jobs (pg_cron)',
+    ],
   },
   {
-    name: 'PostgreSQL',
-    items: ['EF Core Provider', 'Dapper', 'Indexing Strategies', 'Migrations', 'JSONB Queries', 'Performance Tuning'],
+    name: 'Frontend',
+    items: [
+      'Blazor, .NET MAUI Blazor Hybrid',
+      'HTML, CSS, JavaScript, TypeScript',
+    ],
   },
   {
-    name: 'AWS',
-    items: ['EC2 / ECS', 'RDS', 'S3', 'Lambda', 'CloudFormation / CDK', 'IAM Security'],
+    name: 'Cloud & Infrastructure',
+    items: [
+      'AWS: S3, Lambda, SQS, SNS, EventBridge, DynamoDB, RDS, EC2, Fargate, EFS, DMS, CloudWatch, Systems Manager Parameter Store',
+      'Docker, Docker Compose',
+      'Git, GitHub, GitLab',
+    ],
   },
   {
-    name: 'Docker',
-    items: ['Multi-stage Builds', 'Docker Compose', 'Healthchecks', 'Volume Management', 'Container Networking'],
+    name: 'Architecture & Design',
+    items: [
+      'Clean Architecture, Domain-Driven Design (DDD), CQRS',
+      'Dependency Injection',
+      'Repository & Unit of Work',
+      'Saga, Outbox',
+      'SOLID, DRY, KISS, YAGNI, Separation of Concerns (SoC)',
+    ],
   },
   {
-    name: 'Git',
-    items: ['Branch Strategies', 'Rebase / Merge', 'GitHub Actions CI/CD', 'Hooks', 'Cherry-pick / Bisect'],
+    name: 'Observability',
+    items: [
+      'OpenTelemetry',
+      'Prometheus',
+      'Grafana (Loki, Tempo)',
+      'Jaeger',
+    ],
   },
 ] as const;
 
-export const ECOSYSTEM_NAMES = ECOSYSTEM.map(e => e.name);
+export const STACK_NAMES = STACK.map(e => e.name);
 
 export const PAGE = {
   title: `${PERSON.fullName} • ${PERSON.jobTitle}`,
-  description: `${PERSON.jobTitle} based in ${PERSON.location}, ${PERSON.countryName}. ${ECOSYSTEM_NAMES.join(', ')}. Building scalable systems with precision, performance, and purpose.`,
+  description: `${PERSON.jobTitle} based in ${PERSON.location}, ${PERSON.countryName}. ${STACK_NAMES.join(', ')}. Building scalable systems with precision, performance, and purpose.`,
   tagline: 'Optimizing code and architecture. Building scalable systems with precision, performance, and purpose.',
   taglineHighlights: ['code', 'architecture'],
 } as const;

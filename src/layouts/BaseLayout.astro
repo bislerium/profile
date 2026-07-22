@@ -1,6 +1,6 @@
 ---
 import '../styles/index.css';
-import { SITE, LINKS, PERSON, PAGE, ECOSYSTEM_NAMES, OG_IMAGE_ALT } from '../constants';
+import { SITE, LINKS, PERSON, PAGE, STACK_NAMES, OG_IMAGE_ALT } from '../constants';
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -12,7 +12,7 @@ const structuredData = {
   image: `${SITE.url}/assets/logo/square/logo.png`,
   sameAs: [LINKS.github, LINKS.linkedin],
   address: { '@type': 'PostalAddress', addressLocality: PERSON.location, addressCountry: PERSON.country },
-  knowsAbout: ECOSYSTEM_NAMES.map(name => ({ '@type': 'Thing', name })),
+  knowsAbout: STACK_NAMES.map(name => ({ '@type': 'Thing', name })),
   description: PAGE.description,
 };
 
