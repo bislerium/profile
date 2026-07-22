@@ -173,10 +173,11 @@
 
   /* ─── Rule ─── */
   .rule {
-    grid-column: 1 / 9;
+    grid-column: 1 / 8;
     grid-row: 3;
     height: 2px;
     background: linear-gradient(90deg, var(--violet-bright), transparent 85%);
+    background-size: 100% 100%;
     align-self: center;
     margin-block: 1dvh;
     border: none;
