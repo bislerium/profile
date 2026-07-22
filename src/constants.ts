@@ -30,8 +30,10 @@ export const STACK = [
     name: 'Backend',
     items: [
       'C#, .NET 6/7/8/9/10',
-      'ASP.NET Core (Web APIs, Minimal APIs)',
-      'gRPC, SignalR, .NET Aspire',
+      'ASP.NET Core Web APIs (Controller-based, Minimal, gRPC)',
+      'SignalR',
+      'Aspire',
+      'Jobs (Fire & Forget, Delayed, Scheduled, Recurring)',
     ],
   },
   {
@@ -39,9 +41,10 @@ export const STACK = [
     items: [
       'PostgreSQL, MongoDB',
       'Common Table Expressions (CTEs), Recursive CTEs',
-      'Table-Valued Functions (TVFs), Stored Procedures',
-      'Views, Materialized Views',
-      'Full-Text Search (FTS: tsvector, tsquery), pg_trgm',
+      'Table-Valued Functions (TVFs)',
+      'Stored Procedures (SPs)',
+      'Views, Materialized Views (MVs)',
+      'Full-Text Search: tsvector/tsquery, pg_trgm',
       'Scheduled Jobs (pg_cron)',
     ],
   },
@@ -55,7 +58,7 @@ export const STACK = [
   {
     name: 'Cloud & Infrastructure',
     items: [
-      'AWS: S3, Lambda, SQS, SNS, EventBridge, DynamoDB, RDS, EC2, Fargate, EFS, DMS, CloudWatch, Systems Manager Parameter Store',
+      'AWS: S3, Lambda, SQS, SNS, EventBridge, DynamoDB, RDS, EC2, Fargate, EFS, DMS, CloudWatch, Parameter Store',
       'Docker, Docker Compose',
       'Git, GitHub, GitLab',
     ],
@@ -63,11 +66,10 @@ export const STACK = [
   {
     name: 'Architecture & Design',
     items: [
-      'Clean Architecture, Domain-Driven Design (DDD), CQRS',
-      'Dependency Injection',
-      'Repository & Unit of Work',
-      'Saga, Outbox',
-      'SOLID, DRY, KISS, YAGNI, Separation of Concerns (SoC)',
+      'Clean Architecture, Domain-Driven Design (DDD), CQRS, Dependency Injection',
+      'Chain of Responsibility, Mediator, Strategy, Resolver, Singleton, Factory, Builder, Facade, Bridge',
+      'Transactional Outbox, Saga, Two-Phase Commit (2PC)',
+      'SOLID, DRY, KISS, YAGNI, SoC',
     ],
   },
   {
