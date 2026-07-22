@@ -44,6 +44,12 @@
     }
   }
 
+  @keyframes slideIn {
+    to {
+      transform: translateX(0);
+    }
+  }
+
   @keyframes waveFlow {
     to {
       transform: translateX(-300px);
@@ -77,10 +83,10 @@
     }
 
     .rule {
-      opacity: 0;
-      animation: fadeIn 0.8s ease forwards;
+      transform: translateX(80px);
+      animation: slideIn 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
       animation-delay: 1.0s;
-      will-change: opacity;
+      will-change: transform;
     }
 
     .rule path {
