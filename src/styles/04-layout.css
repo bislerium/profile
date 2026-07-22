@@ -193,6 +193,44 @@
 
   .meta-title {
     margin-bottom: var(--space-4);
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+
+  .meta-cv {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--violet-bright);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    background: var(--violet-soft);
+    border-radius: 999px;
+    padding: 0.25em 0.65em;
+    transition: background 0.2s ease;
+  }
+
+  .meta-cv:hover,
+  .meta-cv:focus-visible {
+    background: oklch(60.4% 0.194 285.5 / 0.2);
+  }
+
+  .meta-cv .link-icon {
+    width: 0.85em;
+    height: 0.85em;
+    background-color: currentColor;
+    -webkit-mask-image: url('/assets/icons/icon-cv.svg');
+    mask-image: url('/assets/icons/icon-cv.svg');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
   }
 
   .meta-desc {
@@ -208,9 +246,9 @@
   .links-block {
     grid-column: 8 / -1;
     grid-row: 4 / 6;
-    justify-self: end;
+    justify-self: start;
     align-self: end;
-    text-align: right;
+    text-align: left;
     padding-top: 4dvh;
     padding-bottom: 3dvh;
   }
@@ -228,11 +266,49 @@
     text-decoration: none;
     transition: color 0.3s ease, transform 0.3s ease;
     outline: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
 
     &:hover,
     &:focus-visible {
       color: var(--text);
       transform: translateX(-4px);
+    }
+
+    .link-icon {
+      width: 1em;
+      height: 1em;
+      flex-shrink: 0;
+      background-color: currentColor;
+      -webkit-mask-size: contain;
+      -webkit-mask-position: center;
+      -webkit-mask-repeat: no-repeat;
+      mask-size: contain;
+      mask-position: center;
+      mask-repeat: no-repeat;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .icon-github {
+      -webkit-mask-image: url('/assets/icons/icon-github.svg');
+      mask-image: url('/assets/icons/icon-github.svg');
+    }
+
+    .icon-linkedin {
+      -webkit-mask-image: url('/assets/icons/icon-linkedin.svg');
+      mask-image: url('/assets/icons/icon-linkedin.svg');
+    }
+
+    .icon-cv {
+      -webkit-mask-image: url('/assets/icons/icon-cv.svg');
+      mask-image: url('/assets/icons/icon-cv.svg');
+    }
+
+    &:hover .link-icon,
+    &:focus-visible .link-icon {
+      opacity: 1;
     }
 
     .link-arrow {
@@ -254,15 +330,6 @@
       transform: translateX(0);
     }
 
-    &.cv {
-      color: var(--violet-bright);
-      font-weight: 600;
-
-      &:hover,
-      &:focus-visible {
-        color: var(--violet-bright);
-      }
-    }
   }
 
   /* ─── Footer ─── */
