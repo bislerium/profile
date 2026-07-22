@@ -108,7 +108,7 @@
       padding-top: 2dvh;
     }
 
-    .tech-item {
+    .eco-parent {
       padding: var(--space-1) 0;
     }
   }
@@ -126,7 +126,7 @@
       margin-bottom: var(--space-2);
     }
 
-    .tech-item {
+    .eco-parent {
       font-size: var(--text-xs);
     }
   }
@@ -176,27 +176,42 @@
     }
 
     .tech-label {
-      display: inline;
-      margin-bottom: 0;
-      margin-right: var(--space-3);
+      display: block;
+      margin-bottom: var(--space-2);
+      margin-right: 0;
     }
 
     .tech-list {
-      display: inline;
+      display: block;
     }
 
-    .tech-item {
-      display: inline;
-      padding: 0;
+    .eco-parent {
+      position: static;
+      display: block;
+      padding: var(--space-1) 0;
+    }
 
-      &::after {
-        content: ' · ';
-        color: var(--text-faint);
-      }
+    .eco-parent-name {
+      display: inline-block;
+    }
 
-      &:last-child::after {
-        content: '';
-      }
+    .eco-sublist {
+      position: static;
+      padding-left: var(--space-4);
+      margin-top: var(--space-1);
+      margin-bottom: var(--space-1);
+      border-left: 1px solid var(--rule);
+      white-space: normal;
+    }
+
+    .eco-subitem {
+      padding: var(--space-1) 0;
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+    }
+
+    .tech-list:has(.eco-parent:focus-within) .eco-parent:not(:focus-within) {
+      opacity: 0.4;
     }
 
     .rule {
@@ -267,7 +282,7 @@
       font-size: var(--text-xs);
     }
 
-    .tech-item {
+    .eco-parent {
       font-size: var(--text-xs);
     }
   }
@@ -289,7 +304,7 @@
       font-size: 0.8rem;
     }
 
-    .tech-item {
+    .eco-parent {
       font-size: var(--text-xs);
     }
   }
@@ -331,7 +346,8 @@
     .meta-desc,
     .label,
     .link-item,
-    .tech-item,
+    .eco-parent,
+    .eco-subitem,
     .footer-left,
     .footer-right {
       color: oklch(36% 0 0) !important;
@@ -369,8 +385,21 @@
     .tech-label {
       width: auto;
       text-align: left;
-      display: inline;
-      margin-right: var(--space-3);
+      display: block;
+      margin-bottom: var(--space-2);
+      margin-right: 0;
+    }
+
+    .eco-sublist {
+      display: block !important;
+      padding-left: var(--space-4);
+      margin-top: 0.15em;
+    }
+
+    .eco-subitem {
+      color: oklch(48% 0 0) !important;
+      padding: 0.1em 0;
+      font-size: 0.85em;
     }
   }
 }

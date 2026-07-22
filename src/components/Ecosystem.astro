@@ -1,0 +1,20 @@
+---
+import { ECOSYSTEM } from '../constants';
+---
+<aside class="tech-stack" aria-label="Ecosystem">
+  <h2 class="label tech-label">Ecosystem</h2>
+  <ul class="tech-list" role="list">
+    {ECOSYSTEM.map(item => (
+      <li class="eco-parent">
+        <span class="eco-parent-name" tabindex="0">
+          {item.name}
+        </span>
+        <ul class="eco-sublist" role="list">
+          {item.items.map(sub => (
+            <li class="eco-subitem">{sub}</li>
+          ))}
+        </ul>
+      </li>
+    ))}
+  </ul>
+</aside>

@@ -1,6 +1,6 @@
 // Service worker for bishalgc.info.np — enables PWA install + offline support
 // Cache version is auto-bumped by scripts/bump-sw-cache.js on each build.
-const CACHE_NAME = 'bishalgc-c42e547d1e3030fa37d9ac790eef325d0bd1e1e7f5f74c1205283bf006a0a58d';
+const CACHE_NAME = 'bishalgc-0aca7d42dca5c7f9b2b8abc2d98094da10fd0572c5ef2603db550e2c0fc4af2f';
 const MAX_CACHE_ENTRIES = 50;
 
 // Trim cache to MAX_CACHE_ENTRIES, keeping most-recently-added entries.

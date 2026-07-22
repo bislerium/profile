@@ -61,7 +61,7 @@
     }
   }
 
-  /* ─── Tech Stack ─── */
+  /* ─── Ecosystem ─── */
   .tech-stack {
     grid-column: 10 / -1;
     grid-row: 2;
@@ -79,8 +79,7 @@
     display: block;
   }
 
-  /* ─── Unified list item base ─── */
-  .tech-item,
+  /* ─── Unified list item base (links only) ─── */
   .link-item {
     display: block;
     font-family: var(--font-mono);
@@ -92,17 +91,85 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .tech-item {
+  /* ─── Ecosystem parent items ─── */
+  .eco-parent {
+    position: relative;
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+    padding: var(--space-1) 0;
+    font-variant-numeric: tabular-nums;
     color: var(--text-dim);
     transition: color 0.3s ease, opacity 0.3s ease;
     cursor: default;
+  }
 
-    &:hover {
-      color: var(--violet-bright);
+  .eco-parent-name {
+    cursor: pointer;
+    outline: none;
+    transition: color 0.3s ease;
+  }
+
+  .eco-sublist {
+    display: none;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .eco-subitem {
+    color: var(--text-faint);
+    padding: var(--space-1) 0;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+  }
+
+  .eco-subitem:hover {
+    color: var(--violet-bright);
+  }
+
+  /* Desktop flyout to the left */
+  @media (min-width: 769px) {
+    .eco-sublist {
+      position: absolute;
+      right: calc(100% + 0.75rem);
+      top: 0;
+      text-align: left;
+      white-space: nowrap;
+      z-index: 2;
     }
   }
 
-  .tech-list:has(.tech-item:hover) .tech-item:not(:hover) {
+  /* Hover reveal (devices with a pointer) */
+  @media (hover: hover) {
+    .eco-parent:hover .eco-sublist {
+      display: block;
+    }
+
+    .eco-parent:hover .eco-parent-name {
+      color: var(--violet-bright);
+    }
+
+    .tech-list:has(.eco-parent:hover) .eco-parent:not(:hover) {
+      opacity: 0.4;
+    }
+  }
+
+  /* Focus reveal (mobile tap + keyboard tab) */
+  .eco-parent:focus-within .eco-sublist {
+    display: block;
+  }
+
+  .eco-parent:focus-within .eco-parent-name {
+    color: var(--violet-bright);
+  }
+
+  .tech-list:has(.eco-parent:focus-within) .eco-parent:not(:focus-within) {
     opacity: 0.4;
   }
 
