@@ -56,14 +56,9 @@
     }
   }
 
-  @keyframes ruleThink {
-    0%,
-    100% {
-      background-size: 100% 100%;
-    }
-
-    50% {
-      background-size: 130% 100%;
+  @keyframes ruleFlow {
+    to {
+      stroke-dashoffset: -24;
     }
   }
 
@@ -97,11 +92,14 @@
       opacity: 0;
       transform: scaleX(0);
       transform-origin: left;
-      animation:
-        scaleX 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards,
-        ruleThink 4s ease-in-out infinite;
-      animation-delay: 1.0s, 2.2s;
+      animation: scaleX 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+      animation-delay: 1.0s;
       will-change: transform, opacity;
+
+      path {
+        animation: ruleFlow 1s linear infinite;
+        animation-delay: 2.2s;
+      }
     }
 
     .meta-block {
