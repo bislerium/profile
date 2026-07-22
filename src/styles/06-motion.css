@@ -33,18 +33,6 @@
     }
   }
 
-  @keyframes scaleX {
-    from {
-      opacity: 0;
-      transform: scaleX(0);
-    }
-
-    to {
-      opacity: 1;
-      transform: scaleX(1);
-    }
-  }
-
   @keyframes breathe {
     0%,
     100% {
@@ -90,16 +78,14 @@
 
     .rule {
       opacity: 0;
-      transform: scaleX(0);
-      transform-origin: left;
-      animation: scaleX 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+      animation: fadeIn 0.8s ease forwards;
       animation-delay: 1.0s;
-      will-change: transform, opacity;
+      will-change: opacity;
     }
 
     .rule path {
       animation: waveFlow 3s linear infinite;
-      animation-delay: 2.2s;
+      animation-delay: 1.0s;
       will-change: transform;
     }
 
