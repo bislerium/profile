@@ -44,9 +44,9 @@
     }
   }
 
-  @keyframes slideIn {
+  @keyframes drawIn {
     to {
-      transform: translateX(0);
+      stroke-dashoffset: 0;
     }
   }
 
@@ -82,17 +82,12 @@
       will-change: transform, opacity;
     }
 
-    .rule {
-      transform: translateX(-80px);
-      animation: slideIn 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-      animation-delay: 1.0s;
-      will-change: transform;
-    }
-
     .rule path {
-      animation: waveFlow 3s linear infinite;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: drawIn 1s cubic-bezier(0.23, 1, 0.32, 1) forwards, waveFlow 3s linear infinite;
       animation-delay: 1.0s;
-      will-change: transform;
+      will-change: stroke-dashoffset, transform;
     }
 
     .meta-block {
@@ -133,6 +128,7 @@
     }
 
     .rule path {
+      stroke-dasharray: none;
       animation: none;
     }
   }
