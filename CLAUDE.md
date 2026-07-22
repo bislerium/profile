@@ -28,7 +28,7 @@ src/
     IndexHeader.astro   # Decorative div with logo (not a landmark)
     NameBlock.astro     # h1 — name with TextScramble effect
     TechStack.astro     # aside — stack list
-    SectionDivider.astro # hr — decorative gradient rule
+    SectionDivider.astro # hr — animated sine-wave SVG squiggle (drawIn + waveFlow)
     MetaBlock.astro     # section — role + highlighted tagline (set:html)
     LinksBlock.astro    # nav — GitHub, LinkedIn, CV links
     Footer.astro        # footer — Clock + availability dot + offline indicator
@@ -127,7 +127,7 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 | `03-theme.css` | `theme` | Reusable utility classes (`.highlight`, `.label`) |
 | `04-layout.css` | `layout` | 12-column CSS Grid layout with named grid rows, subgrid footer, responsive padding |
 | `05-components.css` | `components` | Self-contained widgets (`.progress-bar`, `.status-dot`, `.status-offline`) |
-| `06-motion.css` | `motion` | `@keyframes` (fadeUp, fadeIn, scaleX, breathe, progressFill/Fade) and staggered entry animations, respects `prefers-reduced-motion` |
+| `06-motion.css` | `motion` | `@keyframes` (fadeUp, fadeIn, drawIn, waveFlow, breathe, progressFill/Fade) and staggered entry animations, respects `prefers-reduced-motion` |
 | `07-overrides.css` | `overrides` | Skip-link utility, container queries (`@container page`), media queries (768/480/360px), print styles |
 
 All `@font-face` rules live in `00-fonts.css` (no layer) so they're always in the global scope. The 7 numbered files each get a cascade layer matching their name.
