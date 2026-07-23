@@ -48,3 +48,10 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Notify IndexNow
+        run: |
+          curl -s -G -o /dev/null -w "%{http_code}" \
+            --data-urlencode "url=https://bishalgc.info.np/" \
+            --data-urlencode "key=673e9195-812f-49b2-895d-351d3b175b9a" \
+            "https://api.indexnow.org/indexnow"

@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config';
-import sitemap from '@astrojs/sitemap';
+import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import { SITE } from './src/constants';
 
 // https://astro.build/config
@@ -14,6 +14,12 @@ export default defineConfig({
   integrations: [
     sitemap({
       namespaces: { news: false, xhtml: false, image: true, video: false },
+      serialize(item) {
+        item.lastmod = new Date().toISOString();
+        item.changefreq = ChangeFreqEnum.MONTHLY;
+        item.priority = 1.0;
+        return item;
+      },
     }),
   ],
 });
