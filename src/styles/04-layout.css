@@ -98,7 +98,6 @@
   .eco-parent-name {
     cursor: pointer;
     outline: none;
-    transition: color 0.3s ease;
   }
 
   .eco-sublist {
@@ -124,11 +123,6 @@
   .eco-subitem {
     color: var(--text-faint);
     padding: var(--space-1) 0;
-    transition: color 0.3s ease;
-  }
-
-  .eco-subitem:hover {
-    color: var(--violet-bright);
   }
 
   /* Hover reveal (devices with a pointer) */
@@ -141,8 +135,9 @@
       color: var(--violet-bright);
     }
 
-    .tech-list:has(.eco-parent:hover) .eco-parent:not(:hover) {
-      opacity: 0.4;
+    /* Dismiss a stuck focused sublist when hovering a different item */
+    .tech-list:hover .eco-parent:focus-within:not(:hover) .eco-sublist {
+      display: none;
     }
   }
 
@@ -153,10 +148,6 @@
 
   .eco-parent:focus-within .eco-parent-name {
     color: var(--violet-bright);
-  }
-
-  .tech-list:has(.eco-parent:focus-within) .eco-parent:not(:focus-within) {
-    opacity: 0.4;
   }
 
   /* ─── Rule ─── */
