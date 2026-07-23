@@ -14,20 +14,19 @@ No linter or test runner configured — this is a single-page portfolio.
 
 ```text
 src/
-  constants.ts          # SITE, LINKS, PERSON, PAGE — single source of truth for all metadata
+  constants.ts          # SITE, LINKS, PERSON, STACK, STACK_NAMES, PAGE, OG_IMAGE_ALT — single source of truth for all metadata
   layouts/
     BaseLayout.astro    # <head> with all meta, OG, Twitter, favicons, JSON-LD, CSP, GA
   pages/
     index.astro          # Single-page site — composes components into <main>
     404.astro            # Custom 404 error page with BaseLayout + inline styles
-    sitemap.xml.ts       # Dynamic sitemap endpoint (lastmod + changefreq)
     robots.txt.ts        # Robots endpoint (disallows /assets/cv.pdf)
     llms.txt.ts          # LLMs.txt endpoint for AI crawlers
     site.webmanifest.ts  # Dynamic PWA manifest endpoint
   components/
     IndexHeader.astro   # Decorative div with logo (not a landmark)
     NameBlock.astro     # h1 — name with TextScramble effect
-    TechStack.astro     # aside — stack list
+    Ecosystem.astro     # aside — hierarchical stack list (categories + items)
     SectionDivider.astro # hr — animated sine-wave SVG squiggle (drawIn + waveFlow)
     MetaBlock.astro     # section — role + highlighted tagline (set:html)
     LinksBlock.astro    # nav — GitHub, LinkedIn, CV links
@@ -56,17 +55,19 @@ scripts/
 
 ## Centralized constants
 
-`src/constants.ts` is the **single source of truth** for all site metadata. There are 6 exports — never hardcode a name, URL, title, color, or tech item anywhere else.
+`src/constants.ts` is the **single source of truth** for all site metadata. There are 7 exports — never hardcode a name, URL, title, color, or tech item anywhere else.
 
 ```ts
-// Site-level config — URL, analytics, brand
+// Site-level config — URL, analytics, brand, theme colors
 export const SITE = {
   url: 'https://bishalgc.info.np',
   gaId: 'G-CGXSWDPMTW',
   themeColor: '#512bd4',
+  themeColorDark: '#0a0a0f',
+  themeColorLight: '#f7f7f5',
 } as const;
 
-// Outbound links — used in LinkBlock, LLMs.txt, robots.txt, JSON-LD
+// Outbound links — used in LinksBlock, LLMs.txt, robots.txt, JSON-LD
 export const LINKS = {
   github: 'https://github.com/bislerium',
   linkedin: 'https://www.linkedin.com/in/bishalgc/',
@@ -88,28 +89,39 @@ export const PERSON = {
   clockLabel: 'Kathmandu, Nepal',
 } as const;
 
-// Tech stack — one array drives TechStack.astro, JSON-LD knowsAbout, PAGE.description, llms.txt
-export const TECH_STACK = [
-  'C#',
-  '.NET',
-  'PostgreSQL',
-  'AWS',
-  'Docker',
-  'Git',
+// Stack — hierarchical structure drives Ecosystem.astro, JSON-LD knowsAbout, PAGE.description, llms.txt
+export const STACK = [
+  {
+    name: 'Backend',
+    items: [
+      'C#, .NET 6/7/8/9/10',
+      'ASP.NET Core Web APIs (Controller-based, Minimal, gRPC)',
+      'SignalR',
+      'Aspire',
+      'Jobs (Fire & Forget, Delayed, Scheduled, Recurring)',
+    ],
+  },
+  { name: 'Databases', items: ['PostgreSQL, MongoDB', 'CTEs, Recursive CTEs', 'TVFs, SPs', 'Views, MVs', 'Full-Text Search', 'Scheduled Jobs (pg_cron)'] },
+  { name: 'Frontend', items: ['Blazor, .NET MAUI Blazor Hybrid', 'HTML, CSS, JavaScript, TypeScript'] },
+  { name: 'Cloud & Infrastructure', items: ['AWS: S3, Lambda, SQS, SNS, EventBridge, DynamoDB, RDS, EC2, Fargate, EFS, DMS, CloudWatch, Parameter Store', 'Docker, Docker Compose', 'Git, GitHub, GitLab'] },
+  { name: 'Architecture & Design', items: ['Clean Architecture, DDD, CQRS, DI', 'Chain of Responsibility, Mediator, Strategy, Resolver, Singleton, Factory, Builder, Facade, Bridge', 'Transactional Outbox, Saga, 2PC', 'SOLID, DRY, KISS, YAGNI, SoC'] },
+  { name: 'Observability', items: ['OpenTelemetry', 'Prometheus', 'Grafana (Loki, Tempo)', 'Jaeger'] },
 ] as const;
 
-// Page metadata — built from PERSON and TECH_STACK
+export const STACK_NAMES = STACK.map(e => e.name);
+
+// Page metadata — built from PERSON and STACK_NAMES
 export const PAGE = {
   title: `${PERSON.fullName} • ${PERSON.jobTitle}`,
-  description: `${PERSON.jobTitle} based in ${PERSON.location}, ${PERSON.countryName}. ${TECH_STACK.join(', ')}. ...`,
-  tagline: 'Optimizing code and architecture. ...',
+  description: `${PERSON.jobTitle} based in ${PERSON.location}, ${PERSON.countryName}. ${STACK_NAMES.join(', ')}. Building scalable systems with precision, performance, and purpose.`,
+  tagline: 'Optimizing code and architecture. Building scalable systems with precision, performance, and purpose.',
   taglineHighlights: ['code', 'architecture'],
 } as const;
 
 export const OG_IMAGE_ALT = `${PERSON.fullName} • ${PERSON.jobTitle} portfolio`;
 ```
 
-All derived strings are template literals built from `PERSON` and `TECH_STACK` fields. Changing a value in `PERSON` or `TECH_STACK` cascades through `<meta>`, OG, Twitter, JSON-LD, `llms.txt`, the PWA manifest, the clock widget, and the TextScramble animation automatically.
+All derived strings are template literals built from `PERSON` and `STACK` fields. Changing a value in `PERSON` or `STACK` cascades through `<meta>`, OG, Twitter, JSON-LD, `llms.txt`, the PWA manifest, the clock widget, and the TextScramble animation automatically.
 
 The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly — no manual sync needed.
 
@@ -139,7 +151,7 @@ The build inlines all CSS into the HTML (`build.inlineStylesheets: 'always'`), s
 Two vanilla classes in `src/scripts/`, typed with TypeScript, bundled by Astro and inlined into the HTML:
 
 - **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/scripts/text-scramble.ts`.
-- **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Updates every 60s. Includes a `destroy()` method to stop the interval — not currently called since the clock lives for the page lifetime. Source: `src/scripts/clock.ts`.
+- **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Updates every 60s. Source: `src/scripts/clock.ts`.
 
 Init in `init.ts` is loaded via a `<script>` tag in `index.astro`.
 

@@ -8,7 +8,7 @@ export const GET: APIRoute = () => {
     description: PAGE.description,
     start_url: '/',
     scope: '/',
-    id: 'bishalgc-portfolio',
+    id: `${PERSON.shortName.toLowerCase().replace(/\s/g, '')}-portfolio`,
     display: 'standalone',
     lang: 'en',
     dir: 'ltr',

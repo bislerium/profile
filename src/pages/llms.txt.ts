@@ -14,6 +14,10 @@ ${PERSON.fullName} (${PERSON.shortName}) is a ${PERSON.jobTitle.toLowerCase()} â
 
 ${STACK.map(e => `- ${e.name}\n${e.items.map(s => `  - ${s}`).join('\n')}`).join('\n')}
 
+## Pages
+
+- [Home](${SITE.url})
+
 ## Connect
 
 - GitHub: ${LINKS.github}

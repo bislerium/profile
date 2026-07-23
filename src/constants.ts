@@ -2,6 +2,8 @@ export const SITE = {
   url: 'https://bishalgc.info.np',
   gaId: 'G-CGXSWDPMTW',
   themeColor: '#512bd4',
+  themeColorDark: '#0a0a0f',
+  themeColorLight: '#f7f7f5',
 } as const;
 
 export const LINKS = {
