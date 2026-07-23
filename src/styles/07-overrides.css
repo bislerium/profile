@@ -219,10 +219,6 @@
       white-space: normal;
     }
 
-    .tech-list:has(.eco-parent:focus-within) .eco-parent:not(:focus-within) {
-      opacity: 0.4;
-    }
-
     .rule {
       grid-column: 1;
       grid-row: 4;

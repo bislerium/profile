@@ -96,7 +96,6 @@
   }
 
   .eco-parent-name {
-    cursor: pointer;
     outline: none;
   }
 
@@ -135,19 +134,24 @@
       color: var(--violet-bright);
     }
 
-    /* Dismiss a stuck focused sublist when hovering a different item */
-    .tech-list:hover .eco-parent:focus-within:not(:hover) .eco-sublist {
-      display: none;
+    .tech-list:has(.eco-parent:hover) .eco-parent:not(:hover) {
+      opacity: 0.4;
     }
   }
 
-  /* Focus reveal (mobile tap + keyboard tab) */
-  .eco-parent:focus-within .eco-sublist {
-    display: block;
-  }
+  /* Tap reveal (touch devices) */
+  @media (hover: none) {
+    .eco-parent:focus-within .eco-sublist {
+      display: block;
+    }
 
-  .eco-parent:focus-within .eco-parent-name {
-    color: var(--violet-bright);
+    .eco-parent:focus-within .eco-parent-name {
+      color: var(--violet-bright);
+    }
+
+    .tech-list:has(.eco-parent:focus-within) .eco-parent:not(:focus-within) {
+      opacity: 0.4;
+    }
   }
 
   /* ─── Rule ─── */
