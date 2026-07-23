@@ -51,7 +51,8 @@ jobs:
 
       - name: Notify IndexNow
         run: |
-          curl -s -G -o /dev/null -w "%{http_code}" \
-            --data-urlencode "url=https://bishalgc.info.np/" \
-            --data-urlencode "key=673e9195-812f-49b2-895d-351d3b175b9a" \
+          curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d '{"host":"bishalgc.info.np","key":"66deaff2e815448c8709da302c0265cd","keyLocation":"https://bishalgc.info.np/66deaff2e815448c8709da302c0265cd.txt","urlList":["https://bishalgc.info.np/"]}' \
             "https://api.indexnow.org/indexnow"
