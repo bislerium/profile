@@ -5,7 +5,7 @@ export async function GET() {
 Allow: /
 Disallow: ${LINKS.cv}
 
-Sitemap: ${SITE.url}/sitemap.xml
+Sitemap: ${SITE.url}/sitemap-index.xml
 `;
   return new Response(body, {
     headers: { 'Content-Type': 'text/plain' },

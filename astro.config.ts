@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 import { SITE } from './src/constants';
 
 // https://astro.build/config
@@ -10,4 +11,10 @@ export default defineConfig({
     assets: 'astro',
     inlineStylesheets: 'always',
   },
+  integrations: [
+    sitemap({
+      filter: (page) => page === SITE.url,
+      namespaces: { news: false, xhtml: false, image: false, video: false },
+    }),
+  ],
 });
