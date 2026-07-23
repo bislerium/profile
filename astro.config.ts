@@ -13,7 +13,6 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => page === SITE.url,
       namespaces: { news: false, xhtml: false, image: false, video: false },
     }),
   ],

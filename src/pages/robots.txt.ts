@@ -1,13 +1,15 @@
-import { SITE, LINKS } from '../constants';
+import type { APIRoute } from 'astro';
+import { LINKS } from '../constants';
 
-export async function GET() {
+export const GET: APIRoute = ({ site }) => {
+  if (!site) return new Response(null, { status: 500 });
+
+  const sitemapURL = new URL('sitemap-index.xml', site).href;
   const body = `User-agent: *
 Allow: /
 Disallow: ${LINKS.cv}
 
-Sitemap: ${SITE.url}/sitemap-index.xml
+Sitemap: ${sitemapURL}
 `;
-  return new Response(body, {
-    headers: { 'Content-Type': 'text/plain' },
-  });
-}
+  return new Response(body, { headers: { 'Content-Type': 'text/plain' } });
+};
