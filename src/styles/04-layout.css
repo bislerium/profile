@@ -92,11 +92,28 @@
     font-variant-numeric: tabular-nums;
     color: var(--text-dim);
     transition: color 0.3s ease, opacity 0.3s ease;
-    cursor: default;
+    cursor: pointer;
   }
 
   .eco-parent-name {
-    outline: none;
+    /* focus-visible handled globally in base.css */
+    cursor: pointer;
+  }
+
+  .eco-parent-name::after {
+    content: '▸';
+    display: inline-block;
+    margin-left: 0.3em;
+    font-size: 0.8em;
+    opacity: 0.4;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    vertical-align: 0.05em;
+  }
+
+  .eco-parent:hover .eco-parent-name::after,
+  .eco-parent:focus-within .eco-parent-name::after {
+    transform: rotate(90deg);
+    opacity: 0.7;
   }
 
   .eco-sublist {
@@ -124,17 +141,17 @@
     padding: var(--space-1) 0;
   }
 
-  /* Hover reveal (devices with a pointer) */
+  /* Hover / focus reveal (devices with a pointer) */
   @media (hover: hover) {
-    .eco-parent:hover .eco-sublist {
+    .eco-parent:is(:hover, :focus-within) .eco-sublist {
       display: block;
     }
 
-    .eco-parent:hover .eco-parent-name {
+    .eco-parent:is(:hover, :focus-within) .eco-parent-name {
       color: var(--violet-bright);
     }
 
-    .tech-list:has(.eco-parent:hover) .eco-parent:not(:hover) {
+    .tech-list:has(.eco-parent:is(:hover, :focus-within)) .eco-parent:not(:hover):not(:focus-within) {
       opacity: 0.4;
     }
   }
@@ -257,7 +274,6 @@
     color: var(--text-dim);
     text-decoration: none;
     transition: color 0.3s ease;
-    outline: none;
 
     &:hover,
     &:focus-visible {

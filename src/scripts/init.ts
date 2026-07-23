@@ -1,5 +1,6 @@
 import { TextScramble } from './text-scramble';
 import { Clock } from './clock';
+import { initStackToggle } from './stack-toggle';
 import { PERSON } from '../constants';
 
 const init = () => {
@@ -12,6 +13,8 @@ const init = () => {
 
   const clockEl = document.getElementById('clock') as HTMLTimeElement | null;
   if (clockEl) new Clock(clockEl);
+
+  initStackToggle();
 };
 
 if (document.readyState === 'loading') {
