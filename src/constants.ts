@@ -88,7 +88,7 @@ export const STACK = [
 export const STACK_NAMES = STACK.map(e => e.name);
 
 export const PAGE = {
-  title: `${PERSON.fullName} • ${PERSON.jobTitle}`,
+  title: `${PERSON.fullName} - ${PERSON.jobTitle}`,
   description: `${PERSON.jobTitle} based in ${PERSON.location}, ${PERSON.countryName}. ${STACK_NAMES.join(', ')}. Building scalable systems with precision, performance, and purpose.`,
   tagline: 'Optimizing code and architecture. Building scalable systems with precision, performance, and purpose.',
   taglineHighlights: ['code', 'architecture'],
