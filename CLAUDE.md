@@ -101,10 +101,10 @@ export const STACK = [
       'Jobs (Fire & Forget, Delayed, Scheduled, Recurring)',
     ],
   },
-  { name: 'Databases', items: ['PostgreSQL, MongoDB', 'CTEs, Recursive CTEs', 'TVFs, SPs', 'Views, MVs', 'Full-Text Search', 'Scheduled Jobs (pg_cron)'] },
+  { name: 'Databases', items: ['PostgreSQL, MongoDB', 'Common Table Expressions (CTEs), Recursive CTEs', 'Table-Valued Functions (TVFs)', 'Stored Procedures (SPs)', 'Views, Materialized Views (MVs)', 'Full-Text Search: tsvector/tsquery, pg_trgm', 'Scheduled Jobs (pg_cron)'] },
   { name: 'Frontend', items: ['Blazor, .NET MAUI Blazor Hybrid', 'HTML, CSS, JavaScript, TypeScript'] },
   { name: 'Cloud & Infrastructure', items: ['AWS: S3, Lambda, SQS, SNS, EventBridge, DynamoDB, RDS, EC2, Fargate, EFS, DMS, CloudWatch, Parameter Store', 'Docker, Docker Compose', 'Git, GitHub, GitLab'] },
-  { name: 'Architecture & Design', items: ['Clean Architecture, DDD, CQRS, DI', 'Chain of Responsibility, Mediator, Strategy, Resolver, Singleton, Factory, Builder, Facade, Bridge', 'Transactional Outbox, Saga, 2PC', 'SOLID, DRY, KISS, YAGNI, SoC'] },
+  { name: 'Architecture & Design', items: ['Clean Architecture, Domain-Driven Design (DDD), CQRS, Dependency Injection', 'Chain of Responsibility, Mediator, Strategy, Resolver, Singleton, Factory, Builder, Facade, Bridge', 'Transactional Outbox, Saga, Two-Phase Commit (2PC)', 'SOLID, DRY, KISS, YAGNI, SoC'] },
   { name: 'Observability', items: ['OpenTelemetry', 'Prometheus', 'Grafana (Loki, Tempo)', 'Jaeger'] },
 ] as const;
 
@@ -112,7 +112,7 @@ export const STACK_NAMES = STACK.map(e => e.name);
 
 // Page metadata — built from PERSON and STACK_NAMES
 export const PAGE = {
-  title: `${PERSON.fullName} • ${PERSON.jobTitle}`,
+  title: `${PERSON.fullName} - ${PERSON.jobTitle}`,
   description: `${PERSON.jobTitle} based in ${PERSON.location}, ${PERSON.countryName}. ${STACK_NAMES.join(', ')}. Building scalable systems with precision, performance, and purpose.`,
   tagline: 'Optimizing code and architecture. Building scalable systems with precision, performance, and purpose.',
   taglineHighlights: ['code', 'architecture'],

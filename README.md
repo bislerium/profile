@@ -9,7 +9,7 @@ Personal portfolio site built with [Astro](https://astro.build), TypeScript, and
 - **Styling:** Vanilla CSS with `@layer` architecture
 - **CI/CD:** GitHub Actions → GitHub Pages
 - **CDN:** Cloudflare
-- **Fonts:** Inter + JetBrains Mono (Google Fonts)
+- **Fonts:** Switzer + JetBrains Mono (self-hosted woff2, `font-display: swap`)
 
 ## Development
 
