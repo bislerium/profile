@@ -31,11 +31,11 @@ src/
     SectionDivider.astro # hr — animated sine-wave SVG squiggle (drawIn + waveFlow)
     MetaBlock.astro     # section — role + highlighted tagline (set:html)
     LinksBlock.astro    # nav — GitHub, LinkedIn, CV links
-    Footer.astro        # footer — Clock + availability dot + offline indicator
+    Footer.astro        # footer — Clock + availability dot
     SkipLink.astro      # Skip-to-main accessibility link
     ProgressBar.astro   # Decorative scroll indicator (aria-hidden)
   scripts/
-    init.ts             # Boots TextScramble + Clock + SW + offline banner (imports PERSON.nameParts)
+    init.ts             # Boots TextScramble + Clock (imports PERSON.nameParts)
     text-scramble.ts    # Animated text reveal (respects prefers-reduced-motion)
     clock.ts  # Live clock widget using Intl.DateTimeFormat (imports PERSON.timezone, clockLabel)
   styles/               # 8 CSS files — 1 font-face + 7 @layer (see CSS architecture below)
@@ -43,7 +43,6 @@ design/
   logo/square/          # Source logo files (logo-square.svg, .png, .graphite)
 public/
   favicon.ico            # Root favicon (Googlebot fallback, duplicated from assets/icons/)
-  sw.js                  # Service worker — cache-first for /astro/, network-first for navigation + /assets/
   assets/
     icons/              # 16 generated favicon/app-icon files
     logo/square/        # Public logo (logo.svg for header, logo.png for JSON-LD/OG)
@@ -53,7 +52,6 @@ public/
     jetbrains-mono/     # 4 woff2 weights — 400, 500, 600, 700
 scripts/
   generate-icons.py     # Reproducible icon generation from design/logo/square/logo-square.svg
-  bump-sw-cache.js      # Auto-bumps SW cache version before each build (hashes sw.js + astro.config.ts)
 ```
 
 ## Centralized constants
@@ -111,7 +109,7 @@ export const PAGE = {
 export const OG_IMAGE_ALT = `${PERSON.fullName} • ${PERSON.jobTitle} portfolio`;
 ```
 
-All derived strings are template literals built from `PERSON` and `TECH_STACK` fields. Changing a value in `PERSON` or `TECH_STACK` cascades through `<meta>`, OG, Twitter, JSON-LD, `llms.txt`, the PWA manifest, the service worker, the clock widget, and the TextScramble animation automatically.
+All derived strings are template literals built from `PERSON` and `TECH_STACK` fields. Changing a value in `PERSON` or `TECH_STACK` cascades through `<meta>`, OG, Twitter, JSON-LD, `llms.txt`, the PWA manifest, the clock widget, and the TextScramble animation automatically.
 
 The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly — no manual sync needed.
 
@@ -126,7 +124,7 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 | `02-base.css` | `base` | Custom properties (OKLCH colors, fluid `clamp()` spacing), `:root`/`body`, `::selection`, `:focus-visible` |
 | `03-theme.css` | `theme` | Reusable utility classes (`.highlight`, `.label`) |
 | `04-layout.css` | `layout` | 12-column CSS Grid layout with named grid rows, subgrid footer, responsive padding |
-| `05-components.css` | `components` | Self-contained widgets (`.progress-bar`, `.status-dot`, `.status-offline`) |
+| `05-components.css` | `components` | Self-contained widgets (`.progress-bar`, `.status-dot`, `.status-available`) |
 | `06-motion.css` | `motion` | `@keyframes` (fadeUp, fadeIn, drawIn, waveFlow, breathe, progressFill/Fade) and staggered entry animations, respects `prefers-reduced-motion` |
 | `07-overrides.css` | `overrides` | Skip-link utility, container queries (`@container page`), media queries (768/480/360px), print styles |
 
@@ -143,7 +141,7 @@ Two vanilla classes in `src/scripts/`, typed with TypeScript, bundled by Astro a
 - **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/scripts/text-scramble.ts`.
 - **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Updates every 60s. Includes a `destroy()` method to stop the interval — not currently called since the clock lives for the page lifetime. Source: `src/scripts/clock.ts`.
 
-Init in `init.ts` is loaded via a `<script>` tag in `index.astro`. It also registers the service worker (`/sw.js`) and sets up an offline banner (PWA standalone mode only, toggled by `online`/`offline` events).
+Init in `init.ts` is loaded via a `<script>` tag in `index.astro`.
 
 ## Icons and favicons
 
@@ -179,27 +177,11 @@ Source files live in `design/logo/square/`:
 
 Public copies are in `public/assets/logo/square/` as `logo.svg` and `logo.png`. The circle variant has been removed — only the square logo is used site-wide.
 
-## Service Worker
-
-`public/sw.js` provides offline support with a three-tier caching strategy:
-
-| Path pattern | Strategy | Rationale |
-| --- | --- | --- |
-| Navigation (`request.mode === 'navigate'`) | Network-first, cache fallback | Always serve fresh HTML; fall back to cache or `/` when offline |
-| `/astro/*` (hashed build assets) | Cache-first | Content-hashed filenames are immutable — safe to cache indefinitely |
-| `/assets/*` (icons, logos, OG image, CV) | Network-first | Fixed URLs that may change across deploys |
-
-- Precaches `/` on install, cleans old cache versions on activate
-- Max 50 cache entries, LRU eviction (drops oldest entries)
-- Does NOT call `clients.claim()` — existing tabs keep their current SW until reload to prevent mid-session cache invalidation
-- **Known gap:** `/fonts/*` paths are NOT cached by the SW. Font files (~208 KB across 8 woff2 files) are re-fetched on every page load. Fonts follow the same-origin rule but the SW has no handler for the `/fonts/` path prefix.
-- Cache version is auto-bumped by `scripts/bump-sw-cache.js` (hashes `sw.js` content + `astro.config.ts` with SHA-256)
-
 ## Deployment
 
 GitHub Actions deploys to GitHub Pages with Cloudflare CDN in front.
 
-The prebuild hook (`node scripts/bump-sw-cache.js`) auto-bumps the SW cache version, then `astro build` inlines all CSS and JS into a single HTML file (~29 KB). Total `dist/` size is ~920 KB (dominated by the OG image at ~440 KB and fonts at ~208 KB).
+`astro build` inlines all CSS and JS into a single HTML file (~29 KB). Total `dist/` size is ~920 KB (dominated by the OG image at ~440 KB and fonts at ~208 KB).
 
 `.nojekyll` in `public/` prevents GitHub Pages from running Jekyll on the built output (which would ignore `_astro/` prefixed directories).
 
