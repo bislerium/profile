@@ -408,4 +408,26 @@
       font-size: 0.85em;
     }
   }
+
+  /* ─── High Contrast Mode ─── */
+  @media (prefers-contrast: more) {
+    :root {
+      --text: light-dark(#000, #fff);
+      --text-dim: light-dark(#1a1a1a, #e6e6e6);
+      --text-faint: light-dark(#333, #ccc);
+      --violet-bright: light-dark(oklch(35% 0.25 282.4), oklch(75% 0.15 285.5));
+    }
+
+    :focus-visible {
+      outline-width: 3px;
+      outline-offset: 4px;
+    }
+
+    .highlight {
+      background: transparent;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 0.15em;
+    }
+  }
 }
