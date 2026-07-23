@@ -1,6 +1,7 @@
+import type { APIRoute } from 'astro';
 import { SITE, PERSON, PAGE } from '../constants';
 
-export async function GET() {
+export const GET: APIRoute = () => {
   const manifest = {
     name: PERSON.fullName,
     short_name: PERSON.firstName,

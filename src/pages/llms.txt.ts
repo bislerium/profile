@@ -1,6 +1,7 @@
+import type { APIRoute } from 'astro';
 import { SITE, LINKS, PERSON, PAGE, STACK } from '../constants';
 
-export async function GET() {
+export const GET: APIRoute = () => {
   const body = `# ${PERSON.fullName}
 
 > ${PERSON.jobTitle} · ${PERSON.location}, ${PERSON.countryName}
