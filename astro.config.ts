@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
-import { SITE } from './src/pages/index/_constants';
+import { SITE } from './src/pages/portfolio/_constants';
 
 // https://astro.build/config
 export default defineConfig({

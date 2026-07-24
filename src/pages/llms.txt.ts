@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { SITE, LINKS, PERSON, PAGE, STACK } from 'src/pages/index/_constants';
+import { SITE, LINKS, PERSON, PAGE, STACK } from 'src/pages/portfolio/_constants';
 
 export const GET: APIRoute = () => {
   const body = `# ${PERSON.fullName}

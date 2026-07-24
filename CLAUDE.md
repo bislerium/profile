@@ -17,8 +17,8 @@ src/
   layouts/
     BaseLayout.astro    # <head> with all meta, OG, Twitter, favicons, JSON-LD, CSP, GA
   pages/
-    index/              # Main page — all index-specific files colocated here (_ prefix = excluded from routing)
-      index.astro       # Composes components into <main>, imports page-level CSS + _init.ts
+    index.astro          # Single-page portfolio at / — imports from ./portfolio/
+    portfolio/           # All index-specific supporting files (_ prefix = excluded from routing)
       _constants.ts     # SITE, LINKS, PERSON, STACK, STACK_NAMES, PAGE, OG_IMAGE_ALT — single source of truth
       _init.ts          # Boots TextScramble + Clock + stack toggle (imports PERSON.nameParts)
       styles/           # Page-level CSS (layout, components, motion)
@@ -59,7 +59,7 @@ scripts/
 
 ## Centralized constants
 
-`src/pages/index/_constants.ts` is the **single source of truth** for all site metadata. There are 7 exports — never hardcode a name, URL, title, color, or tech item anywhere else.
+`src/pages/portfolio/_constants.ts` is the **single source of truth** for all site metadata. There are 7 exports — never hardcode a name, URL, title, color, or tech item anywhere else.
 
 ```ts
 // Site-level config — URL, analytics, brand, theme colors
@@ -131,7 +131,7 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 
 ## CSS architecture
 
-4 shared CSS files imported via `src/styles/index.css` (loaded in `BaseLayout.astro`) + 4 page-level CSS files imported via `src/pages/index/styles/index.css` (loaded in `index.astro`):
+4 shared CSS files imported via `src/styles/index.css` (loaded in `BaseLayout.astro`) + 4 page-level CSS files imported via `src/pages/portfolio/styles/index.css` (loaded in `index.astro`):
 
 **Shared** (`src/styles/` — used by all pages):
 
@@ -142,7 +142,7 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 | `02-base.css` | `base` | Custom properties (OKLCH colors, fluid `clamp()` spacing), `:root`/`body`, `::selection`, `:focus-visible` |
 | `03-theme.css` | `theme` | Reusable utility classes (`.highlight`, `.label`) |
 
-**Page-level** (`src/pages/index/styles/` — index page only):
+**Page-level** (`src/pages/portfolio/styles/` — index page only):
 
 | File | Layer | Purpose |
 | --- | --- | --- |
@@ -159,13 +159,13 @@ The build inlines all CSS into the HTML (`build.inlineStylesheets: 'always'`), s
 
 ## JavaScript
 
-Three vanilla classes colocated with their components in `src/pages/index/_components/`, typed with TypeScript, bundled by Astro and inlined into the HTML:
+Three vanilla classes colocated with their components in `src/pages/portfolio/_components/`, typed with TypeScript, bundled by Astro and inlined into the HTML:
 
-- **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/pages/index/_components/NameBlock/text-scramble.ts`.
-- **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Updates every 60s. Source: `src/pages/index/_components/Footer/clock.ts`.
-- **`initStackToggle`** — Syncs `aria-expanded` on ecosystem stack category items with their CSS hover/focus state. Reads pseudo-class state so ARIA stays in sync without duplicating CSS logic. Source: `src/pages/index/_components/Ecosystem/stack-toggle.ts`.
+- **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/pages/portfolio/_components/NameBlock/text-scramble.ts`.
+- **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Updates every 60s. Source: `src/pages/portfolio/_components/Footer/clock.ts`.
+- **`initStackToggle`** — Syncs `aria-expanded` on ecosystem stack category items with their CSS hover/focus state. Reads pseudo-class state so ARIA stays in sync without duplicating CSS logic. Source: `src/pages/portfolio/_components/Ecosystem/stack-toggle.ts`.
 
-Init in `src/pages/index/_init.ts` is loaded via a `<script>` tag in `index.astro`.
+Init in `src/pages/portfolio/_init.ts` is loaded via a `<script>` tag in `index.astro`.
 
 ## Icons and favicons
 
