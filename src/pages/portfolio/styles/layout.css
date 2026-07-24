@@ -134,7 +134,7 @@
     line-height: 1.6;
     font-variant-numeric: tabular-nums;
     position: absolute;
-    right: calc(100% + 1rem);
+    right: calc(100% + 1.25rem);
     top: 0;
     text-align: right;
     width: max-content;
