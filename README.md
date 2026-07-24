@@ -26,4 +26,4 @@ Pushes to `main` trigger a GitHub Actions workflow that builds and deploys to Gi
 
 ## License
 
-MIT
+All rights reserved. See [LICENSE](LICENSE).
