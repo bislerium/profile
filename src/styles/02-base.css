@@ -28,11 +28,11 @@
     --text-faint: light-dark(oklch(29% 0.008 286), oklch(62% 0.015 285.7));
     --rule: light-dark(oklch(88.5% 0.011 286.2), oklch(29.2% 0.029 284.5));
     --violet-soft: light-dark(
-      oklch(46.2% 0.235 282.4 / 0.08),
+      oklch(46.2% 0.235 282.4 / 0.05),
       oklch(60.4% 0.194 285.5 / 0.12)
     );
     --violet-soft-hover: light-dark(
-      oklch(46.2% 0.235 282.4 / 0.15),
+      oklch(46.2% 0.235 282.4 / 0.10),
       oklch(60.4% 0.194 285.5 / 0.2)
     );
 
