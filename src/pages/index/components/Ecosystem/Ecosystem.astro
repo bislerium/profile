@@ -1,5 +1,5 @@
 ---
-import { STACK } from '../constants';
+import { STACK } from 'src/constants';
 
 function slug(name: string): string {
   return `eco-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
