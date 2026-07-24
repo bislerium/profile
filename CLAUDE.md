@@ -219,15 +219,24 @@ GitHub Actions deploys to GitHub Pages with Cloudflare CDN in front.
 
 CI triggers on pushes to `main` for changes to `src/`, `public/`, `astro.config.ts`, `package.json`, `package-lock.json`, `tsconfig.json`, or the workflow itself. Also supports `workflow_dispatch` for manual deploys.
 
-## Cloudflare cache config
+## Cloudflare config
 
-GitHub Pages sends no `Cache-Control` headers at origin, so Cloudflare defaults all static assets to `max-age=14400` (4 hours). This must be fixed in the Cloudflare dashboard — **not in code**.
+GitHub Pages sends no cache or security headers at origin, so these must be configured in the Cloudflare dashboard — **not in code**.
 
-**Required cache rules** (Cloudflare Dashboard → Rules → Cache Rules):
+**Cache Rules** (Cloudflare Dashboard → Rules → Cache Rules):
 
 | Rule | URI Path | Browser Cache TTL |
 |------|----------|-------------------|
 | Fonts | `/fonts/*` | 1 year |
 | Static assets | `/assets/*` | 1 year |
+
+**Response Headers** (Cloudflare Dashboard → Rules → Transform Rules → Modify Response Header):
+
+| Header | Value |
+|--------|-------|
+| `Cross-Origin-Opener-Policy` | `same-origin` |
+| `X-Frame-Options` | `DENY` |
+
+`frame-ancestors 'none'` is also set in the CSP `<meta>` tag for browser-level protection. `X-Frame-Options` covers older browsers and provides defense-in-depth at the CDN layer.
 
 Frequent pushes won't cause stale content: the HTML (short TTL) always loads fresh and picks up fingerprinted JS bundles; fonts and icons rarely change. If a font ever does change, rename the file or purge Cloudflare cache once.
