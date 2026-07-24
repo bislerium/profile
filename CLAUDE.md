@@ -26,6 +26,7 @@ src/
         layout.css      # Grid layout + component positioning (was 04-layout.css)
         components.css  # Progress bar, status dot (was 05-components.css)
         motion.css      # @keyframes + staggered entry animations (was 06-motion.css)
+        overrides.css   # Skip-link, container/media queries, print, high-contrast (was 07-overrides.css)
       _components/
         IndexHeader/    # IndexHeader.astro — decorative div with logo (not a landmark)
         NameBlock/      # NameBlock.astro + text-scramble.ts — h1 with animated text reveal
@@ -40,7 +41,7 @@ src/
     robots.txt.ts        # Robots endpoint (disallows /assets/cv.pdf)
     llms.txt.ts          # LLMs.txt endpoint for AI crawlers
     site.webmanifest.ts  # Dynamic PWA manifest endpoint
-  styles/               # 5 shared CSS files — 1 font-face + 4 @layer
+  styles/               # 4 shared CSS files — 1 font-face + 3 @layer
 design/
   logo/square/          # Source logo files (logo-square.svg, .png, .graphite)
 public/
@@ -130,7 +131,7 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 
 ## CSS architecture
 
-5 shared CSS files imported via `src/styles/index.css` (loaded in `BaseLayout.astro`) + 3 page-level CSS files imported via `src/pages/index/styles/index.css` (loaded in `index.astro`):
+4 shared CSS files imported via `src/styles/index.css` (loaded in `BaseLayout.astro`) + 4 page-level CSS files imported via `src/pages/index/styles/index.css` (loaded in `index.astro`):
 
 **Shared** (`src/styles/` — used by all pages):
 
@@ -140,7 +141,6 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 | `01-reset.css` | `reset` | Box-sizing, margin/padding zero, `text-wrap: balance/pretty` |
 | `02-base.css` | `base` | Custom properties (OKLCH colors, fluid `clamp()` spacing), `:root`/`body`, `::selection`, `:focus-visible` |
 | `03-theme.css` | `theme` | Reusable utility classes (`.highlight`, `.label`) |
-| `07-overrides.css` | `overrides` | Skip-link utility, container queries (`@container page`), media queries (768/480/360px), print styles |
 
 **Page-level** (`src/pages/index/styles/` — index page only):
 
@@ -149,6 +149,7 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 | `layout.css` | `layout` | 12-column CSS Grid layout with named grid rows, subgrid footer, responsive padding |
 | `components.css` | `components` | Self-contained widgets (`.progress-bar`, `.status-dot`, `.status-available`) |
 | `motion.css` | `motion` | `@keyframes` (fadeUp, fadeIn, drawIn, waveFlow, breathe, progressFill/Fade) and staggered entry animations, respects `prefers-reduced-motion` |
+| `overrides.css` | `overrides` | Skip-link utility, container queries (`@container page`), media queries (768/480/360px), print styles, high-contrast mode |
 
 All `@font-face` rules live in `00-fonts.css` (no layer) so they're always in the global scope. The 7 layered files each get a cascade layer matching their name.
 

@@ -3,4 +3,3 @@
 @import './01-reset.css' layer(reset);
 @import './02-base.css' layer(base);
 @import './03-theme.css' layer(theme);
-@import './07-overrides.css' layer(overrides);
