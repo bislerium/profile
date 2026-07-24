@@ -1,7 +1,7 @@
-import { TextScramble } from './text-scramble';
-import { Clock } from './clock';
-import { initStackToggle } from './stack-toggle';
-import { PERSON } from '../constants';
+import { TextScramble } from './components/NameBlock/text-scramble';
+import { Clock } from './components/Footer/clock';
+import { initStackToggle } from './components/Ecosystem/stack-toggle';
+import { PERSON } from 'src/constants';
 
 const init = () => {
   const nameLines = document.querySelectorAll('.name-line');
