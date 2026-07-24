@@ -36,6 +36,10 @@ const webSiteData = {
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+    <!-- Preconnect to third-party origins -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://static.cloudflareinsights.com" />
+
     <!-- Google tag (gtag.js) -->
     <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${SITE.gaId}`}></script>
     <script is:inline define:vars={{ gaId: SITE.gaId }}>

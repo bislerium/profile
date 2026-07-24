@@ -23,7 +23,7 @@ export const GET: APIRoute = () => {
     ],
   };
 
-  return new Response(JSON.stringify(manifest, null, 2), {
+  return new Response(JSON.stringify(manifest), {
     headers: { 'Content-Type': 'application/manifest+json' },
   });
 }
