@@ -201,6 +201,10 @@
       position: relative;
     }
 
+    .stack-category {
+      text-align: left;
+    }
+
     .stack-parent-name {
       white-space: nowrap;
     }
