@@ -8,8 +8,7 @@ interface Props {
 
 const { title = PAGE.title } = Astro.props;
 
-const structuredData = {
-  '@context': 'https://schema.org',
+const personData = {
   '@type': 'Person',
   name: PERSON.fullName,
   alternateName: PERSON.shortName,
@@ -23,13 +22,17 @@ const structuredData = {
 };
 
 const webSiteData = {
-  '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: PERSON.fullName,
   alternateName: [PERSON.shortName, 'bishalgc.info.np'],
   url: SITE.url,
   description: PAGE.description,
   author: { '@type': 'Person', name: PERSON.fullName },
+};
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [personData, webSiteData],
 };
 ---
 
@@ -109,7 +112,7 @@ const webSiteData = {
     <link rel="me" href={LINKS.linkedin} />
 
     <!-- Structured data -->
-    <script type="application/ld+json" is:inline set:html={JSON.stringify([structuredData, webSiteData])} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
 
     <!-- Fonts are self-hosted — zero external requests -->
 
