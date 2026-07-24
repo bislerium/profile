@@ -236,6 +236,9 @@ GitHub Pages sends no cache or security headers at origin, so these must be conf
 |--------|-------|
 | `Cross-Origin-Opener-Policy` | `same-origin` |
 | `X-Frame-Options` | `DENY` |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains; preload` (overwrite Cloudflare's 30-day default) |
+
+After setting `preload`, submit `bishalgc.info.np` at https://hstspreload.org.
 
 `frame-ancestors 'none'` is also set in the CSP `<meta>` tag for browser-level protection. `X-Frame-Options` covers older browsers and provides defense-in-depth at the CDN layer.
 
