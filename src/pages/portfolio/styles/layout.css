@@ -61,7 +61,7 @@
     }
   }
 
-  /* ─── Ecosystem ─── */
+  /* ─── Stack ─── */
   .tech-stack {
     grid-column: 10 / -1;
     grid-row: 2;
@@ -79,8 +79,8 @@
     display: block;
   }
 
-  /* ─── Ecosystem parent items ─── */
-  .eco-parent {
+  /* ─── Stack category items ─── */
+  .stack-parent {
     position: relative;
     display: block;
     font-family: var(--font-mono);
@@ -98,7 +98,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .eco-parent-name::after {
+  .stack-category::after {
     content: '▸';
     display: inline-block;
     margin-left: 0.3em;
@@ -108,13 +108,13 @@
     vertical-align: 0.05em;
   }
 
-  .eco-parent:hover .eco-parent-name::after,
-  .eco-parent:focus-within .eco-parent-name::after {
+  .stack-parent:hover .stack-category::after,
+  .stack-parent:focus-within .stack-category::after {
     transform: rotate(90deg);
     opacity: 0.7;
   }
 
-  .eco-sublist {
+  .stack-sublist {
     display: none;
     list-style: none;
     font-family: var(--font-mono);
@@ -130,45 +130,45 @@
     pointer-events: none;
   }
 
-  .eco-parent:hover .eco-sublist {
+  .stack-parent:hover .stack-sublist {
     pointer-events: auto;
   }
 
-  .eco-subitem {
+  .stack-subitem {
     color: var(--text-faint);
     padding: var(--space-1) 0;
   }
 
   /* Hover / focus reveal (devices with a pointer) */
   @media (hover: hover) {
-    .eco-parent:is(:hover, :focus-within) .eco-sublist {
+    .stack-parent:is(:hover, :focus-within) .stack-sublist {
       display: block;
     }
 
-    .eco-parent:is(:hover, :focus-within) .eco-parent-name {
+    .stack-parent:is(:hover, :focus-within) .stack-category {
       color: var(--violet-bright);
     }
 
-    .tech-list:has(.eco-parent:is(:hover, :focus-within)) .eco-parent:not(:hover):not(:focus-within) {
+    .tech-list:has(.stack-parent:is(:hover, :focus-within)) .stack-parent:not(:hover):not(:focus-within) {
       opacity: 0.4;
     }
   }
 
   /* Tap reveal (touch devices) */
   @media (hover: none) {
-    .eco-parent:focus-within .eco-sublist {
+    .stack-parent:focus-within .stack-sublist {
       display: block;
     }
 
-    .eco-parent:focus-within .eco-parent-name {
+    .stack-parent:focus-within .stack-category {
       color: var(--violet-bright);
     }
 
-    .eco-parent-name:focus-visible {
+    .stack-category:focus-visible {
       outline: none;
     }
 
-    .tech-list:has(.eco-parent:focus-within) .eco-parent:not(:focus-within) {
+    .tech-list:has(.stack-parent:focus-within) .stack-parent:not(:focus-within) {
       opacity: 0.4;
     }
   }

@@ -108,7 +108,7 @@
       padding-top: 2dvh;
     }
 
-    .eco-parent {
+    .stack-parent {
       padding: var(--space-1) 0;
     }
   }
@@ -126,7 +126,7 @@
       margin-bottom: var(--space-2);
     }
 
-    .eco-parent {
+    .stack-parent {
       font-size: var(--text-xs);
     }
   }
@@ -196,16 +196,16 @@
       display: none;
     }
 
-    .eco-parent {
+    .stack-parent {
       flex-shrink: 0;
       position: relative;
     }
 
-    .eco-parent-name {
+    .stack-parent-name {
       white-space: nowrap;
     }
 
-    .eco-sublist {
+    .stack-sublist {
       position: static;
       width: auto;
       max-width: none;
@@ -215,7 +215,7 @@
       text-align: left;
     }
 
-    .eco-subitem {
+    .stack-subitem {
       white-space: normal;
     }
 
@@ -287,7 +287,7 @@
       font-size: var(--text-xs);
     }
 
-    .eco-parent {
+    .stack-parent {
       font-size: var(--text-xs);
     }
   }
@@ -309,7 +309,7 @@
       font-size: 0.8rem;
     }
 
-    .eco-parent {
+    .stack-parent {
       font-size: var(--text-xs);
     }
   }
@@ -351,8 +351,8 @@
     .meta-desc,
     .label,
     .link-item,
-    .eco-parent,
-    .eco-subitem,
+    .stack-parent,
+    .stack-subitem,
     .footer-left,
     .footer-right {
       color: oklch(36% 0 0) !important;
@@ -395,14 +395,14 @@
       margin-right: 0;
     }
 
-    .eco-sublist {
+    .stack-sublist {
       display: block !important;
       position: static;
       padding-left: var(--space-4);
       margin-top: 0.15em;
     }
 
-    .eco-subitem {
+    .stack-subitem {
       color: oklch(48% 0 0) !important;
       padding: 0.1em 0;
       font-size: 0.85em;

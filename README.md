@@ -22,7 +22,7 @@ npm run preview # Preview production build locally
 
 ## Deployment
 
-Pushes to `main` trigger a GitHub Actions workflow that builds and deploys to GitHub Pages. The workflow skips non-source changes (`design/`, `CLAUDE.md`, etc.).
+Pushes to `main` that touch `src/`, `public/`, config files, or the workflow itself trigger a GitHub Actions build and deploy to GitHub Pages.
 
 ## License
 

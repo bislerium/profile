@@ -26,7 +26,7 @@ export const PERSON = {
   clockLabel: 'Kathmandu, Nepal',
 } as const;
 
-// Stack — hierarchical structure drives Ecosystem.astro, JSON-LD knowsAbout, PAGE.description, llms.txt
+// Stack — hierarchical structure drives Stack.astro, JSON-LD knowsAbout, PAGE.description, llms.txt
 export const STACK = [
   {
     name: 'Backend',
@@ -85,7 +85,7 @@ export const STACK = [
   },
 ] as const;
 
-export const STACK_NAMES = STACK.map(e => e.name);
+export const STACK_NAMES = STACK.map(category => category.name);
 
 export const PAGE = {
   title: `${PERSON.fullName} - ${PERSON.jobTitle}`,

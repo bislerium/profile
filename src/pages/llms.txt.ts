@@ -15,7 +15,7 @@ ${PAGE.description}
 
 ## Stack
 
-${STACK.map(e => `- ${e.name}\n${e.items.map(s => `  - ${s}`).join('\n')}`).join('\n')}
+${STACK.map(category => `- ${category.name}\n${category.items.map(s => `  - ${s}`).join('\n')}`).join('\n')}
 
 ## Pages
 
@@ -32,6 +32,6 @@ ${STACK.map(e => `- ${e.name}\n${e.items.map(s => `  - ${s}`).join('\n')}`).join
 - Contact via LinkedIn for professional inquiries.
 `;
   return new Response(body, {
-    headers: { 'Content-Type': 'text/plain' },
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   });
 }

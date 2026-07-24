@@ -36,6 +36,8 @@
       oklch(60.4% 0.194 285.5 / 0.2)
     );
 
+    --status-green: oklch(72.3% 0.192 149.6);
+
     --selection-bg: var(--violet-bright);
     --selection-text: oklch(100% 0 0);
 

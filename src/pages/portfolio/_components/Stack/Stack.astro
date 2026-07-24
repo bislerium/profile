@@ -2,25 +2,24 @@
 import { STACK } from 'src/pages/portfolio/_constants';
 
 function slug(name: string): string {
-  return `eco-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
+  return `stack-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
 }
 ---
 <aside class="tech-stack" aria-label="Stack">
   <h2 class="label tech-label">Stack</h2>
   <ul class="tech-list" role="list">
     {STACK.map(item => (
-      <li class="eco-parent">
-        <span
-          class="eco-parent-name"
-          tabindex="0"
+      <li class="stack-parent">
+        <button
+          class="stack-category"
           aria-expanded="false"
           aria-controls={slug(item.name)}
         >
           {item.name}
-        </span>
-        <ul id={slug(item.name)} class="eco-sublist" role="list">
+        </button>
+        <ul id={slug(item.name)} class="stack-sublist" role="list">
           {item.items.map(sub => (
-            <li class="eco-subitem">{sub}</li>
+            <li class="stack-subitem">{sub}</li>
           ))}
         </ul>
       </li>

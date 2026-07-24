@@ -112,7 +112,7 @@ export const STACK = [
   { name: 'Observability', items: ['OpenTelemetry', 'Prometheus', 'Grafana (Loki, Tempo)', 'Jaeger'] },
 ] as const;
 
-export const STACK_NAMES = STACK.map(e => e.name);
+export const STACK_NAMES = STACK.map(category => category.name);
 
 // Page metadata — built from PERSON and STACK_NAMES
 export const PAGE = {
@@ -163,7 +163,7 @@ Three vanilla classes colocated with their components in `src/pages/portfolio/_c
 
 - **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/pages/portfolio/_components/Name/text-scramble.ts`.
 - **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Updates every 60s. Source: `src/pages/portfolio/_components/Footer/clock.ts`.
-- **`initStackToggle`** — Syncs `aria-expanded` on ecosystem stack category items with their CSS hover/focus state. Reads pseudo-class state so ARIA stays in sync without duplicating CSS logic. Source: `src/pages/portfolio/_components/Stack/stack-toggle.ts`.
+- **`initStackToggle`** — Syncs `aria-expanded` on stack category items with their CSS hover/focus state. Reads pseudo-class state so ARIA stays in sync without duplicating CSS logic. Source: `src/pages/portfolio/_components/Stack/stack-toggle.ts`.
 
 Init in `src/pages/portfolio/_init.ts` is loaded via a `<script>` tag in `index.astro`.
 

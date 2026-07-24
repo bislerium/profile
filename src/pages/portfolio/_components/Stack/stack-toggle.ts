@@ -4,11 +4,11 @@
  * in sync without duplicating the CSS logic or changing existing behavior.
  */
 export function initStackToggle(): void {
-  const parents = document.querySelectorAll<HTMLElement>('.eco-parent');
+  const parents = document.querySelectorAll<HTMLElement>('.stack-parent');
   if (parents.length === 0) return;
 
   const update = (parent: Element) => {
-    const nameEl = parent.querySelector<HTMLElement>('.eco-parent-name');
+    const nameEl = parent.querySelector<HTMLElement>('.stack-category');
     if (!nameEl) return;
     const expanded = parent.matches(':hover') || parent.matches(':focus-within');
     nameEl.setAttribute('aria-expanded', String(expanded));
