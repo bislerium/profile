@@ -217,11 +217,12 @@
     align-items: center;
     gap: 0.4em;
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     color: var(--violet-bright);
     text-decoration: none;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
     background: var(--violet-soft);
     border-radius: 999px;
     padding: 0.25em 0.65em;
