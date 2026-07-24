@@ -219,7 +219,7 @@
     font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 600;
-    color: var(--violet-bright);
+    color: var(--text);
     text-decoration: none;
     letter-spacing: 0.05em;
     background: var(--violet-soft);
