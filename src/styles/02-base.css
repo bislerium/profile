@@ -19,7 +19,7 @@
     --radius-sm: 6px;
 
     --violet: oklch(46.2% 0.235 282.4);
-    --violet-bright: light-dark(oklch(32% 0.14 285.5), oklch(60.4% 0.194 285.5));
+    --violet-bright: light-dark(oklch(31% 0.14 285.5), oklch(60.4% 0.194 285.5));
 
     --bg: light-dark(oklch(95.5% 0.003 106.4), oklch(14.7% 0.011 285));
     --bg-elevated: light-dark(oklch(94.2% 0.005 106.5), oklch(18.6% 0.016 284.7));
