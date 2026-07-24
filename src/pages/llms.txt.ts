@@ -4,11 +4,11 @@ import { SITE, LINKS, PERSON, PAGE, STACK } from 'src/pages/portfolio/_constants
 export const GET: APIRoute = () => {
   const body = `# ${PERSON.fullName}
 
-> ${PERSON.jobTitle} · ${PERSON.location}, ${PERSON.countryName}
+> ${PERSON.jobTitle} · ${PERSON.location}, ${PERSON.countryName} · ${PERSON.timezone}
 
 ## About
 
-${PERSON.fullName} (${PERSON.shortName}) is a ${PERSON.jobTitle.toLowerCase()} — ${PAGE.tagline.toLowerCase()}.
+${PAGE.description}
 
 ## Stack
 
@@ -22,7 +22,6 @@ ${STACK.map(e => `- ${e.name}\n${e.items.map(s => `  - ${s}`).join('\n')}`).join
 
 - GitHub: ${LINKS.github}
 - LinkedIn: ${LINKS.linkedin}
-- CV: ${SITE.url}${LINKS.cv}
 
 ## Policies
 
