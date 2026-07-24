@@ -39,6 +39,33 @@ def create_favicon_svg():
     shutil.copy2(SOURCE_SVG, dest)
     print(f"✓ favicon.svg")
 
+def create_favicon_ico():
+    """Create multi-resolution favicon.ico (16, 32, 48px) at site root.
+
+    The root /favicon.ico is the one referenced in <link rel=icon>.
+    It is the legacy fallback for Googlebot and IE — all modern browsers
+    use the SVG favicon or PNG sizes instead.
+    """
+    sizes = [16, 32, 48]
+    frames = []
+
+    for size in sizes:
+        tmp = ICONS_DIR / f"_tmp_ico_{size}.png"
+        rsvg_to_png(SOURCE_SVG, tmp, size, size)
+        frames.append(Image.open(tmp).convert("RGBA"))
+        tmp.unlink()
+
+    ico_path = ROOT / "public" / "favicon.ico"
+    frames[0].save(
+        ico_path,
+        format="ICO",
+        sizes=[(s, s) for s in sizes],
+        append_images=frames[1:],
+    )
+    for f in frames:
+        f.close()
+    print(f"✓ favicon.ico → public/favicon.ico (16×16, 32×32, 48×48)")
+
 def create_favicon_png(name: str, size: int):
     """Create a single-size favicon PNG."""
     p = ICONS_DIR / name
@@ -103,6 +130,7 @@ def main():
     print("Generating icons from logo-square.svg …\n")
 
     create_favicon_svg()
+    create_favicon_ico()
     create_favicon_png("favicon-16x16.png", 16)
     create_favicon_png("favicon-32x32.png", 32)
     create_favicon_png("favicon-96x96.png", 96)
