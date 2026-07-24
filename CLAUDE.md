@@ -14,12 +14,12 @@ No linter or test runner configured — this is a single-page portfolio.
 
 ```text
 src/
-  constants.ts          # SITE, LINKS, PERSON, STACK, STACK_NAMES, PAGE, OG_IMAGE_ALT — single source of truth for all metadata
   layouts/
     BaseLayout.astro    # <head> with all meta, OG, Twitter, favicons, JSON-LD, CSP, GA
   pages/
     index/              # Main page — all index-specific files colocated here (_ prefix = excluded from routing)
       index.astro       # Composes components into <main>, imports page-level CSS + _init.ts
+      _constants.ts     # SITE, LINKS, PERSON, STACK, STACK_NAMES, PAGE, OG_IMAGE_ALT — single source of truth
       _init.ts          # Boots TextScramble + Clock + stack toggle (imports PERSON.nameParts)
       styles/           # Page-level CSS (layout, components, motion)
         index.css       # Entry point — imports layout, components, motion
@@ -58,7 +58,7 @@ scripts/
 
 ## Centralized constants
 
-`src/constants.ts` is the **single source of truth** for all site metadata. There are 7 exports — never hardcode a name, URL, title, color, or tech item anywhere else.
+`src/pages/index/_constants.ts` is the **single source of truth** for all site metadata. There are 7 exports — never hardcode a name, URL, title, color, or tech item anywhere else.
 
 ```ts
 // Site-level config — URL, analytics, brand, theme colors
