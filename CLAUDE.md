@@ -18,26 +18,29 @@ src/
   layouts/
     BaseLayout.astro    # <head> with all meta, OG, Twitter, favicons, JSON-LD, CSP, GA
   pages/
-    index.astro          # Single-page site — composes components into <main>
-    404.astro            # Custom 404 error page with BaseLayout + inline styles
+    index/              # Main page — all index-specific files colocated here (_ prefix = excluded from routing)
+      index.astro       # Composes components into <main>, imports page-level CSS + _init.ts
+      _init.ts          # Boots TextScramble + Clock + stack toggle (imports PERSON.nameParts)
+      styles/           # Page-level CSS (layout, components, motion)
+        index.css       # Entry point — imports layout, components, motion
+        layout.css      # Grid layout + component positioning (was 04-layout.css)
+        components.css  # Progress bar, status dot (was 05-components.css)
+        motion.css      # @keyframes + staggered entry animations (was 06-motion.css)
+      _components/
+        IndexHeader/    # IndexHeader.astro — decorative div with logo (not a landmark)
+        NameBlock/      # NameBlock.astro + text-scramble.ts — h1 with animated text reveal
+        Ecosystem/      # Ecosystem.astro + stack-toggle.ts — hierarchical stack list
+        SectionDivider/ # SectionDivider.astro — animated sine-wave SVG squiggle
+        MetaBlock/      # MetaBlock.astro — role + highlighted tagline
+        LinksBlock/     # LinksBlock.astro — nav for GitHub, LinkedIn, CV
+        Footer/         # Footer.astro + clock.ts — clock widget + availability dot
+        ProgressBar/    # ProgressBar.astro — decorative scroll indicator
+        SkipLink/       # SkipLink.astro — skip-to-main accessibility link
+    404.astro           # Custom 404 error page with BaseLayout + inline styles
     robots.txt.ts        # Robots endpoint (disallows /assets/cv.pdf)
     llms.txt.ts          # LLMs.txt endpoint for AI crawlers
     site.webmanifest.ts  # Dynamic PWA manifest endpoint
-  components/
-    IndexHeader.astro   # Decorative div with logo (not a landmark)
-    NameBlock.astro     # h1 — name with TextScramble effect
-    Ecosystem.astro     # aside — hierarchical stack list (categories + items)
-    SectionDivider.astro # hr — animated sine-wave SVG squiggle (drawIn + waveFlow)
-    MetaBlock.astro     # section — role + highlighted tagline (set:html)
-    LinksBlock.astro    # nav — GitHub, LinkedIn, CV links
-    Footer.astro        # footer — Clock + availability dot
-    SkipLink.astro      # Skip-to-main accessibility link
-    ProgressBar.astro   # Decorative scroll indicator (aria-hidden)
-  scripts/
-    init.ts             # Boots TextScramble + Clock (imports PERSON.nameParts)
-    text-scramble.ts    # Animated text reveal (respects prefers-reduced-motion)
-    clock.ts  # Live clock widget using Intl.DateTimeFormat (imports PERSON.timezone, clockLabel)
-  styles/               # 8 CSS files — 1 font-face + 7 @layer (see CSS architecture below)
+  styles/               # 5 shared CSS files — 1 font-face + 4 @layer
 design/
   logo/square/          # Source logo files (logo-square.svg, .png, .graphite)
 public/
@@ -127,7 +130,9 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 
 ## CSS architecture
 
-8 CSS files imported in order via `src/styles/index.css` (loaded in `BaseLayout.astro` frontmatter via `import '../styles/index.css'`):
+5 shared CSS files imported via `src/styles/index.css` (loaded in `BaseLayout.astro`) + 3 page-level CSS files imported via `src/pages/index/styles/index.css` (loaded in `index.astro`):
+
+**Shared** (`src/styles/` — used by all pages):
 
 | File | Layer | Purpose |
 | --- | --- | --- |
@@ -135,12 +140,17 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 | `01-reset.css` | `reset` | Box-sizing, margin/padding zero, `text-wrap: balance/pretty` |
 | `02-base.css` | `base` | Custom properties (OKLCH colors, fluid `clamp()` spacing), `:root`/`body`, `::selection`, `:focus-visible` |
 | `03-theme.css` | `theme` | Reusable utility classes (`.highlight`, `.label`) |
-| `04-layout.css` | `layout` | 12-column CSS Grid layout with named grid rows, subgrid footer, responsive padding |
-| `05-components.css` | `components` | Self-contained widgets (`.progress-bar`, `.status-dot`, `.status-available`) |
-| `06-motion.css` | `motion` | `@keyframes` (fadeUp, fadeIn, drawIn, waveFlow, breathe, progressFill/Fade) and staggered entry animations, respects `prefers-reduced-motion` |
 | `07-overrides.css` | `overrides` | Skip-link utility, container queries (`@container page`), media queries (768/480/360px), print styles |
 
-All `@font-face` rules live in `00-fonts.css` (no layer) so they're always in the global scope. The 7 numbered files each get a cascade layer matching their name.
+**Page-level** (`src/pages/index/styles/` — index page only):
+
+| File | Layer | Purpose |
+| --- | --- | --- |
+| `layout.css` | `layout` | 12-column CSS Grid layout with named grid rows, subgrid footer, responsive padding |
+| `components.css` | `components` | Self-contained widgets (`.progress-bar`, `.status-dot`, `.status-available`) |
+| `motion.css` | `motion` | `@keyframes` (fadeUp, fadeIn, drawIn, waveFlow, breathe, progressFill/Fade) and staggered entry animations, respects `prefers-reduced-motion` |
+
+All `@font-face` rules live in `00-fonts.css` (no layer) so they're always in the global scope. The 7 layered files each get a cascade layer matching their name.
 
 The build inlines all CSS into the HTML (`build.inlineStylesheets: 'always'`), so there are zero external stylesheet requests at runtime.
 
@@ -148,12 +158,13 @@ The build inlines all CSS into the HTML (`build.inlineStylesheets: 'always'`), s
 
 ## JavaScript
 
-Two vanilla classes in `src/scripts/`, typed with TypeScript, bundled by Astro and inlined into the HTML:
+Three vanilla classes colocated with their components in `src/pages/index/_components/`, typed with TypeScript, bundled by Astro and inlined into the HTML:
 
-- **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/scripts/text-scramble.ts`.
-- **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Updates every 60s. Source: `src/scripts/clock.ts`.
+- **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/pages/index/_components/NameBlock/text-scramble.ts`.
+- **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Updates every 60s. Source: `src/pages/index/_components/Footer/clock.ts`.
+- **`initStackToggle`** — Syncs `aria-expanded` on ecosystem stack category items with their CSS hover/focus state. Reads pseudo-class state so ARIA stays in sync without duplicating CSS logic. Source: `src/pages/index/_components/Ecosystem/stack-toggle.ts`.
 
-Init in `init.ts` is loaded via a `<script>` tag in `index.astro`.
+Init in `src/pages/index/_init.ts` is loaded via a `<script>` tag in `index.astro`.
 
 ## Icons and favicons
 
