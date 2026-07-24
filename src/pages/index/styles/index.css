@@ -1,0 +1,4 @@
+/* src/pages/index/styles/index.css — page-level styles for index */
+@import './layout.css' layer(layout);
+@import './components.css' layer(components);
+@import './motion.css' layer(motion);

@@ -1,8 +1,6 @@
+/* src/styles/index.css — shared styles (fonts + global layers) */
 @import './00-fonts.css';
 @import './01-reset.css' layer(reset);
 @import './02-base.css' layer(base);
 @import './03-theme.css' layer(theme);
-@import './04-layout.css' layer(layout);
-@import './05-components.css' layer(components);
-@import './06-motion.css' layer(motion);
 @import './07-overrides.css' layer(overrides);
