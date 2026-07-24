@@ -4,8 +4,6 @@ export class Clock {
   #el: HTMLTimeElement;
   #formatter: Intl.DateTimeFormat;
   #zoneFormatter: Intl.DateTimeFormat;
-  #interval: ReturnType<typeof setInterval> | null = null;
-
   constructor(el: HTMLTimeElement) {
     this.#el = el;
     this.#formatter = new Intl.DateTimeFormat('en-US', {
@@ -20,7 +18,7 @@ export class Clock {
     });
 
     this.#update();
-    this.#interval = setInterval(() => this.#update(), 60_000);
+    setInterval(() => this.#update(), 60_000);
   }
 
   #update() {
