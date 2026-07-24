@@ -1,0 +1,32 @@
+---
+import BaseLayout from 'src/layouts/BaseLayout.astro';
+import 'src/pages/index/styles/index.css';
+import SkipLink from 'src/pages/index/_components/SkipLink/SkipLink.astro';
+import ProgressBar from 'src/pages/index/_components/ProgressBar/ProgressBar.astro';
+import IndexHeader from 'src/pages/index/_components/IndexHeader/IndexHeader.astro';
+import NameBlock from 'src/pages/index/_components/NameBlock/NameBlock.astro';
+import Ecosystem from 'src/pages/index/_components/Ecosystem/Ecosystem.astro';
+import SectionDivider from 'src/pages/index/_components/SectionDivider/SectionDivider.astro';
+import MetaBlock from 'src/pages/index/_components/MetaBlock/MetaBlock.astro';
+import LinksBlock from 'src/pages/index/_components/LinksBlock/LinksBlock.astro';
+import Footer from 'src/pages/index/_components/Footer/Footer.astro';
+---
+
+<BaseLayout>
+  <SkipLink />
+  <ProgressBar />
+
+  <main class="page" id="main" tabindex="-1">
+    <IndexHeader />
+    <NameBlock />
+    <Ecosystem />
+    <SectionDivider />
+    <MetaBlock />
+    <LinksBlock />
+    <Footer />
+  </main>
+
+  <script>
+    import 'src/pages/index/_init.ts';
+  </script>
+</BaseLayout>

@@ -11,6 +11,13 @@ export default defineConfig({
     assets: 'astro',
     inlineStylesheets: 'always',
   },
+  vite: {
+    resolve: {
+      alias: {
+        src: new URL('./src', import.meta.url).pathname,
+      },
+    },
+  },
   integrations: [
     sitemap({
       namespaces: { news: false, xhtml: false, image: true, video: false },

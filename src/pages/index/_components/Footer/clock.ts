@@ -1,4 +1,4 @@
-import { PERSON } from '../constants';
+import { PERSON } from 'src/constants';
 
 export class Clock {
   #el: HTMLTimeElement;
