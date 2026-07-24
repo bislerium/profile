@@ -4,6 +4,9 @@ import { SITE, LINKS, PERSON, PAGE, STACK } from 'src/pages/portfolio/_constants
 export const GET: APIRoute = () => {
   const body = `# ${PERSON.fullName}
 
+> This file provides structured information for AI assistants and LLMs
+> to learn about ${PERSON.fullName}'s background, skills, and work.
+
 > ${PERSON.jobTitle} · ${PERSON.location}, ${PERSON.countryName} · ${PERSON.timezone}
 
 ## About
