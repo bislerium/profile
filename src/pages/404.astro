@@ -4,13 +4,44 @@ import { PERSON } from 'src/pages/portfolio/_constants';
 ---
 
 <BaseLayout title={`Page not found • ${PERSON.fullName}`}>
-  <main style="display:flex;align-items:center;justify-content:center;height:100dvh;font-family:var(--font-mono);color:var(--text-dim);font-size:var(--text-sm);text-align:center;padding:2rem;">
+  <main class="error-page">
     <div>
-      <h1 style="font-family:var(--font-sans);font-size:var(--text-display);font-weight:600;color:var(--text);margin-bottom:var(--space-4);">404</h1>
+      <h1>404</h1>
       <p>Page not found.</p>
-      <p style="margin-top:var(--space-4);">
-        <a href="/" style="color:var(--violet-bright);text-decoration:none;">← Go home</a>
+      <p class="error-back">
+        <a href="/">← Go home</a>
       </p>
     </div>
   </main>
 </BaseLayout>
+
+<style>
+  .error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100dvh;
+    font-family: var(--font-mono);
+    color: var(--text-dim);
+    font-size: var(--text-sm);
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .error-page h1 {
+    font-family: var(--font-sans);
+    font-size: var(--text-display);
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: var(--space-4);
+  }
+
+  .error-back {
+    margin-top: var(--space-4);
+  }
+
+  .error-back a {
+    color: var(--violet-bright);
+    text-decoration: none;
+  }
+</style>

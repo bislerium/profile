@@ -4,6 +4,7 @@ import { SITE } from './src/pages/portfolio/_constants';
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'static',
   site: SITE.url,
   trailingSlash: 'never',
   build: {
