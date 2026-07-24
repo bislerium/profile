@@ -98,11 +98,6 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .eco-parent-name {
-    /* focus-visible handled globally in base.css */
-    cursor: pointer;
-  }
-
   .eco-parent-name::after {
     content: '▸';
     display: inline-block;
