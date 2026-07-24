@@ -169,7 +169,7 @@ Init in `src/pages/index/_init.ts` is loaded via a `<script>` tag in `index.astr
 
 ## Icons and favicons
 
-16 icon files in `public/assets/icons/` covering all platforms:
+15 favicon/app-icon files in `public/assets/icons/` covering all platforms:
 
 | Files | Platform |
 | --- | --- |
@@ -181,13 +181,21 @@ Init in `src/pages/index/_init.ts` is loaded via a `<script>` tag in `index.astr
 | `maskable-icon-{192,512}.png` | Android adaptive icons (80% safe zone) |
 | `mstile-150x150.png` | Windows 8/10 tile |
 
+3 additional SVG icons used as CSS mask-images for UI elements:
+
+| Files | Purpose |
+| --- | --- |
+| `icon-cv.svg` | CV link icon in MetaBlock |
+| `icon-github.svg` | GitHub link icon in LinksBlock |
+| `icon-linkedin.svg` | LinkedIn link icon in LinksBlock |
+
 Regenerate all icons from the source logo by running:
 
 ```bash
 python3 scripts/generate-icons.py
 ```
 
-This reads `design/logo/square/logo-square.svg` and outputs all sizes to `public/assets/icons/` plus the OG image to `public/assets/og-image.png`.
+This reads `design/logo/square/logo-square.svg` and outputs all sizes to `public/assets/icons/`. Does NOT generate `og-image.png` — that is managed separately.
 
 **Note:** Pillow 12.3.0's ICO reader reports only 1 frame, but the generated `favicon.ico` actually contains 3 frames — verify with the `file` command instead.
 
