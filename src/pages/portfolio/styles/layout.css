@@ -169,6 +169,10 @@
       color: var(--violet-bright);
     }
 
+    .eco-parent-name:focus-visible {
+      outline: none;
+    }
+
     .tech-list:has(.eco-parent:focus-within) .eco-parent:not(:focus-within) {
       opacity: 0.4;
     }
