@@ -28,7 +28,7 @@ src/
         motion.css      # @keyframes + staggered entry animations (was 06-motion.css)
         overrides.css   # Skip-link, container/media queries, print, high-contrast (was 07-overrides.css)
       _components/
-        IndexHeader/    # IndexHeader.astro — decorative div with logo (not a landmark)
+        Header/        # Header.astro — decorative div with logo (not a landmark)
         NameBlock/      # NameBlock.astro + text-scramble.ts — h1 with animated text reveal
         Ecosystem/      # Ecosystem.astro + stack-toggle.ts — hierarchical stack list
         SectionDivider/ # SectionDivider.astro — animated sine-wave SVG squiggle
