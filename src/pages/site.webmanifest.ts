@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { SITE, PERSON, PAGE } from '../constants';
+import { SITE, PERSON, PAGE } from 'src/pages/index/_constants';
 
 export const GET: APIRoute = () => {
   const manifest = {

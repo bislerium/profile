@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { LINKS } from '../constants';
+import { LINKS } from 'src/pages/index/_constants';
 
 export const GET: APIRoute = ({ site }) => {
   if (!site) return new Response(null, { status: 500 });
