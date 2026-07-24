@@ -1,6 +1,6 @@
-import { TextScramble } from './_components/NameBlock/text-scramble';
+import { TextScramble } from './_components/Name/text-scramble';
 import { Clock } from './_components/Footer/clock';
-import { initStackToggle } from './_components/Ecosystem/stack-toggle';
+import { initStackToggle } from './_components/Stack/stack-toggle';
 import { PERSON } from 'src/pages/portfolio/_constants';
 
 const init = () => {

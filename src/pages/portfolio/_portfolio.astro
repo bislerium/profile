@@ -2,27 +2,27 @@
 import BaseLayout from 'src/layouts/BaseLayout.astro';
 import 'src/pages/portfolio/styles/index.css';
 import SkipLink from 'src/pages/portfolio/_components/SkipLink/SkipLink.astro';
-import ProgressBar from 'src/pages/portfolio/_components/ProgressBar/ProgressBar.astro';
+import Progress from 'src/pages/portfolio/_components/Progress/Progress.astro';
 import Header from 'src/pages/portfolio/_components/Header/Header.astro';
-import NameBlock from 'src/pages/portfolio/_components/NameBlock/NameBlock.astro';
-import Ecosystem from 'src/pages/portfolio/_components/Ecosystem/Ecosystem.astro';
-import SectionDivider from 'src/pages/portfolio/_components/SectionDivider/SectionDivider.astro';
-import MetaBlock from 'src/pages/portfolio/_components/MetaBlock/MetaBlock.astro';
-import LinksBlock from 'src/pages/portfolio/_components/LinksBlock/LinksBlock.astro';
+import Name from 'src/pages/portfolio/_components/Name/Name.astro';
+import Stack from 'src/pages/portfolio/_components/Stack/Stack.astro';
+import Divider from 'src/pages/portfolio/_components/Divider/Divider.astro';
+import Meta from 'src/pages/portfolio/_components/Meta/Meta.astro';
+import Links from 'src/pages/portfolio/_components/Links/Links.astro';
 import Footer from 'src/pages/portfolio/_components/Footer/Footer.astro';
 ---
 
 <BaseLayout>
   <SkipLink />
-  <ProgressBar />
+  <Progress />
 
   <main class="page" id="main" tabindex="-1">
     <Header />
-    <NameBlock />
-    <Ecosystem />
-    <SectionDivider />
-    <MetaBlock />
-    <LinksBlock />
+    <Name />
+    <Stack />
+    <Divider />
+    <Meta />
+    <Links />
     <Footer />
   </main>
 

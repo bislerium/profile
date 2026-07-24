@@ -28,14 +28,14 @@ src/
         motion.css      # @keyframes + staggered entry animations (was 06-motion.css)
         overrides.css   # Skip-link, container/media queries, print, high-contrast (was 07-overrides.css)
       _components/
-        Header/        # Header.astro — decorative div with logo (not a landmark)
-        NameBlock/      # NameBlock.astro + text-scramble.ts — h1 with animated text reveal
-        Ecosystem/      # Ecosystem.astro + stack-toggle.ts — hierarchical stack list
-        SectionDivider/ # SectionDivider.astro — animated sine-wave SVG squiggle
-        MetaBlock/      # MetaBlock.astro — role + highlighted tagline
-        LinksBlock/     # LinksBlock.astro — nav for GitHub, LinkedIn, CV
+        Header/         # Header.astro — decorative div with logo (not a landmark)
+        Name/           # Name.astro + text-scramble.ts — h1 with animated text reveal
+        Stack/          # Stack.astro + stack-toggle.ts — hierarchical stack list
+        Divider/        # Divider.astro — animated sine-wave SVG squiggle
+        Meta/           # Meta.astro — role + highlighted tagline
+        Links/          # Links.astro — nav for GitHub, LinkedIn, CV
         Footer/         # Footer.astro + clock.ts — clock widget + availability dot
-        ProgressBar/    # ProgressBar.astro — decorative scroll indicator
+        Progress/       # Progress.astro — decorative scroll indicator
         SkipLink/       # SkipLink.astro — skip-to-main accessibility link
     404.astro           # Custom 404 error page with BaseLayout + inline styles
     robots.txt.ts        # Robots endpoint (disallows /assets/cv.pdf)
@@ -71,7 +71,7 @@ export const SITE = {
   themeColorLight: '#f7f7f5',
 } as const;
 
-// Outbound links — used in LinksBlock, LLMs.txt, robots.txt, JSON-LD
+// Outbound links — used in Links, LLMs.txt, robots.txt, JSON-LD
 export const LINKS = {
   github: 'https://github.com/bislerium',
   linkedin: 'https://www.linkedin.com/in/bishalgc/',
@@ -93,7 +93,7 @@ export const PERSON = {
   clockLabel: 'Kathmandu, Nepal',
 } as const;
 
-// Stack — hierarchical structure drives Ecosystem.astro, JSON-LD knowsAbout, PAGE.description, llms.txt
+// Stack — hierarchical structure drives Stack.astro, JSON-LD knowsAbout, PAGE.description, llms.txt
 export const STACK = [
   {
     name: 'Backend',
@@ -161,9 +161,9 @@ The build inlines all CSS into the HTML (`build.inlineStylesheets: 'always'`), s
 
 Three vanilla classes colocated with their components in `src/pages/portfolio/_components/`, typed with TypeScript, bundled by Astro and inlined into the HTML:
 
-- **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/pages/portfolio/_components/NameBlock/text-scramble.ts`.
+- **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/pages/portfolio/_components/Name/text-scramble.ts`.
 - **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Updates every 60s. Source: `src/pages/portfolio/_components/Footer/clock.ts`.
-- **`initStackToggle`** — Syncs `aria-expanded` on ecosystem stack category items with their CSS hover/focus state. Reads pseudo-class state so ARIA stays in sync without duplicating CSS logic. Source: `src/pages/portfolio/_components/Ecosystem/stack-toggle.ts`.
+- **`initStackToggle`** — Syncs `aria-expanded` on ecosystem stack category items with their CSS hover/focus state. Reads pseudo-class state so ARIA stays in sync without duplicating CSS logic. Source: `src/pages/portfolio/_components/Stack/stack-toggle.ts`.
 
 Init in `src/pages/portfolio/_init.ts` is loaded via a `<script>` tag in `index.astro`.
 
@@ -185,9 +185,9 @@ Init in `src/pages/portfolio/_init.ts` is loaded via a `<script>` tag in `index.
 
 | Files | Purpose |
 | --- | --- |
-| `icon-cv.svg` | CV link icon in MetaBlock |
-| `icon-github.svg` | GitHub link icon in LinksBlock |
-| `icon-linkedin.svg` | LinkedIn link icon in LinksBlock |
+| `icon-cv.svg` | CV link icon in Meta |
+| `icon-github.svg` | GitHub link icon in Links |
+| `icon-linkedin.svg` | LinkedIn link icon in Links |
 
 Regenerate all icons from the source logo by running:
 
