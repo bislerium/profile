@@ -8,12 +8,12 @@ for (const w of PAGE.taglineHighlights) {
 ---
 
 <section class="meta-block" aria-labelledby="role-heading">
-  <h2 id="role-heading" class="label meta-title">
-    {PERSON.jobTitle}{' '}
+  <div class="meta-title">
+    <h2 id="role-heading" class="label">{PERSON.jobTitle}</h2>
     <a href={LINKS.cv} class="meta-cv" target="_blank" rel="noopener noreferrer" aria-label="View CV (opens in a new tab)">
       <span class="link-icon icon-cv" aria-hidden="true"></span>
       CV
     </a>
-  </h2>
+  </div>
   <p class="meta-desc" set:html={html} />
 </section>

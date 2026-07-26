@@ -10,6 +10,7 @@ const { title = PAGE.title } = Astro.props;
 
 const personData = {
   '@type': 'Person',
+  '@id': `${SITE.url}/#person`,
   name: PERSON.fullName,
   alternateName: PERSON.shortName,
   jobTitle: PERSON.jobTitle,
@@ -19,20 +20,34 @@ const personData = {
   address: { '@type': 'PostalAddress', addressLocality: PERSON.location, addressCountry: PERSON.country },
   knowsAbout: STACK_NAMES.map(name => ({ '@type': 'Thing', name })),
   description: PAGE.description,
+  mainEntityOfPage: { '@id': `${SITE.url}/#profile-page` },
 };
 
 const webSiteData = {
   '@type': 'WebSite',
+  '@id': `${SITE.url}/#website`,
   name: PERSON.fullName,
   alternateName: [PERSON.shortName, new URL(SITE.url).hostname],
   url: SITE.url,
   description: PAGE.description,
-  author: { '@type': 'Person', name: PERSON.fullName },
+  inLanguage: 'en',
+};
+
+const profilePageData = {
+  '@type': 'ProfilePage',
+  '@id': `${SITE.url}/#profile-page`,
+  url: SITE.url,
+  name: PAGE.title,
+  description: PAGE.description,
+  inLanguage: 'en',
+  isPartOf: { '@id': `${SITE.url}/#website` },
+  about: { '@id': `${SITE.url}/#person` },
+  mainEntity: { '@id': `${SITE.url}/#person` },
 };
 
 const structuredData = {
   '@context': 'https://schema.org',
-  '@graph': [personData, webSiteData],
+  '@graph': [profilePageData, personData, webSiteData],
 };
 ---
 

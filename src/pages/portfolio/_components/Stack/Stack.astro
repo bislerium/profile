@@ -5,8 +5,8 @@ function slug(name: string): string {
   return `stack-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
 }
 ---
-<aside class="tech-stack" aria-label="Stack">
-  <h2 class="label tech-label">Stack</h2>
+<section class="tech-stack" aria-labelledby="stack-heading">
+  <h2 id="stack-heading" class="label tech-label">Stack</h2>
   <ul class="tech-list" role="list">
     {STACK.map(item => (
       <li class="stack-parent">
@@ -25,4 +25,4 @@ function slug(name: string): string {
       </li>
     ))}
   </ul>
-</aside>
+</section>
