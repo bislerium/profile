@@ -12,72 +12,104 @@
  */
 
 // ── Minimal HTML-to-Markdown converter ──────────────────────────────────────
+//
+// This converts HTML from the origin into markdown for agent consumption.
+// It is NOT a security boundary — the HTML comes from our own Astro build,
+// not untrusted user input. The conversion operates on already-sanitized
+// static content. CodeQL alerts for regex-based HTML parsing are acknowledged
+// but not exploitable in this context.
+
+// Single-pass entity decoder — each entity decoded exactly once to prevent
+// double-encoding (CodeQL #1).
+function decodeEntities(text) {
+  return text.replace(/&([a-z]+|#\d+|#x[0-9a-f]+);/gi, (match, entity) => {
+    switch (entity.toLowerCase()) {
+      case 'amp': return '&';
+      case 'lt': return '<';
+      case 'gt': return '>';
+      case 'quot': return '"';
+      case 'apos': return "'";
+      case '#39': return "'";
+      default:
+        if (entity.toLowerCase().startsWith('#x')) {
+          return String.fromCodePoint(parseInt(entity.slice(2), 16));
+        }
+        if (entity.startsWith('#')) {
+          return String.fromCodePoint(parseInt(entity.slice(1), 10));
+        }
+        return match;
+    }
+  });
+}
+
+// Strip HTML tags. The regex handles quoted attribute values to avoid
+// false matches on ">" inside attributes. Not a security boundary —
+// the input is our own static HTML from Astro.
+function stripTags(html) {
+  return html.replace(/<(?:[^>"']+|"[^"]*"|'[^']*')*>/g, '');
+}
 
 function htmlToMarkdown(html) {
   let md = html;
 
-  // Remove <head> entirely
-  md = md.replace(/<head[\s\S]*?<\/head>/gi, '');
+  // Remove <head> entirely before any conversion
+  md = md.replace(/<head\b[\s\S]*?<\/head\s*>/gi, '');
 
-  // Remove scripts, styles, svgs
-  md = md.replace(/<(script|style|svg)[\s\S]*?<\/\1>/gi, '');
-  md = md.replace(/<svg[\s\S]*?<\/svg>/gi, '');
+  // Remove scripts, styles, svgs (robust: explicit boundaries)
+  md = md.replace(/<(script|style|svg)\b[\s\S]*?<\/\1\s*>/gi, '');
 
   // Remove HTML comments
   md = md.replace(/<!--[\s\S]*?-->/g, '');
 
   // Convert headings
-  md = md.replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, (_, text) => `\n# ${stripTags(text).trim()}\n`);
-  md = md.replace(/<h2[^>]*>([\s\S]*?)<\/h2>/gi, (_, text) => `\n## ${stripTags(text).trim()}\n`);
-  md = md.replace(/<h3[^>]*>([\s\S]*?)<\/h3>/gi, (_, text) => `\n### ${stripTags(text).trim()}\n`);
-  md = md.replace(/<h4[^>]*>([\s\S]*?)<\/h4>/gi, (_, text) => `\n#### ${stripTags(text).trim()}\n`);
+  md = md.replace(/<h1\b[^>]*>([\s\S]*?)<\/h1\s*>/gi,
+    (_, t) => `\n# ${stripTags(t).trim()}\n`);
+  md = md.replace(/<h2\b[^>]*>([\s\S]*?)<\/h2\s*>/gi,
+    (_, t) => `\n## ${stripTags(t).trim()}\n`);
+  md = md.replace(/<h3\b[^>]*>([\s\S]*?)<\/h3\s*>/gi,
+    (_, t) => `\n### ${stripTags(t).trim()}\n`);
+  md = md.replace(/<h4\b[^>]*>([\s\S]*?)<\/h4\s*>/gi,
+    (_, t) => `\n#### ${stripTags(t).trim()}\n`);
 
   // Convert links
-  md = md.replace(/<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, (_, href, text) => {
-    const clean = stripTags(text).trim();
-    return clean ? `[${clean}](${href})` : '';
-  });
+  md = md.replace(/<a\b[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a\s*>/gi,
+    (_, href, text) => {
+      const clean = stripTags(text).trim();
+      return clean ? `[${clean}](${href})` : '';
+    });
 
   // Convert bold/strong
-  md = md.replace(/<(strong|b)[^>]*>([\s\S]*?)<\/(strong|b)>/gi, '**$2**');
+  md = md.replace(/<(strong|b)\b[^>]*>([\s\S]*?)<\/(strong|b)\s*>/gi,
+    '**$2**');
 
   // Convert italic/em
-  md = md.replace(/<(em|i)[^>]*>([\s\S]*?)<\/(em|i)>/gi, '*$2*');
+  md = md.replace(/<(em|i)\b[^>]*>([\s\S]*?)<\/(em|i)\s*>/gi,
+    '*$2*');
 
-  // Convert line items
-  md = md.replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, (_, text) => `- ${stripTags(text).trim()}\n`);
+  // Convert list items
+  md = md.replace(/<li\b[^>]*>([\s\S]*?)<\/li\s*>/gi,
+    (_, t) => `- ${stripTags(t).trim()}\n`);
 
-  // Convert paragraphs and block elements to double-newline
-  md = md.replace(/<(p|div|section|article|header|footer|main|nav|ul|ol|br)[^>]*>/gi, '\n');
-  md = md.replace(/<\/(p|div|section|article|header|footer|main|nav|ul|ol)>/gi, '\n');
-
-  // Convert <br> tags
-  md = md.replace(/<br\s*\/?>/gi, '\n');
+  // Block elements → newline boundaries
+  const block = /<(p|div|section|article|header|footer|main|nav|ul|ol)\b[^>]*>/gi;
+  const blockClose = /<\/(p|div|section|article|header|footer|main|nav|ul|ol)\s*>/gi;
+  md = md.replace(block, '\n');
+  md = md.replace(blockClose, '\n');
+  md = md.replace(/<br\b[^>]*\/?>/gi, '\n');
 
   // Strip remaining tags
   md = stripTags(md);
 
-  // Decode HTML entities
-  md = md.replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&apos;/g, "'")
-    .replace(/&#x2F;/g, '/')
-    .replace(/&#x2f;/g, '/');
+  // Decode HTML entities (once, after tag processing)
+  md = decodeEntities(md);
 
   // Collapse whitespace (3+ newlines → 2)
   md = md.replace(/\n{3,}/g, '\n\n');
 
-  // Trim leading/trailing whitespace per line while preserving intentional blank lines
+  // Trim trailing whitespace per line
   md = md.split('\n').map(line => line.trimEnd()).join('\n');
 
   return md.trim() + '\n';
-}
-
-function stripTags(html) {
-  return html.replace(/<[^>]*>/g, '');
 }
 
 // ── Worker entrypoint ───────────────────────────────────────────────────────
