@@ -89,8 +89,8 @@ export const STACK_NAMES = STACK.map(category => category.name);
 
 export const PAGE = {
   title: `${PERSON.fullName} - ${PERSON.jobTitle}`,
-  description: `${PERSON.jobTitle} based in ${PERSON.location}, ${PERSON.countryName}. ${STACK_NAMES.join(', ')}. Building scalable systems with precision, performance, and purpose.`,
-  tagline: 'Optimizing code and architecture. Building scalable systems with precision, performance, and purpose.',
+  description: `${PERSON.fullName} (${PERSON.shortName}) — ${PERSON.jobTitle} in ${PERSON.location}, ${PERSON.countryName}. ${STACK_NAMES.join(', ')}.`,
+  tagline: `Hi, I'm ${PERSON.fullName} — also ${PERSON.shortName}. I optimize code and architecture, building scalable systems with precision, performance, and purpose.`,
   taglineHighlights: ['code', 'architecture'],
 } as const;
 

@@ -364,6 +364,10 @@
     padding-bottom: var(--space-1);
   }
 
+  .footer-name::after {
+    content: ' · ';
+  }
+
   .footer-right {
     grid-column: 9 / -1;
     justify-self: end;
