@@ -40,13 +40,13 @@ export default {
   async fetch(request, _env, _ctx) {
     const accept = request.headers.get('Accept') || '';
 
-    // Pass through for non-markdown requests
-    if (!accept.includes('text/markdown')) {
+    // Pass through for non-markdown or non-GET requests
+    if (!accept.includes('text/markdown') || request.method !== 'GET') {
       return fetch(request);
     }
 
-    // Fetch the HTML from origin
-    const originResponse = await fetch(request);
+    // Always fetch via GET so we have a body to convert
+    const originResponse = await fetch(new Request(request.url, { method: 'GET' }));
     const contentType = originResponse.headers.get('Content-Type') || '';
 
     // Only convert HTML responses

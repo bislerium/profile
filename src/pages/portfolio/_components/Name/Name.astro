@@ -3,5 +3,5 @@ import { PERSON } from 'src/pages/portfolio/_constants';
 ---
 
 <h1 class="name-block" aria-label={PERSON.fullName}>
-  {PERSON.nameParts.map(part => <span class="name-line">{part}</span>)}
+  {PERSON.nameParts.map((part, i) => [i > 0 && ' ', <span class="name-line">{part}</span>])}
 </h1>
