@@ -245,3 +245,59 @@ After setting `preload`, submit `bishalgc.info.np` at https://hstspreload.org.
 `frame-ancestors 'none'` is also set in the CSP `<meta>` tag for browser-level protection. `X-Frame-Options` covers older browsers and provides defense-in-depth at the CDN layer.
 
 Frequent pushes won't cause stale content: the HTML (short TTL) always loads fresh and picks up fingerprinted JS bundles; fonts and icons rarely change. If a font ever does change, rename the file or purge Cloudflare cache once.
+
+## Agent Discovery
+
+The site publishes machine-readable endpoints and headers for AI agent discovery and content negotiation. These are split across origin (Astro static files) and edge (Cloudflare dashboard/DNS).
+
+### Origin endpoints (Astro-generated static files)
+
+| Endpoint | Content-Type | Purpose |
+|---|---|---|
+| `/robots.txt` | `text/plain` | Content Signals: `ai-train=no, search=yes, ai-input=no` |
+| `/.well-known/api-catalog` | `application/linkset+json` | RFC 9727 API catalog with declarative linkset |
+| `/.well-known/agent-skills/index.json` | `application/json` | Agent Skills Discovery v0.2.0 index |
+
+### Cloudflare-side configuration (dashboard only)
+
+These must be configured in the Cloudflare dashboard — **not in code**.
+
+**Link Headers** (Cloudflare Dashboard → Rules → Transform Rules → Modify Response Header):
+
+Add a rule targeting the homepage (`hostname eq bishalgc.info.np AND uri.path eq "/"`) with these response headers:
+
+```
+Link: </.well-known/api-catalog>; rel="api-catalog"
+Link: </llms.txt>; rel="service-doc"
+Link: </.well-known/agent-skills/index.json>; rel="describedby"
+```
+
+Per RFC 8288 (Web Linking) and RFC 9727 §3.
+
+**Markdown for Agents** (Cloudflare Dashboard → Speed → Optimization → Content Optimization → Markdown for Agents™ → On):
+
+Enables transparent HTML→markdown conversion when `Accept: text/markdown` is present. Response uses `Content-Type: text/markdown` with `x-markdown-tokens` header. No origin changes needed. Verify availability on the current Cloudflare plan before enabling.
+
+**DNS-AID Record** (Cloudflare DNS Dashboard → Records → Add record):
+
+| Field | Value |
+|---|---|
+| Type | HTTPS |
+| Name | `_index._agents` |
+| Target | `bishalgc.info.np` |
+| TTL | 3600 |
+| Priority | 1 |
+| Parameters | `alpn="http/1.1" port=443` |
+
+DNSSEC is auto-managed by Cloudflare. Per draft-mozleywilliams-dnsop-dnsaid and RFC 9460.
+
+### Validation
+
+Verify agent readiness by scanning the deployed site:
+
+```
+POST https://isitagentready.com/api/scan
+Content-Type: application/json
+
+{"url": "https://bishalgc.info.np"}
+```
