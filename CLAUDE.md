@@ -253,7 +253,7 @@ The site publishes machine-readable endpoints and headers for AI agent discovery
 ### Origin endpoints (Astro-generated static files)
 
 | Endpoint | Content-Type | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `/robots.txt` | `text/plain` | Content Signals: `ai-train=no, search=yes, ai-input=no` |
 | `/.well-known/api-catalog` | `application/linkset+json` | RFC 9727 API catalog with declarative linkset |
 | `/.well-known/agent-skills/index.json` | `application/json` | Agent Skills Discovery v0.2.0 index |
@@ -266,7 +266,7 @@ These must be configured in the Cloudflare dashboard — **not in code**.
 
 Add a rule targeting the homepage (`hostname eq bishalgc.info.np AND uri.path eq "/"`) with these response headers:
 
-```
+```text
 Link: </.well-known/api-catalog>; rel="api-catalog"
 Link: </llms.txt>; rel="service-doc"
 Link: </.well-known/agent-skills/index.json>; rel="describedby"
@@ -281,7 +281,7 @@ Enables transparent HTML→markdown conversion when `Accept: text/markdown` is p
 **DNS-AID Record** (Cloudflare DNS Dashboard → Records → Add record):
 
 | Field | Value |
-|---|---|
+| --- | --- |
 | Type | HTTPS |
 | Name | `_index._agents` |
 | Target | `bishalgc.info.np` |
@@ -295,7 +295,7 @@ DNSSEC is auto-managed by Cloudflare. Per draft-mozleywilliams-dnsop-dnsaid and 
 
 Verify agent readiness by scanning the deployed site:
 
-```
+```http
 POST https://isitagentready.com/api/scan
 Content-Type: application/json
 
