@@ -25,6 +25,7 @@ ${STACK.map(category => `- ${category.name}\n${category.items.map(s => `  - ${s}
 
 - GitHub: ${LINKS.github}
 - LinkedIn: ${LINKS.linkedin}
+- CV: ${SITE.url}${LINKS.cv}
 
 ## Policies
 

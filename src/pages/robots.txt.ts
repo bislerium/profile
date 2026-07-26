@@ -7,7 +7,6 @@ export const GET: APIRoute = ({ site }) => {
   const sitemapURL = new URL('sitemap-index.xml', site).href;
   const body = `User-agent: *
 Allow: /
-Disallow: ${LINKS.cv}
 Content-Signal: ai-train=no, search=yes, ai-input=no
 
 Sitemap: ${sitemapURL}
