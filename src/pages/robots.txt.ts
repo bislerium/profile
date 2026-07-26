@@ -8,6 +8,7 @@ export const GET: APIRoute = ({ site }) => {
   const body = `User-agent: *
 Allow: /
 Disallow: ${LINKS.cv}
+Content-Signal: ai-train=no, search=yes, ai-input=no
 
 Sitemap: ${sitemapURL}
 `;
