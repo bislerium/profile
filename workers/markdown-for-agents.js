@@ -1,38 +1,30 @@
 /**
  * Cloudflare Worker — Markdown for Agents
  *
- * Intercepts requests with `Accept: text/markdown` and returns
- * a markdown-converted version of the HTML response. Uses `turndown`
- * and `linkedom` for robust, spec-compliant HTML-to-markdown conversion.
+ * Intercepts GET requests with `Accept: text/markdown` and returns
+ * a markdown-converted version of the HTML response via turndown + linkedom.
  *
- * Deployed via GitHub integration on push to main.
  * Free-plan limits: 100,000 requests/day — far above this portfolio's traffic.
  */
 
 import TurndownService from 'turndown';
 import { parseHTML } from 'linkedom';
 
-// Shim DOM globals that turndown needs in the Workers runtime (no native DOM).
-// Linkedom provides a lightweight, spec-compliant DOM implementation.
-(function shimDOM() {
-  if (!globalThis.document) {
-    const { document, Node, DOMParser } = parseHTML('<!doctype html><html><head></head><body></body></html>');
-    globalThis.document = document;
-    globalThis.Node = Node;
-    globalThis.DOMParser = DOMParser;
-    // For turndown v7+ which checks globalThis.window
-    globalThis.window = document.defaultView;
-  }
-})();
-
 const turndown = new TurndownService({
   headingStyle: 'atx',
   bulletListMarker: '-',
   codeBlockStyle: 'fenced',
-  // Don't escape markdown characters in text nodes — the output is
-  // markdown, so escaping would double-encode links, bold, etc.
-  escapeMarkdown: false,
 });
+
+// Headers to forward from origin (security- and identity-relevant)
+const FORWARD_HEADERS = [
+  'content-security-policy',
+  'strict-transport-security',
+  'x-frame-options',
+  'x-content-type-options',
+  'referrer-policy',
+  'cross-origin-opener-policy',
+];
 
 // ── Worker entrypoint ───────────────────────────────────────────────────────
 
@@ -40,42 +32,34 @@ export default {
   async fetch(request, _env, _ctx) {
     const accept = request.headers.get('Accept') || '';
 
-    // Pass through for non-markdown or non-GET requests
+    // Only intercept GET requests asking for markdown
     if (!accept.includes('text/markdown') || request.method !== 'GET') {
       return fetch(request);
     }
 
-    // Always fetch via GET so we have a body to convert
+    // Fetch origin HTML (always GET so we have a body to convert)
     const originResponse = await fetch(new Request(request.url, { method: 'GET' }));
     const contentType = originResponse.headers.get('Content-Type') || '';
 
-    // Only convert HTML responses
     if (!contentType.includes('text/html')) {
       return originResponse;
     }
 
     const html = await originResponse.text();
+    const { document: doc, Node } = parseHTML(html);
 
-    // Parse HTML and convert to markdown using turndown
-    const { document: doc } = parseHTML(html);
+    // Turndown needs Node.ELEMENT_NODE / Node.TEXT_NODE for nodeType checks.
+    // Workers lack a native DOM, so shim from the linkedom parse (once per isolate).
+    globalThis.Node ??= Node;
+
     const markdown = turndown.turndown(doc.body);
-
-    // Preserve security headers from origin
-    const securityHeaders = [
-      'content-security-policy',
-      'strict-transport-security',
-      'x-frame-options',
-      'x-content-type-options',
-      'referrer-policy',
-      'cross-origin-opener-policy',
-    ];
 
     const headers = new Headers();
     headers.set('Content-Type', 'text/markdown; charset=utf-8');
     headers.set('Vary', 'Accept');
-    headers.set('x-markdown-tokens', String(Math.max(1, Math.round(markdown.length / 4))));
+    headers.set('x-markdown-tokens', String(Math.round(markdown.length / 4) || 1));
 
-    for (const name of securityHeaders) {
+    for (const name of FORWARD_HEADERS) {
       const value = originResponse.headers.get(name);
       if (value) headers.set(name, value);
     }
