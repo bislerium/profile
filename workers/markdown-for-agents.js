@@ -61,6 +61,10 @@ function htmlToMarkdown(html) {
   // Remove HTML comments
   md = md.replace(/<!--[\s\S]*?-->/g, '');
 
+  // Add space between adjacent inline elements BEFORE any content extraction,
+  // so <span>Bishal</span><span>Gharti</span> becomes "Bishal Gharti"
+  md = md.replace(/<\/(span|a|em|strong|b|i|code|small|label|time)>(\s*)</gi, ' $2<');
+
   // Convert headings
   md = md.replace(/<h1\b[^>]*>([\s\S]*?)<\/h1\s*>/gi,
     (_, t) => `\n# ${stripTags(t).trim()}\n`);
@@ -99,10 +103,6 @@ function htmlToMarkdown(html) {
 
   // Strip remaining tags
   md = stripTags(md);
-
-  // Add space between adjacent inline elements before stripping tags,
-  // so <span>Bishal</span><span>Gharti</span> becomes "Bishal Gharti"
-  md = md.replace(/<\/(span|a|em|strong|b|i|code|small|label|time)>(\s*)</gi, ' $2<');
 
   // Decode HTML entities (once, after tag processing)
   md = decodeEntities(md);
