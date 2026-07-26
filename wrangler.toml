@@ -1,13 +1,9 @@
 # Cloudflare Worker — Markdown for Agents
 # Deployed via GitHub integration on push to main
+#
+# Route must be set manually in dashboard:
+# bishalgc.info.np → Workers Routes → Add route → bishalgc.info.np/* → markdown-for-agents
 
 name = "markdown-for-agents"
 main = "workers/markdown-for-agents.js"
 compatibility_date = "2025-07-26"
-
-# Route the worker to your domain
-routes = [
-  { pattern = "bishalgc.info.np/*", zone_id = "" }
-]
-
-# Free plan — no paid bindings needed
