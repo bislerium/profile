@@ -258,9 +258,21 @@ The site publishes machine-readable endpoints and headers for AI agent discovery
 | `/.well-known/api-catalog` | `application/linkset+json` | RFC 9727 API catalog with declarative linkset |
 | `/.well-known/agent-skills/index.json` | `application/json` | Agent Skills Discovery v0.2.0 index |
 
+### Origin Link elements (HTML `<head>`, in `BaseLayout.astro`)
+
+These `<link>` elements provide agent discovery for HTML-parsing crawlers at the origin level. They mirror the HTTP `Link:` headers configured at Cloudflare, giving double coverage — HTML-aware agents find them in the DOM, and header-aware agents find them in the HTTP response.
+
+| Rel | Href | Purpose |
+| --- | --- | --- |
+| `api-catalog` | `/.well-known/api-catalog` | RFC 9727 API catalog |
+| `service-doc` | `/llms.txt` | AI/LLM documentation |
+| `describedby` | `/.well-known/agent-skills/index.json` | Agent Skills Discovery index |
+
+These are IANA-registered link relation types per RFC 8288.
+
 ### Cloudflare-side configuration (dashboard only)
 
-These must be configured in the Cloudflare dashboard — **not in code**.
+These HTTP `Link:` response headers complement the HTML `<link>` elements at the origin. Both must be configured — origin covers HTML-parsing agents, Cloudflare covers header-only agents.
 
 **Link Headers** (Cloudflare Dashboard → Rules → Transform Rules → Modify Response Header):
 
@@ -274,9 +286,18 @@ Link: </.well-known/agent-skills/index.json>; rel="describedby"
 
 Per RFC 8288 (Web Linking) and RFC 9727 §3.
 
-**Markdown for Agents** (Cloudflare Dashboard → Speed → Optimization → Content Optimization → Markdown for Agents™ → On):
+**Markdown for Agents** — two options depending on your Cloudflare plan:
 
-Enables transparent HTML→markdown conversion when `Accept: text/markdown` is present. Response uses `Content-Type: text/markdown` with `x-markdown-tokens` header. No origin changes needed. Verify availability on the current Cloudflare plan before enabling.
+*Pro/Business plan:* Cloudflare Dashboard → AI Crawl Control → Markdown for Agents → On. Enables transparent HTML→markdown conversion when `Accept: text/markdown` is present. Response uses `Content-Type: text/markdown` with `x-markdown-tokens` header. No origin changes needed.
+
+*Free plan (current):* The toggle is unavailable, so markdown negotiation runs via a **Cloudflare Worker** (included on free plan, 100k req/day). The Worker script lives at `workers/markdown-for-agents.js`. It intercepts requests with `Accept: text/markdown`, fetches the HTML from origin, converts it to markdown, and returns `Content-Type: text/markdown` with `x-markdown-tokens`. Security headers (CSP, HSTS, X-Frame-Options, etc.) are preserved from the origin response.
+
+Deploy the Worker (first time only):
+1. Cloudflare Dashboard → Workers & Pages → Create → Workers → Edit code
+2. Paste the contents of `workers/markdown-for-agents.js`
+3. Click Deploy
+4. Add a Route: `bishalgc.info.np/*` (or attach a custom domain)
+5. Done — no rebuild needed on content changes; the Worker fetches live HTML from origin
 
 **DNS-AID Record** (Cloudflare DNS Dashboard → Records → Add record):
 

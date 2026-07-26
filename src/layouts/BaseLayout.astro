@@ -118,6 +118,11 @@ const structuredData = {
     <link rel="me" href={LINKS.github} />
     <link rel="me" href={LINKS.linkedin} />
 
+    <!-- Agent discovery (RFC 8288 Link relations) -->
+    <link rel="api-catalog" href="/.well-known/api-catalog" />
+    <link rel="service-doc" href="/llms.txt" />
+    <link rel="describedby" href="/.well-known/agent-skills/index.json" />
+
     <!-- Structured data -->
     <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
 
