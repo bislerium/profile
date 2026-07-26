@@ -100,11 +100,18 @@ function htmlToMarkdown(html) {
   // Strip remaining tags
   md = stripTags(md);
 
+  // Add space between adjacent inline elements before stripping tags,
+  // so <span>Bishal</span><span>Gharti</span> becomes "Bishal Gharti"
+  md = md.replace(/<\/(span|a|em|strong|b|i|code|small|label|time)>(\s*)</gi, ' $2<');
+
   // Decode HTML entities (once, after tag processing)
   md = decodeEntities(md);
 
   // Collapse whitespace (3+ newlines → 2)
   md = md.replace(/\n{3,}/g, '\n\n');
+
+  // Collapse multiple spaces
+  md = md.replace(/ {2,}/g, ' ');
 
   // Trim trailing whitespace per line
   md = md.split('\n').map(line => line.trimEnd()).join('\n');
@@ -149,7 +156,7 @@ export default {
     const headers = new Headers();
     headers.set('Content-Type', 'text/markdown; charset=utf-8');
     headers.set('Vary', 'Accept');
-    headers.set('x-markdown-tokens', String(Math.round(markdown.length / 4)));
+    headers.set('x-markdown-tokens', String(Math.max(1, Math.round(markdown.length / 4))));
 
     for (const name of securityHeaders) {
       const value = originResponse.headers.get(name);
