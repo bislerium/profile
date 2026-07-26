@@ -329,7 +329,7 @@
       transition: opacity 0.3s ease, transform 0.3s ease;
       color: var(--violet-bright);
       font-size: 1.3em;
-      font-weight: 700;
+      font-weight: 600;
       line-height: 1;
       vertical-align: -0.05em;
     }
@@ -348,6 +348,8 @@
     display: grid;
     grid-template-columns: subgrid;
     align-items: end;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 40px;
   }
 
   .footer-left {

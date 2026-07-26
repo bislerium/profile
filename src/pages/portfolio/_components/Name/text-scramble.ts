@@ -9,10 +9,20 @@ export class TextScramble {
   #glitchTimer: ReturnType<typeof setTimeout> | null = null;
   #glitchFrame: number | null = null;
   #currentText = '';
+  #pageVisible = true;
 
   constructor(el: HTMLElement) {
     this.#el = el;
     this.#reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.addEventListener('visibilitychange', () => {
+      this.#pageVisible = !document.hidden;
+      if (document.hidden) {
+        this.#cancelGlitch();
+      } else if (this.#currentText) {
+        this.#scheduleGlitch();
+      }
+    });
   }
 
   setText(newText: string): Promise<void> {
@@ -46,30 +56,44 @@ export class TextScramble {
   }
 
   #update = () => {
-    const fragment = document.createDocumentFragment();
     let complete = 0;
 
-    for (const item of this.#queue) {
+    if (this.#frame === 0) {
+      // Frame 0: build the DOM once — all characters wrapped in <span>
+      const fragment = document.createDocumentFragment();
+      for (const item of this.#queue) {
+        const span = document.createElement('span');
+        span.textContent = item.from;
+        fragment.appendChild(span);
+      }
+      this.#el.replaceChildren(fragment);
+    }
+
+    // Update each span in place — no DOM rebuilds
+    const children = this.#el.children;
+    for (let i = 0; i < this.#queue.length; i++) {
+      const item = this.#queue[i];
+      const span = children[i] as HTMLSpanElement;
+
       if (this.#frame >= item.end) {
         complete++;
-        fragment.appendChild(document.createTextNode(item.to));
+        span.textContent = item.to;
+        span.style.color = '';
+        span.style.opacity = '';
       } else if (this.#frame >= item.start) {
         if (!item.char || Math.random() < 0.28) {
           item.char = this.#randomChar();
         }
-        const span = document.createElement('span');
+        span.textContent = item.char!;
         span.style.color = 'var(--violet-bright)';
         span.style.opacity = '0.6';
-        span.textContent = item.char;
-        fragment.appendChild(span);
-      } else {
-        fragment.appendChild(document.createTextNode(item.from));
       }
+      // else: still in "from" phase — span already has item.from from frame 0
     }
 
-    this.#el.replaceChildren(fragment);
-
     if (complete === this.#queue.length) {
+      // Clean up: replace all spans with a single text node
+      this.#el.textContent = this.#currentText;
       this.#resolve?.();
       this.#scheduleGlitch();
     } else {
@@ -78,15 +102,19 @@ export class TextScramble {
     }
   };
 
-  /** Schedule the next random glitch burst after a random delay (2–8s). */
+  /** Schedule a glitch burst after 1.5–5s idle. */
   #scheduleGlitch() {
-    if (this.#reducedMotion) return;
-    const delay = 2000 + Math.random() * 6000;
+    if (this.#reducedMotion || !this.#pageVisible) return;
+    const delay = 1500 + Math.random() * 3500;
     this.#glitchTimer = setTimeout(() => this.#runGlitch(), delay);
   }
 
-  /** Scramble a random handful of characters for a few frames, then restore. */
+  /**
+   * Scramble 1–3 characters for 4–10 frames.
+   * Builds DOM once on frame 1, reuses spans on frames 2+ — only textContent changes.
+   */
   #runGlitch() {
+    if (!this.#pageVisible) return;
     const text = this.#currentText;
     if (!text) return;
 
@@ -97,32 +125,48 @@ export class TextScramble {
       positions.add(Math.floor(Math.random() * len));
     }
 
-    // Glitch for 4–12 frames (~67–200 ms at 60 fps)
-    const totalFrames = 4 + Math.floor(Math.random() * 9);
+    const totalFrames = 4 + Math.floor(Math.random() * 7);
     let frame = 0;
+    let glitchSpans: HTMLSpanElement[] = [];
+    let initialized = false;
 
     const animate = () => {
+      if (!this.#pageVisible) {
+        this.#el.textContent = text;
+        return;
+      }
+
       if (frame >= totalFrames) {
         this.#el.textContent = text;
         this.#scheduleGlitch();
         return;
       }
 
-      const fragment = document.createDocumentFragment();
-
-      for (let i = 0; i < len; i++) {
-        if (positions.has(i)) {
-          const span = document.createElement('span');
-          span.style.color = 'var(--violet-bright)';
+      if (!initialized) {
+        // Frame 1: build DOM structure with <span> at glitch positions
+        const fragment = document.createDocumentFragment();
+        glitchSpans = [];
+        for (let i = 0; i < len; i++) {
+          if (positions.has(i)) {
+            const span = document.createElement('span');
+            span.style.color = 'var(--violet-bright)';
+            span.textContent = this.#randomChar();
+            fragment.appendChild(span);
+            glitchSpans.push(span);
+          } else {
+            fragment.appendChild(document.createTextNode(text[i]));
+          }
+        }
+        this.#el.replaceChildren(fragment);
+        initialized = true;
+      } else {
+        // Frames 2+: only update span contents — no DOM structure changes
+        for (const span of glitchSpans) {
           span.style.opacity = String(0.3 + Math.random() * 0.5);
           span.textContent = this.#randomChar();
-          fragment.appendChild(span);
-        } else {
-          fragment.appendChild(document.createTextNode(text[i]));
         }
       }
 
-      this.#el.replaceChildren(fragment);
       frame++;
       this.#glitchFrame = requestAnimationFrame(animate);
     };

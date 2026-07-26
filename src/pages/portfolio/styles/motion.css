@@ -1,135 +1,119 @@
 @layer motion {
   @keyframes progressFill {
-    to {
-      transform: scaleX(1);
-    }
+    to { transform: scaleX(1); }
   }
 
   @keyframes progressFade {
-    to {
-      opacity: 0;
-    }
-  }
-
-  @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(var(--space-4));
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
-    }
+    to { opacity: 0; }
   }
 
   @keyframes breathe {
-    0%,
-    100% {
-      opacity: 1;
-    }
-
-    50% {
-      opacity: 0.3;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
   }
 
   @keyframes drawIn {
-    to {
-      stroke-dashoffset: 0;
-    }
+    to { stroke-dashoffset: 0; }
   }
 
   @keyframes waveFlow {
-    to {
-      transform: translateX(-300px);
-    }
+    to { transform: translateX(-300px); }
   }
 
   @media (prefers-reduced-motion: no-preference) {
+    /* ─── Entry transitions using @starting-style ─── */
+
     .name-line {
-      opacity: 0.01;
-      animation: fadeUp 0.8s ease forwards;
-      will-change: transform, opacity;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.8s ease, transform 0.8s ease;
 
-      &:nth-child(1) {
-        animation-delay: 0.3s;
-      }
+      &:nth-child(1) { transition-delay: 0.3s; }
+      &:nth-child(2) { transition-delay: 0.5s; }
+      &:nth-child(3) { transition-delay: 0.7s; }
 
-      &:nth-child(2) {
-        animation-delay: 0.5s;
-      }
-
-      &:nth-child(3) {
-        animation-delay: 0.7s;
+      @starting-style {
+        opacity: 0;
+        transform: translateY(var(--space-4));
       }
     }
 
     .tech-stack {
-      opacity: 0;
-      animation: fadeUp 0.8s ease forwards;
-      animation-delay: 1.6s;
-      will-change: transform, opacity;
-    }
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition-delay: 1.6s;
 
-    .rule path {
-      stroke-dasharray: 1000;
-      stroke-dashoffset: 1000;
-      animation: drawIn 1.8s cubic-bezier(0.23, 1, 0.32, 1) forwards, waveFlow 3s linear infinite;
-      animation-delay: 1.0s;
-      will-change: stroke-dashoffset, transform;
+      @starting-style {
+        opacity: 0;
+        transform: translateY(var(--space-4));
+      }
     }
 
     .meta-block {
-      opacity: 0;
-      animation: fadeUp 0.8s ease forwards;
-      animation-delay: 1.2s;
-      will-change: transform, opacity;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition-delay: 1.2s;
+
+      @starting-style {
+        opacity: 0;
+        transform: translateY(var(--space-4));
+      }
     }
 
     .links-block {
-      opacity: 0;
-      animation: fadeUp 0.8s ease forwards;
-      animation-delay: 1.4s;
-      will-change: transform, opacity;
-    }
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition-delay: 1.4s;
 
-    .links-list > li:nth-child(1) .link-item {
-      animation-delay: 1.5s;
-    }
-
-    .links-list > li:nth-child(2) .link-item {
-      animation-delay: 1.6s;
+      @starting-style {
+        opacity: 0;
+        transform: translateY(var(--space-4));
+      }
     }
 
     .page-footer {
       .footer-left,
       .footer-right {
-        opacity: 0;
-        animation: fadeIn 0.6s ease forwards;
-        animation-delay: 1.9s;
+        opacity: 1;
+        transition: opacity 0.6s ease;
+        transition-delay: 1.9s;
+
+        @starting-style {
+          opacity: 0;
+        }
       }
+    }
+
+    /* ─── Divider: one-shot draw + infinite wave (keyframes suit this combo better) ─── */
+
+    .rule path {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation:
+        drawIn 1.8s cubic-bezier(0.23, 1, 0.32, 1) forwards,
+        waveFlow 3s linear infinite;
+      animation-delay: 1.0s;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .progress-bar {
-      display: none !important;
-    }
+    .progress-bar { display: none !important; }
 
     .rule path {
       stroke-dasharray: none;
       animation: none;
+    }
+  }
+
+  @media (prefers-reduced-data: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0s !important;
+      transition-duration: 0s !important;
     }
   }
 }
