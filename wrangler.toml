@@ -1,0 +1,13 @@
+# Cloudflare Worker — Markdown for Agents
+# Deployed via GitHub integration on push to main
+
+name = "markdown-for-agents"
+main = "workers/markdown-for-agents.js"
+compatibility_date = "2025-07-26"
+
+# Route the worker to your domain
+routes = [
+  { pattern = "bishalgc.info.np/*", zone_id = "" }
+]
+
+# Free plan — no paid bindings needed
