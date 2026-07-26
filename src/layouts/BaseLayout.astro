@@ -24,7 +24,7 @@ const personData = {
 const webSiteData = {
   '@type': 'WebSite',
   name: PERSON.fullName,
-  alternateName: [PERSON.shortName, 'bishalgc.info.np'],
+  alternateName: [PERSON.shortName, new URL(SITE.url).hostname],
   url: SITE.url,
   description: PAGE.description,
   author: { '@type': 'Person', name: PERSON.fullName },
