@@ -8,7 +8,7 @@
     --text-xs: clamp(0.6rem, 0.85vw, 0.75rem);
     --text-sm: clamp(0.85rem, 1.1vw, 1rem);
     --text-md: clamp(1rem, 1.25vw, 1.15rem);
-    --text-display: clamp(2.6rem, 8.2vw, 6.2rem);
+    --text-display: clamp(2.2rem, 6.5vw, 5rem);
 
     --space-1: 0.25rem;
     --space-2: 0.5rem;
