@@ -223,6 +223,8 @@ CI triggers on pushes to `main` for changes to `src/`, `public/`, `astro.config.
 
 GitHub Pages sends no cache or security headers at origin, so these must be configured in the Cloudflare dashboard — **not in code**.
 
+**Rocket Loader must be OFF** (Speed → Optimization → Content Optimization → Rocket Loader™ → Off). Rocket Loader intercepts Astro's module scripts and changes the request credentials mode, which mismatches Vite's `<link rel="modulepreload">` hints — causing "A preload for '...' is found, but is not used because the request credentials mode does not match" console warnings. Since all CSS is inlined and JS is a single small bundle, Rocket Loader provides no benefit and only creates compatibility issues.
+
 **Cache Rules** (Cloudflare Dashboard → Rules → Cache Rules):
 
 | Rule | URI Path | Browser Cache TTL |
