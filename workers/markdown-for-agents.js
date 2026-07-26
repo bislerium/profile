@@ -95,8 +95,8 @@ function htmlToMarkdown(html) {
     (_, t) => `- ${stripTags(t).trim()}\n`);
 
   // Block elements → newline boundaries
-  const block = /<(p|div|section|article|header|footer|main|nav|ul|ol)\b[^>]*>/gi;
-  const blockClose = /<\/(p|div|section|article|header|footer|main|nav|ul|ol)\s*>/gi;
+  const block = /<(p|div|section|article|header|footer|main|nav|ul|ol|button|aside)\b[^>]*>/gi;
+  const blockClose = /<\/(p|div|section|article|header|footer|main|nav|ul|ol|button|aside)\s*>/gi;
   md = md.replace(block, '\n');
   md = md.replace(blockClose, '\n');
   md = md.replace(/<br\b[^>]*\/?>/gi, '\n');
