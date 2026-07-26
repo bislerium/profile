@@ -38,10 +38,12 @@ src/
         Progress/       # Progress.astro — decorative scroll indicator
         SkipLink/       # SkipLink.astro — skip-to-main accessibility link
     404.astro           # Custom 404 error page with BaseLayout + inline styles
-    robots.txt.ts        # Robots endpoint (disallows /assets/cv.pdf)
-    llms.txt.ts          # LLMs.txt endpoint for AI crawlers
+    robots.txt.ts        # Robots endpoint with Content-Signal headers, CV now allowed
+    llms.txt.ts          # LLMs.txt endpoint with CV link for AI crawlers
     site.webmanifest.ts  # Dynamic PWA manifest endpoint
   styles/               # 4 shared CSS files — 1 font-face + 3 @layer
+workers/
+  markdown-for-agents.js # Cloudflare Worker: HTML→markdown via turndown + linkedom
 design/
   logo/square/          # Source logo files (logo-square.svg, .png, .graphite)
 public/
@@ -55,6 +57,7 @@ public/
     jetbrains-mono/     # 4 woff2 weights — 400, 500, 600, 700
 scripts/
   generate-icons.py     # Reproducible icon generation from design/logo/square/logo-square.svg
+wrangler.toml           # Cloudflare Worker config (markdown-for-agents)
 ```
 
 ## Centralized constants
@@ -254,7 +257,8 @@ The site publishes machine-readable endpoints and headers for AI agent discovery
 
 | Endpoint | Content-Type | Purpose |
 | --- | --- | --- |
-| `/robots.txt` | `text/plain` | Content Signals: `ai-train=no, search=yes, ai-input=no` |
+| `/robots.txt` | `text/plain` | Content Signals: `ai-train=no, search=yes, ai-input=no` (CV now allowed) |
+| `/llms.txt` | `text/plain; charset=utf-8` | Curated LLM context: name, role, stack, links, CV, policies |
 | `/.well-known/api-catalog` | `application/linkset+json` | RFC 9727 API catalog with declarative linkset |
 | `/.well-known/agent-skills/index.json` | `application/json` | Agent Skills Discovery v0.2.0 index |
 
@@ -290,14 +294,9 @@ Per RFC 8288 (Web Linking) and RFC 9727 §3.
 
 *Pro/Business plan:* Cloudflare Dashboard → AI Crawl Control → Markdown for Agents → On. Enables transparent HTML→markdown conversion when `Accept: text/markdown` is present. Response uses `Content-Type: text/markdown` with `x-markdown-tokens` header. No origin changes needed.
 
-*Free plan (current):* The toggle is unavailable, so markdown negotiation runs via a **Cloudflare Worker** (included on free plan, 100k req/day). The Worker script lives at `workers/markdown-for-agents.js`. It intercepts requests with `Accept: text/markdown`, fetches the HTML from origin, converts it to markdown, and returns `Content-Type: text/markdown` with `x-markdown-tokens`. Security headers (CSP, HSTS, X-Frame-Options, etc.) are preserved from the origin response.
+*Free plan (current):* The toggle is unavailable, so markdown negotiation runs via a **Cloudflare Worker** (included on free plan, 100k req/day). The Worker script lives at `workers/markdown-for-agents.js`. It intercepts GET requests with `Accept: text/markdown`, fetches the HTML from origin, converts it to markdown using **turndown** + **linkedom** (spec-compliant HTML→markdown library with lightweight DOM shim), and returns `Content-Type: text/markdown` with `x-markdown-tokens`. Non-GET and non-markdown requests pass through with zero overhead (one string check). Security headers (CSP, HSTS, X-Frame-Options, etc.) are preserved from the origin response.
 
-Deploy the Worker (first time only):
-1. Cloudflare Dashboard → Workers & Pages → Create → Workers → Edit code
-2. Paste the contents of `workers/markdown-for-agents.js`
-3. Click Deploy
-4. Add a Route: `bishalgc.info.np/*` (or attach a custom domain)
-5. Done — no rebuild needed on content changes; the Worker fetches live HTML from origin
+Deployed via GitHub integration (`wrangler.toml` at repo root). The Worker auto-deploys on push to `main`. Route must be set once in Cloudflare Dashboard: `bishalgc.info.np/*` → `markdown-for-agents`.
 
 **DNS-AID Record** (Cloudflare DNS Dashboard → Records → Add record):
 
