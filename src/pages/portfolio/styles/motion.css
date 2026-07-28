@@ -50,18 +50,6 @@
       }
     }
 
-    .meta-block {
-      opacity: 1;
-      transform: translateY(0);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-      transition-delay: 1.2s;
-
-      @starting-style {
-        opacity: 0;
-        transform: translateY(var(--space-4));
-      }
-    }
-
     .links-block {
       opacity: 1;
       transform: translateY(0);
