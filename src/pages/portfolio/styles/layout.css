@@ -92,13 +92,13 @@
     font-variant-numeric: tabular-nums;
     color: var(--text-dim);
     transition: color 0.3s ease, opacity 0.3s ease;
-    cursor: pointer;
     -webkit-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
 
   .stack-category {
+    cursor: pointer;
     padding: 0.55rem 0;
     text-align: right;
     width: 100%;
@@ -115,8 +115,7 @@
     vertical-align: 0.05em;
   }
 
-  .stack-parent:hover .stack-category::after,
-  .stack-parent:focus-within .stack-category::after {
+  .stack-parent:is(:hover, :focus-within, .stack-active) .stack-category::after {
     transform: rotate(90deg);
     opacity: 0.7;
   }
@@ -137,37 +136,38 @@
     pointer-events: none;
   }
 
-  .stack-parent:hover .stack-sublist {
+  .stack-parent:is(:hover, .stack-active) .stack-sublist {
     pointer-events: auto;
   }
 
   .stack-subitem {
     color: var(--text-faint);
     padding: var(--space-1) 0;
+    cursor: default;
   }
 
   /* Hover / focus reveal (devices with a pointer) */
   @media (hover: hover) {
-    .stack-parent:is(:hover, :focus-within) .stack-sublist {
+    .stack-parent:is(:hover, :focus-within, .stack-active) .stack-sublist {
       display: block;
     }
 
-    .stack-parent:is(:hover, :focus-within) .stack-category {
+    .stack-parent:is(:hover, :focus-within, .stack-active) .stack-category {
       color: var(--violet-bright);
     }
 
-    .tech-list:has(.stack-parent:is(:hover, :focus-within)) .stack-parent:not(:hover):not(:focus-within) {
+    .tech-list:has(.stack-parent:is(:hover, :focus-within, .stack-active)) .stack-parent:not(:hover):not(:focus-within):not(.stack-active) {
       opacity: 0.4;
     }
   }
 
   /* Tap reveal (touch devices) */
   @media (hover: none) {
-    .stack-parent:focus-within .stack-sublist {
+    .stack-parent:is(:focus-within, .stack-active) .stack-sublist {
       display: block;
     }
 
-    .stack-parent:focus-within .stack-category {
+    .stack-parent:is(:focus-within, .stack-active) .stack-category {
       color: var(--violet-bright);
     }
 
@@ -175,7 +175,7 @@
       outline: none;
     }
 
-    .tech-list:has(.stack-parent:focus-within) .stack-parent:not(:focus-within) {
+    .tech-list:has(.stack-parent:is(:focus-within, .stack-active)) .stack-parent:not(:focus-within):not(.stack-active) {
       opacity: 0.4;
     }
   }

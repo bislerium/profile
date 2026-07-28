@@ -1,6 +1,7 @@
 import { TextScramble } from './_components/Name/text-scramble';
 import { Clock } from './_components/Footer/clock';
 import { initStackToggle } from './_components/Stack/stack-toggle';
+import { initAutoCycle } from './_components/Stack/auto-cycle';
 import { PERSON } from 'src/pages/portfolio/_constants';
 
 const init = () => {
@@ -15,6 +16,7 @@ const init = () => {
   if (clockEl) new Clock(clockEl);
 
   initStackToggle();
+  initAutoCycle();
 };
 
 if (document.readyState === 'loading') {
