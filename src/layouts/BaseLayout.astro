@@ -80,7 +80,6 @@ const structuredData = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="view-transition" content="same-origin" />
-    <meta name="color-scheme" content="dark light" />
     <meta http-equiv="Content-Security-Policy"
       content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://www.googletagmanager.com; font-src 'self'; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://www.google.com https://www.google.com.np; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com https://www.google.com https://*.g.doubleclick.net https://*.cloudflareinsights.com; base-uri 'self'; form-action 'self';" />
     <meta name="theme-color" content={SITE.themeColorDark} media="(prefers-color-scheme: dark)" />
@@ -104,7 +103,6 @@ const structuredData = {
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:alt" content={OG_IMAGE_ALT} />
-    <meta property="og:logo" content={`${SITE.url}/assets/logo/square/logo.png`} />
     <meta property="profile:first_name" content={PERSON.firstName} />
     <meta property="profile:last_name" content={PERSON.lastName} />
 
@@ -154,8 +152,6 @@ const structuredData = {
       }]
     }
     </script>
-
-    <!-- Fonts are self-hosted — zero external requests -->
 
   </head>
 

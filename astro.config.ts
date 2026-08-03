@@ -1,31 +1,19 @@
 import { defineConfig } from 'astro/config';
-import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
+import sitemap from '@astrojs/sitemap';
 import { SITE } from './src/pages/portfolio/_constants';
 
-// https://astro.build/config
 export default defineConfig({
-  output: 'static',
   site: SITE.url,
   trailingSlash: 'never',
   build: {
     format: 'file',
-    assets: 'astro',
     inlineStylesheets: 'always',
-  },
-  vite: {
-    resolve: {
-      alias: {
-        src: new URL('./src', import.meta.url).pathname,
-      },
-    },
   },
   integrations: [
     sitemap({
-      namespaces: { news: false, xhtml: false, image: true, video: false },
+      namespaces: { news: false, xhtml: false, image: false, video: false },
       serialize(item) {
-        item.lastmod = new Date().toISOString();
-        item.changefreq = ChangeFreqEnum.MONTHLY;
-        item.priority = 1.0;
+        item.lastmod = new Date('2026-08-03').toISOString();
         return item;
       },
     }),

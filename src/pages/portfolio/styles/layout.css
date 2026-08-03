@@ -5,7 +5,6 @@
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: auto 1fr auto auto 1fr auto;
-    gap: 0;
     height: 100%;
     padding: 4dvh 5dvw 3dvh;
     container-type: size;
@@ -23,7 +22,6 @@
   }
 
   .logo {
-    display: block;
     width: 36px;
     height: 36px;
     border-radius: var(--radius-sm);
@@ -48,10 +46,6 @@
     color: var(--text);
     text-wrap: balance;
 
-    &:nth-child(1) {
-      padding-left: 0;
-    }
-
     &:nth-child(2) {
       padding-left: clamp(2rem, 6vw, 6rem);
     }
@@ -75,17 +69,12 @@
     margin-bottom: var(--space-3);
   }
 
-  .tech-list {
-    display: block;
-  }
-
   /* ─── Stack category items ─── */
   .stack-parent {
     position: relative;
     display: block;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    font-weight: 400;
     letter-spacing: 0.05em;
     line-height: 1.5;
     padding: var(--space-1) 0;
@@ -172,7 +161,7 @@
     }
 
     .stack-category:focus-visible {
-      outline: none;
+      outline-offset: 2px;
     }
 
     .tech-list:has(.stack-parent:is(:focus-within, .stack-active)) .stack-parent:not(:focus-within):not(.stack-active) {
@@ -184,8 +173,6 @@
   .rule {
     grid-column: 1 / 8;
     grid-row: 3;
-    width: 100%;
-    height: auto;
     align-self: center;
     margin-block: 1dvh;
     color: var(--violet-bright);
@@ -245,7 +232,6 @@
 
   .meta-desc {
     font-size: var(--text-md);
-    font-weight: 400;
     color: var(--text-dim);
     line-height: 1.65;
     max-width: 480px;
@@ -267,17 +253,12 @@
     margin-bottom: var(--space-3);
   }
 
-  .links-list {
-    display: block;
-  }
-
   .link-item {
     display: inline-flex;
     align-items: center;
     gap: 0.45em;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    font-weight: 400;
     letter-spacing: 0.05em;
     line-height: 1.5;
     font-variant-numeric: tabular-nums;

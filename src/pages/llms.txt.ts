@@ -35,4 +35,4 @@ ${STACK.map(category => `- ${category.name}\n${category.items.map(s => `  - ${s}
   return new Response(body, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   });
-}
+};

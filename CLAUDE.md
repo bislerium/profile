@@ -53,8 +53,8 @@ public/
     logo/square/        # Public logo (logo.svg for header, logo.png for JSON-LD/OG)
     og-image.png        # 1200×630 OG card image (8-bit colormap PNG, ~440 KB)
   fonts/
-    switzer/            # 4 woff2 weights — 400, 500, 600, 700
-    jetbrains-mono/     # 4 woff2 weights — 400, 500, 600, 700
+    switzer/            # 2 woff2 weights — 400, 600
+    jetbrains-mono/     # 2 woff2 weights — 400, 600
 scripts/
   generate-icons.py     # Reproducible icon generation from design/logo/square/logo-square.svg
 wrangler.toml           # Cloudflare Worker config (markdown-for-agents)

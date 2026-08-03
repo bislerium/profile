@@ -48,7 +48,7 @@ export class TextScramble {
       this.#queue.push({ from, to, start, end, char: null });
     }
 
-    cancelAnimationFrame(this.#frameRequest!);
+    if (this.#frameRequest !== null) cancelAnimationFrame(this.#frameRequest);
     this.#frame = 0;
     this.#update();
 

@@ -46,11 +46,6 @@
 
   /* ─── Height Queries ─── */
   @container page (max-height: 700px) {
-    .page {
-      padding: 3dvh 5dvw 2dvh;
-    }
-
-    :root { --text-display: clamp(1.9rem, 5.5vw, 4rem); }
 
     .name-block {
       padding-bottom: 2dvh;
@@ -75,11 +70,6 @@
   }
 
   @container page (max-height: 550px) {
-    .page {
-      padding: 2dvh 5dvw 1.5dvh;
-    }
-
-    :root { --text-display: clamp(1.5rem, 4.8vw, 3.2rem); }
 
     .name-block {
       padding-bottom: 1.5dvh;
@@ -122,7 +112,6 @@
   }
 
   @container page (max-height: 450px) {
-    :root { --text-display: clamp(1.3rem, 4vw, 2.5rem); }
 
     .meta-title {
       margin-bottom: var(--space-2);
@@ -175,7 +164,6 @@
       align-self: start;
       text-align: left;
       padding-bottom: 2dvh;
-      padding-top: 0;
       max-width: 100%;
       overflow: hidden;
     }
@@ -183,7 +171,6 @@
     .tech-label {
       display: block;
       margin-bottom: var(--space-2);
-      margin-right: 0;
     }
 
     .tech-list {
@@ -206,10 +193,6 @@
 
     .stack-category {
       text-align: left;
-    }
-
-    .stack-parent-name {
-      white-space: nowrap;
     }
 
     .stack-sublist {
@@ -259,12 +242,6 @@
       display: flex;
       justify-content: space-between;
       padding-top: 2dvh;
-
-      .footer-left,
-      .footer-right {
-        grid-column: auto;
-        justify-self: auto;
-      }
     }
   }
 
@@ -369,7 +346,7 @@
     }
 
     .rule {
-      background: oklch(0% 0 0) !important;
+      color: oklch(0% 0 0) !important;
       opacity: 1 !important;
       transform: none !important;
     }
@@ -386,17 +363,10 @@
       display: none !important;
     }
 
-    .tech-stack {
-      justify-content: flex-start;
-      text-align: left;
-    }
-
     .tech-label {
-      width: auto;
       text-align: left;
       display: block;
       margin-bottom: var(--space-2);
-      margin-right: 0;
     }
 
     .stack-sublist {

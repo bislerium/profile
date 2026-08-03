@@ -22,6 +22,10 @@
     box-shadow: 0 0 8px var(--status-green);
     flex-shrink: 0;
     animation: breathe 4s ease-in-out infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
   }
 
   .status-available {

@@ -4,7 +4,7 @@ import { trackStackExpand } from 'src/pages/portfolio/_ga-events';
  * Syncs a single parent's aria-expanded with its visual state.
  * Checks CSS pseudo-classes PLUS the .stack-active class used by auto-cycle.
  */
-export function syncStackParent(parent: Element): void {
+function syncStackParent(parent: Element): void {
   const nameEl = parent.querySelector<HTMLElement>('.stack-category');
   if (!nameEl) return;
   const expanded =

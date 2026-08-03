@@ -8,10 +8,16 @@
  * this file.
  */
 
+declare global {
+  interface Window {
+    gtag?: (command: string, name: string, params?: Record<string, string | boolean>) => void;
+  }
+}
+
 const gtagEvent = (name: string, params?: Record<string, string | boolean>): void => {
   try {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', name, params);
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', name, params);
     }
   } catch {
     // Ad-blocker or network error — silently skip

@@ -6,7 +6,7 @@
 
 name = "markdown-for-agents"
 main = "workers/markdown-for-agents.js"
-compatibility_date = "2025-07-26"
+compatibility_date = "2026-08-01"
 
 [observability.logs]
 enabled = true

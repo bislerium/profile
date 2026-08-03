@@ -10,7 +10,7 @@ const init = () => {
   const scramblers = Array.from(nameLines).map(el => new TextScramble(el as HTMLElement));
 
   scramblers.forEach((s, i) => {
-    setTimeout(() => s?.setText(PERSON.nameParts[i]), 300 + i * 200);
+    setTimeout(() => s.setText(PERSON.nameParts[i]), 300 + i * 200);
   });
 
   const clockEl = document.getElementById('clock') as HTMLTimeElement | null;
