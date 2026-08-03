@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { SITE } from 'src/pages/portfolio/_constants';
+import { SITE } from '../portfolio/_constants';
 
 export const GET: APIRoute = () => {
   const body = JSON.stringify({
