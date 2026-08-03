@@ -20,7 +20,8 @@ src/
     index.astro          # Single-page portfolio at / — imports from ./portfolio/
     portfolio/           # All index-specific supporting files (_ prefix = excluded from routing)
       _constants.ts     # SITE, LINKS, PERSON, STACK, STACK_NAMES, PAGE, OG_IMAGE_ALT — single source of truth
-      _init.ts          # Boots TextScramble + Clock + stack toggle (imports PERSON.nameParts)
+      _ga-events.ts     # GA4 custom event dispatch (cv_click, github_click, linkedin_click, stack_expand, accessibility_preference)
+      _init.ts          # Boots TextScramble + Clock + stack toggle + auto-cycle + delegated GA4 click listener
       styles/           # Page-level CSS (layout, components, motion)
         index.css       # Entry point — imports layout, components, motion
         layout.css      # Grid layout + component positioning (was 04-layout.css)
@@ -30,7 +31,7 @@ src/
       _components/
         Header/         # Header.astro — decorative div with logo (not a landmark)
         Name/           # Name.astro + text-scramble.ts — h1 with animated text reveal
-        Stack/          # Stack.astro + stack-toggle.ts — hierarchical stack list
+        Stack/          # Stack.astro + stack-toggle.ts + auto-cycle.ts — hierarchical stack list
         Divider/        # Divider.astro — animated sine-wave SVG squiggle
         Meta/           # Meta.astro — role + highlighted tagline
         Links/          # Links.astro — nav for GitHub, LinkedIn, CV
@@ -162,13 +163,15 @@ The build inlines all CSS into the HTML (`build.inlineStylesheets: 'always'`), s
 
 ## JavaScript
 
-Three vanilla classes colocated with their components in `src/pages/portfolio/_components/`, typed with TypeScript, bundled by Astro and inlined into the HTML:
+Four vanilla modules colocated with their components in `src/pages/portfolio/_components/`, typed with TypeScript, bundled by Astro and inlined into the HTML. A fifth module (`_ga-events.ts`) lives at the portfolio level for GA4 event dispatch.
 
 - **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/pages/portfolio/_components/Name/text-scramble.ts`.
-- **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Updates every 60s. Source: `src/pages/portfolio/_components/Footer/clock.ts`.
-- **`initStackToggle`** — Syncs `aria-expanded` on stack category items with their CSS hover/focus state. Reads pseudo-class state so ARIA stays in sync without duplicating CSS logic. Source: `src/pages/portfolio/_components/Stack/stack-toggle.ts`.
+- **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Aligns to real minute boundaries via `setTimeout` to the next :00 second, then `setInterval` every 60s — avoids drift from page-load-time alignment. Source: `src/pages/portfolio/_components/Footer/clock.ts`.
+- **`initStackToggle`** — Syncs `aria-expanded` on stack categories with visual state. Desktop (`hover: hover`): hover and keyboard focus reveal sublists; `pointerdown` calls `preventDefault()` so mouse clicks don't persist `:focus-within` (Tab still works). Touch (`hover: none`): tap toggles `.stack-open` with mutual exclusion (one item open at a time); tap outside the stack to dismiss. Fires GA4 `stack_expand` events on manual interaction. Source: `src/pages/portfolio/_components/Stack/stack-toggle.ts`.
+- **`initAutoCycle`** — Auto-cycles a `.stack-active` class through stack categories every 3 seconds for discovery. Pauses on manual hover/focus, resumes 2s after interaction stops. Tracks cursor position via `mousemove` to detect stationary cursors over the sublist flyout (where `pointer-events: none` would make `:hover` miss). Won't resume if cursor is in the stack area, a tap-opened item is visible, or `prefers-reduced-motion` is set. Continues from the next item after the last auto-activated one. Source: `src/pages/portfolio/_components/Stack/auto-cycle.ts`.
+- **`_ga-events.ts`** — Central GA4 custom event dispatch. One exported function per event: `trackCvClick`, `trackGithubClick`, `trackLinkedinClick`, `trackStackExpand(category)`, `trackAccessibilityPref`. Each wraps `window.gtag('event', ...)`. Silently no-ops if gtag absent (ad-blocker, dev without network). Event names and parameters live here — callers pass only category strings. Source: `src/pages/portfolio/_ga-events.ts`.
 
-Init in `src/pages/portfolio/_init.ts` is loaded via a `<script>` tag in `index.astro`.
+Init in `src/pages/portfolio/_init.ts` is loaded via a `<script>` tag in `index.astro`. It boots `TextScramble`, `Clock`, `initStackToggle`, `initAutoCycle`, and a delegated click listener for `[data-track]` attributes that routes to the corresponding `_ga-events.ts` function.
 
 ## Icons and favicons
 
