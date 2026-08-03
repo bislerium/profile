@@ -23,26 +23,32 @@ export function initAutoCycle(): void {
   };
 
   const activate = (i: number) => {
-    clearActive();
     const parent = parents[i];
-    parent.classList.add('stack-active');
 
+    // Read layout BEFORE any DOM mutations to avoid forced reflow.
     // On mobile (≤768px) the stack categories are in a horizontal scrollable
     // row. Only scroll if the item isn't already fully visible to avoid
     // triggering unnecessary scroll events (and GA scroll tracking) on every
     // tick. Desktop layout stacks items vertically so this is always a no-op.
     const scrollParent = parent.closest<HTMLElement>('.tech-list');
+    let needsScroll = false;
     if (scrollParent) {
       const pRect = parent.getBoundingClientRect();
       const cRect = scrollParent.getBoundingClientRect();
-      const isFullyVisible =
+      needsScroll = !(
         pRect.left >= cRect.left &&
         pRect.right <= cRect.right &&
         pRect.top >= cRect.top &&
-        pRect.bottom <= cRect.bottom;
-      if (!isFullyVisible) {
-        parent.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'nearest' });
-      }
+        pRect.bottom <= cRect.bottom
+      );
+    }
+
+    // All writes after reads — no layout thrashing
+    clearActive();
+    parent.classList.add('stack-active');
+
+    if (needsScroll) {
+      parent.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'nearest' });
     }
 
     syncAllStackAria();

@@ -34,7 +34,7 @@ export class TextScramble {
       return Promise.resolve();
     }
 
-    const oldText = this.#el.innerText;
+    const oldText = this.#el.textContent ?? '';
     const length = Math.max(oldText.length, newText.length);
 
     const promise = new Promise<void>((resolve) => { this.#resolve = resolve; });
@@ -59,17 +59,21 @@ export class TextScramble {
     let complete = 0;
 
     if (this.#frame === 0) {
-      // Frame 0: build the DOM once — all characters wrapped in <span>
+      // Frame 0: build the DOM once — all characters wrapped in <span>.
+      // Use appendChild(textNode) instead of .textContent so every span
+      // always has a firstChild (even when item.from is empty). Later
+      // frames mutate firstChild.nodeValue in-place to avoid triggering
+      // MutationObserver childList events on every frame.
       const fragment = document.createDocumentFragment();
       for (const item of this.#queue) {
         const span = document.createElement('span');
-        span.textContent = item.from;
+        span.appendChild(document.createTextNode(item.from));
         fragment.appendChild(span);
       }
       this.#el.replaceChildren(fragment);
     }
 
-    // Update each span in place — no DOM rebuilds
+    // Update each span in place — no DOM rebuilds, no childList mutations
     const children = this.#el.children;
     for (let i = 0; i < this.#queue.length; i++) {
       const item = this.#queue[i];
@@ -77,16 +81,16 @@ export class TextScramble {
 
       if (this.#frame >= item.end) {
         complete++;
-        span.textContent = item.to;
-        span.style.color = '';
-        span.style.opacity = '';
+        span.firstChild!.nodeValue = item.to;
+        if (span.style.color) span.style.color = '';
+        if (span.style.opacity) span.style.opacity = '';
       } else if (this.#frame >= item.start) {
         if (!item.char || Math.random() < 0.28) {
           item.char = this.#randomChar();
         }
-        span.textContent = item.char!;
-        span.style.color = 'var(--violet-bright)';
-        span.style.opacity = '0.6';
+        span.firstChild!.nodeValue = item.char!;
+        if (span.style.color !== 'var(--violet-bright)') span.style.color = 'var(--violet-bright)';
+        if (span.style.opacity !== '0.6') span.style.opacity = '0.6';
       }
       // else: still in "from" phase — span already has item.from from frame 0
     }
@@ -143,14 +147,15 @@ export class TextScramble {
       }
 
       if (!initialized) {
-        // Frame 1: build DOM structure with <span> at glitch positions
+        // Frame 1: build DOM structure with <span> at glitch positions.
+        // Use appendChild(textNode) so later frames mutate nodeValue in-place.
         const fragment = document.createDocumentFragment();
         glitchSpans = [];
         for (let i = 0; i < len; i++) {
           if (positions.has(i)) {
             const span = document.createElement('span');
             span.style.color = 'var(--violet-bright)';
-            span.textContent = this.#randomChar();
+            span.appendChild(document.createTextNode(this.#randomChar()));
             fragment.appendChild(span);
             glitchSpans.push(span);
           } else {
@@ -160,10 +165,11 @@ export class TextScramble {
         this.#el.replaceChildren(fragment);
         initialized = true;
       } else {
-        // Frames 2+: only update span contents — no DOM structure changes
+        // Frames 2+: only update span contents — mutate text node in-place
         for (const span of glitchSpans) {
-          span.style.opacity = String(0.3 + Math.random() * 0.5);
-          span.textContent = this.#randomChar();
+          const opacity = String(0.3 + Math.random() * 0.5);
+          if (span.style.opacity !== opacity) span.style.opacity = opacity;
+          span.firstChild!.nodeValue = this.#randomChar();
         }
       }
 
