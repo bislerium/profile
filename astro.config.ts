@@ -12,10 +12,6 @@ export default defineConfig({
   integrations: [
     sitemap({
       namespaces: { news: false, xhtml: false, image: false, video: false },
-      serialize(item) {
-        item.lastmod = new Date('2026-08-03').toISOString();
-        return item;
-      },
     }),
   ],
 });

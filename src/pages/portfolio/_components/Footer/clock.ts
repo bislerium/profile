@@ -18,7 +18,15 @@ export class Clock {
     });
 
     this.#update();
-    setInterval(() => this.#update(), 60_000);
+
+    // Align to real minute boundaries — first tick fires at :00 seconds,
+    // then every 60s after. Avoids drift from page-load-time alignment.
+    const now = new Date();
+    const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+    setTimeout(() => {
+      this.#update();
+      setInterval(() => this.#update(), 60_000);
+    }, msToNextMinute);
   }
 
   #update() {

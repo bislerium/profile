@@ -4,6 +4,13 @@ import { syncAllStackAria } from './stack-toggle';
  * Auto-cycles a `.stack-active` class through stack categories every 3 seconds
  * for discovery and visual interest. Pauses on manual hover/focus, resumes 2s
  * after the user stops interacting. Exits immediately if prefers-reduced-motion.
+ *
+ * Cursor tracking (mousemove listener) catches stationary cursors at page load
+ * and cursor positions over the sublist flyout after stop() clears .stack-active
+ * (when pointer-events: none would make matches(':hover') miss). The 2-second
+ * resume timer only fires when the last known cursor position is outside the
+ * stack area — defined as .tech-stack's bounding rect expanded left by 400px
+ * to cover the absolutely-positioned sublist flyout.
  */
 export function initAutoCycle(): void {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -17,6 +24,30 @@ export function initAutoCycle(): void {
   let index = -1;
   let intervalId: ReturnType<typeof setInterval> | null = null;
   let resumeTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  let hovering = false;
+  let lastCursorX = -1;
+  let lastCursorY = -1;
+
+  // Track cursor position so resume() can check actual cursor location even
+  // when the sublist has pointer-events: none and :hover pseudo-class misses.
+  const onMouseMove = (e: MouseEvent) => {
+    lastCursorX = e.clientX;
+    lastCursorY = e.clientY;
+  };
+  document.addEventListener('mousemove', onMouseMove);
+
+  /** Returns true if last known cursor is over the stack or its sublist flyout area. */
+  const isCursorInStackArea = (): boolean => {
+    if (lastCursorX < 0) return false; // no mousemove yet
+    const rect = stack.getBoundingClientRect();
+    // Sublists extend left from .tech-stack; max-width is 360px + 1.25rem gap ≈ 380px.
+    return (
+      lastCursorX >= rect.left - 400 &&
+      lastCursorX <= rect.right &&
+      lastCursorY >= rect.top &&
+      lastCursorY <= rect.bottom
+    );
+  };
 
   const clearActive = () => {
     for (const p of parents) p.classList.remove('stack-active');
@@ -80,9 +111,9 @@ export function initAutoCycle(): void {
 
   // --- Pause / resume on user interaction ---
   // Listen at document level because .stack-sublist is absolutely positioned
-  // outside .tech-stack's bounding box (right: calc(100% + 1.25rem)). Listening
-  // on .tech-stack would fire mouseleave when the cursor enters the revealed
-  // sublist, spuriously resuming the cycle while the user is still interacting.
+  // outside .tech-stack's bounding box (right: 100%). Listening on .tech-stack
+  // would fire mouseleave when the cursor enters the revealed sublist,
+  // spuriously resuming the cycle while the user is still interacting.
 
   const pause = () => {
     stop();
@@ -92,18 +123,18 @@ export function initAutoCycle(): void {
     if (resumeTimeoutId !== null) clearTimeout(resumeTimeoutId);
     resumeTimeoutId = setTimeout(() => {
       resumeTimeoutId = null;
-      // Don't resume if the user is still interacting. Checking both the
-      // hovering flag AND CSS :hover / :focus-within covers the case where
-      // focus moves out but the mouse is stationary over the stack.
+      // Don't resume if the user is still interacting.
       if (hovering) return;
       if (stack.matches(':hover') || stack.matches(':focus-within')) return;
-      // Continue from the next item after the last auto-activated one
+      // Also check cursor position — covers cursor over sublist flyout area
+      // where pointer-events may be none and :hover wouldn't match.
+      if (isCursorInStackArea()) return;
+      // Don't resume if a tap-opened item is visible
+      if (document.querySelector('.stack-parent.stack-open')) return;
       next();
       intervalId = setInterval(next, 3000);
     }, 2000);
   };
-
-  let hovering = false;
 
   const onMouseOver = (e: MouseEvent) => {
     const enteredStack = stack.contains(e.target as Node);
@@ -123,7 +154,6 @@ export function initAutoCycle(): void {
   };
 
   const onFocusOut = (e: FocusEvent) => {
-    // Only resume if focus actually left the stack (not just moved within it)
     if (!stack.contains(e.relatedTarget as Node | null)) {
       resume();
     }
@@ -133,6 +163,10 @@ export function initAutoCycle(): void {
   document.addEventListener('focusin', onFocusIn);
   document.addEventListener('focusout', onFocusOut);
 
-  // Kick off after a brief delay so the page settles first
-  setTimeout(start, 1500);
+  // Kick off after a brief delay so the page settles first.
+  // If the cursor is already in the stack area, skip the initial cycle.
+  setTimeout(() => {
+    if (isCursorInStackArea() || stack.matches(':hover') || stack.matches(':focus-within')) return;
+    start();
+  }, 1500);
 }
