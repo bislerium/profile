@@ -121,6 +121,11 @@ export function initAutoCycle(): void {
 
   const resume = () => {
     if (resumeTimeoutId !== null) clearTimeout(resumeTimeoutId);
+    // Safety: clear any lingering interval so we never stack two timers.
+    if (intervalId !== null) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
     resumeTimeoutId = setTimeout(() => {
       resumeTimeoutId = null;
       // Don't resume if the user is still interacting.
@@ -154,6 +159,9 @@ export function initAutoCycle(): void {
   };
 
   const onFocusOut = (e: FocusEvent) => {
+    // Only resume if focus was actually inside the stack — otherwise the
+    // auto-cycle was never paused and resume() would stack a second interval.
+    if (!stack.contains(e.target as Node | null)) return;
     if (!stack.contains(e.relatedTarget as Node | null)) {
       resume();
     }
