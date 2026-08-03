@@ -3,7 +3,7 @@ import { Clock } from './_components/Footer/clock';
 import { initStackToggle } from './_components/Stack/stack-toggle';
 import { initAutoCycle } from './_components/Stack/auto-cycle';
 import { PERSON } from 'src/pages/portfolio/_constants';
-import { trackAccessibilityPref, trackCvDownload, trackGithubClick, trackLinkedinClick } from 'src/pages/portfolio/_ga-events';
+import { trackAccessibilityPref, trackCvClick, trackGithubClick, trackLinkedinClick } from 'src/pages/portfolio/_ga-events';
 
 const init = () => {
   const nameLines = document.querySelectorAll('.name-line');
@@ -25,7 +25,7 @@ const init = () => {
     const el = (e.target as HTMLElement).closest('[data-track]');
     if (!el) return;
     const event = el.getAttribute('data-track');
-    if (event === 'cv_download') trackCvDownload();
+    if (event === 'cv_click') trackCvClick();
     else if (event === 'github_click') trackGithubClick();
     else if (event === 'linkedin_click') trackLinkedinClick();
   });

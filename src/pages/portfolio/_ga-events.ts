@@ -18,9 +18,9 @@ const gtagEvent = (name: string, params?: Record<string, string | boolean>): voi
   }
 };
 
-/** Fires when user clicks the CV download link. */
-export function trackCvDownload(): void {
-  gtagEvent('cv_download');
+/** Fires when user clicks the CV link. */
+export function trackCvClick(): void {
+  gtagEvent('cv_click');
 }
 
 /** Fires when user clicks the GitHub outbound link. */
