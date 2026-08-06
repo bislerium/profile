@@ -9,6 +9,8 @@
     padding: 4dvh 5dvw 3dvh;
     container-type: size;
     container-name: page;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   /* ─── Header ─── */
