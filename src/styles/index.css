@@ -1,5 +1,5 @@
 /* src/styles/index.css — shared styles (fonts + global layers) */
-@import './00-fonts.css';
+@import './00-fonts.css' layer(fonts);
 @import './01-reset.css' layer(reset);
 @import './02-base.css' layer(base);
 @import './03-theme.css' layer(theme);

@@ -70,7 +70,7 @@ const structuredData = {
     <!-- Google tag (gtag.js) -->
     <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${SITE.gaId}`}></script>
     <script is:inline define:vars={{ gaId: SITE.gaId }}>
-  window.dataLayer = window.dataLayer || [];
+  window.dataLayer ??= [];
   window.gtag = function(){window.dataLayer.push(arguments);}
   window.gtag('js', new Date());
   window.gtag('config', gaId);

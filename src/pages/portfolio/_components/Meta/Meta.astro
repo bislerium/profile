@@ -1,17 +1,17 @@
 ---
 import { PERSON, PAGE, LINKS } from 'src/pages/portfolio/_constants';
 
-let html: string = PAGE.tagline;
-for (const w of PAGE.taglineHighlights) {
-  html = html.replace(w, `<span class="highlight">${w}</span>`);
-}
+const html = PAGE.taglineHighlights.reduce(
+  (acc, w) => acc.replace(w, `<span class="highlight">${w}</span>`),
+  PAGE.tagline,
+);
 ---
 
 <section class="meta-block" aria-labelledby="role-heading">
   <div class="meta-title">
     <h2 id="role-heading" class="label">{PERSON.jobTitle}</h2>
-    <a href={LINKS.cv} class="meta-cv" target="_blank" rel="noopener noreferrer" aria-label="View CV (opens in a new tab)" data-track="cv_click">
-      <span class="link-icon icon-cv" aria-hidden="true"></span>
+    <a href={LINKS.cv} class="meta-cv" target="_blank" rel="noreferrer" aria-label="View CV (opens in a new tab)" data-track="cv_click">
+      <span class="link-icon" aria-hidden="true"></span>
       CV
     </a>
   </div>

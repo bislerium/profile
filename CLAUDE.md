@@ -36,7 +36,7 @@ src/
         Meta/           # Meta.astro — role + highlighted tagline
         Links/          # Links.astro — nav for GitHub, LinkedIn, CV
         Footer/         # Footer.astro + clock.ts — clock widget + availability dot
-        Progress/       # Progress.astro — decorative scroll indicator
+        Progress/       # Progress.astro — decorative load indicator
         SkipLink/       # SkipLink.astro — skip-to-main accessibility link
     404.astro           # Custom 404 error page with BaseLayout + inline styles
     robots.txt.ts        # Robots endpoint with Content-Signal headers, CV now allowed
@@ -152,10 +152,10 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 | --- | --- | --- |
 | `layout.css` | `layout` | 12-column CSS Grid layout with named grid rows, subgrid footer, responsive padding |
 | `components.css` | `components` | Self-contained widgets (`.progress-bar`, `.status-dot`, `.status-available`) |
-| `motion.css` | `motion` | `@keyframes` (fadeUp, fadeIn, drawIn, waveFlow, breathe, progressFill/Fade) and staggered entry animations, respects `prefers-reduced-motion` |
+| `motion.css` | `motion` | `@keyframes` (progressFill, progressFade, breathe, drawIn, waveFlow) and staggered entry animations, respects `prefers-reduced-motion` |
 | `overrides.css` | `overrides` | Skip-link utility, container queries (`@container page`), media queries (768/480/360px), print styles, high-contrast mode |
 
-All `@font-face` rules live in `00-fonts.css` (no layer) so they're always in the global scope. The 7 layered files each get a cascade layer matching their name.
+All `@font-face` rules live in `00-fonts.css` (imported in `layer(fonts)`) so they don't interfere with the cascade. The 7 layered files each get a cascade layer matching their name.
 
 The build inlines all CSS into the HTML (`build.inlineStylesheets: 'always'`), so there are zero external stylesheet requests at runtime.
 
@@ -165,7 +165,7 @@ The build inlines all CSS into the HTML (`build.inlineStylesheets: 'always'`), s
 
 Three vanilla modules colocated with their components in `src/pages/portfolio/_components/`, typed with TypeScript, bundled by Astro and inlined into the HTML. A fourth module (`_ga-events.ts`) lives at the portfolio level for GA4 event dispatch.
 
-- **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `innerText` (reads rendered text including any prior scramble state) to capture the current text. Source: `src/pages/portfolio/_components/Name/text-scramble.ts`.
+- **`TextScramble`** — Animated text reveal using random character scrambling from a fixed character set. In `setText()`, uses `requestAnimationFrame` to cycle through random characters at ~28% change rate per frame. Respects `prefers-reduced-motion` by skipping animation entirely. Applied to `.name-line` elements on load. Uses `textContent` to capture current text without forcing reflow. Source: `src/pages/portfolio/_components/Name/text-scramble.ts`.
 - **`Clock`** — Live clock in footer showing Asia/Kathmandu time with UTC offset (e.g. "Kathmandu, Nepal · 2:30 PM · GMT+5:45"). Uses `Intl.DateTimeFormat` with `timeZone: 'Asia/Kathmandu'` and `formatToParts()` for timezone extraction. Aligns to real minute boundaries via `setTimeout` to the next :00 second, then `setInterval` every 60s — avoids drift from page-load-time alignment. Source: `src/pages/portfolio/_components/Footer/clock.ts`.
 - **`initStackToggle`** — Syncs `aria-expanded` on stack categories with visual state. Desktop (`hover: hover`): hover and keyboard focus reveal sublists; `pointerdown` calls `preventDefault()` so mouse clicks don't persist `:focus-within` (Tab still works). Touch (`hover: none`): tap toggles `.stack-open` with mutual exclusion (one item open at a time); tap outside the stack to dismiss. Fires GA4 `stack_expand` events on manual interaction. Source: `src/pages/portfolio/_components/Stack/stack-toggle.ts`.
 - **`_ga-events.ts`** — Central GA4 custom event dispatch. One exported function per event: `trackCvClick`, `trackGithubClick`, `trackLinkedinClick`, `trackStackExpand(category)`, `trackAccessibilityPref`. Each wraps `window.gtag('event', ...)`. Silently no-ops if gtag absent (ad-blocker, dev without network). Event names and parameters live here — callers pass only category strings. Source: `src/pages/portfolio/_ga-events.ts`.

@@ -5,27 +5,32 @@ import { PERSON } from 'src/pages/portfolio/_constants';
 import { trackAccessibilityPref, trackCvClick, trackGithubClick, trackLinkedinClick } from 'src/pages/portfolio/_ga-events';
 
 const init = () => {
-  const nameLines = document.querySelectorAll('.name-line');
-  const scramblers = Array.from(nameLines).map(el => new TextScramble(el as HTMLElement));
+  const nameLines = document.querySelectorAll<HTMLElement>('.name-line');
+  const scramblers = Array.from(nameLines, el => new TextScramble(el));
 
   scramblers.forEach((s, i) => {
     setTimeout(() => s.setText(PERSON.nameParts[i]), 300 + i * 200);
   });
 
-  const clockEl = document.getElementById('clock') as HTMLTimeElement | null;
+  const clockEl = document.querySelector<HTMLTimeElement>('#clock');
   if (clockEl) new Clock(clockEl);
 
   initStackToggle();
 
   // Delegated click listener for GA4 data-track attributes.
   // No inline onclick needed — attribute drives which event fires.
+  const trackers = {
+    cv_click: trackCvClick,
+    github_click: trackGithubClick,
+    linkedin_click: trackLinkedinClick,
+  } as const;
+
   document.addEventListener('click', (e) => {
-    const el = (e.target as HTMLElement).closest('[data-track]');
+    if (!(e.target instanceof HTMLElement)) return;
+    const el = e.target.closest('[data-track]');
     if (!el) return;
-    const event = el.getAttribute('data-track');
-    if (event === 'cv_click') trackCvClick();
-    else if (event === 'github_click') trackGithubClick();
-    else if (event === 'linkedin_click') trackLinkedinClick();
+    const event = el.getAttribute('data-track') as keyof typeof trackers | null;
+    trackers[event!]?.();
   });
 
   trackAccessibilityPref();

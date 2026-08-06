@@ -43,7 +43,8 @@ export function initStackToggle(): void {
     // :focus-within from making the sublist persist after tap-to-close.
     // Keyboard Tab still focuses normally (doesn't fire pointerdown).
     parent.addEventListener('pointerdown', (e) => {
-      if ((e.target as HTMLElement).closest('.stack-category')) {
+      if (!(e.target instanceof HTMLElement)) return;
+      if (e.target.closest('.stack-category')) {
         e.preventDefault();
       }
     });
@@ -51,8 +52,8 @@ export function initStackToggle(): void {
     // --- Touch: tap to toggle .stack-open (mutual exclusion) ---
     if (isTouchDevice) {
       parent.addEventListener('click', (e) => {
-        const target = e.target as HTMLElement;
-        if (!target.closest('.stack-category')) return;
+        if (!(e.target instanceof HTMLElement)) return;
+        if (!e.target.closest('.stack-category')) return;
 
         const wasOpen = parent.classList.contains('stack-open');
 
@@ -60,10 +61,8 @@ export function initStackToggle(): void {
           p.classList.remove('stack-open');
         }
 
-        if (!wasOpen) {
-          parent.classList.add('stack-open');
-          trackStackExpand(getCategoryName(parent));
-        }
+        parent.classList.toggle('stack-open', !wasOpen);
+        if (!wasOpen) trackStackExpand(getCategoryName(parent));
 
         syncAllStackAria();
       });
@@ -91,8 +90,8 @@ export function initStackToggle(): void {
   // --- Touch: dismiss tapped items when clicking outside the stack ---
   if (isTouchDevice) {
     document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('.tech-stack')) return;
+      if (!(e.target instanceof HTMLElement)) return;
+      if (e.target.closest('.tech-stack')) return;
       for (const p of parents) {
         p.classList.remove('stack-open');
       }

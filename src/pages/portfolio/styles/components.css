@@ -2,8 +2,7 @@
   .progress-bar {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
+    inset-inline: 0;
     height: 2px;
     background: var(--violet-bright);
     z-index: 100;
@@ -20,7 +19,6 @@
     border-radius: 50%;
     background: var(--status-green);
     box-shadow: 0 0 8px var(--status-green);
-    flex-shrink: 0;
     animation: breathe 4s ease-in-out infinite;
 
     @media (prefers-reduced-motion: reduce) {

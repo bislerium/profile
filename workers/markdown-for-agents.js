@@ -30,7 +30,7 @@ const FORWARD_HEADERS = [
 
 export default {
   async fetch(request, _env, _ctx) {
-    const accept = request.headers.get('Accept') || '';
+    const accept = request.headers.get('Accept') ?? '';
 
     // Only intercept GET requests asking for markdown
     if (!accept.includes('text/markdown') || request.method !== 'GET') {
@@ -39,7 +39,7 @@ export default {
 
     // Fetch origin HTML (always GET so we have a body to convert)
     const originResponse = await fetch(new Request(request.url, { method: 'GET' }));
-    const contentType = originResponse.headers.get('Content-Type') || '';
+    const contentType = originResponse.headers.get('Content-Type') ?? '';
 
     if (!contentType.includes('text/html')) {
       return originResponse;

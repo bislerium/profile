@@ -38,15 +38,13 @@ export class TextScramble {
     const length = Math.max(oldText.length, newText.length);
 
     const promise = new Promise<void>((resolve) => { this.#resolve = resolve; });
-    this.#queue = [];
-
-    for (let i = 0; i < length; i++) {
-      const from = oldText[i] || '';
-      const to = newText[i] || '';
-      const start = Math.floor(Math.random() * 20);
-      const end = start + Math.floor(Math.random() * 20);
-      this.#queue.push({ from, to, start, end, char: null });
-    }
+    this.#queue = Array.from({ length }, (_, i) => ({
+      from: oldText[i] || '',
+      to: newText[i] || '',
+      start: Math.floor(Math.random() * 20),
+      end: Math.floor(Math.random() * 20) + Math.floor(Math.random() * 20),
+      char: null,
+    }));
 
     if (this.#frameRequest !== null) cancelAnimationFrame(this.#frameRequest);
     this.#frame = 0;
@@ -75,8 +73,7 @@ export class TextScramble {
 
     // Update each span in place — no DOM rebuilds, no childList mutations
     const children = this.#el.children;
-    for (let i = 0; i < this.#queue.length; i++) {
-      const item = this.#queue[i];
+    this.#queue.forEach((item, i) => {
       const span = children[i] as HTMLSpanElement;
 
       if (this.#frame >= item.end) {
@@ -93,7 +90,7 @@ export class TextScramble {
         if (span.style.opacity !== '0.6') span.style.opacity = '0.6';
       }
       // else: still in "from" phase — span already has item.from from frame 0
-    }
+    });
 
     if (complete === this.#queue.length) {
       // Clean up: replace all spans with a single text node
