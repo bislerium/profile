@@ -1,7 +1,6 @@
 import { TextScramble } from './_components/Name/text-scramble';
 import { Clock } from './_components/Footer/clock';
 import { initStackToggle } from './_components/Stack/stack-toggle';
-import { initAutoCycle } from './_components/Stack/auto-cycle';
 import { PERSON } from 'src/pages/portfolio/_constants';
 import { trackAccessibilityPref, trackCvClick, trackGithubClick, trackLinkedinClick } from 'src/pages/portfolio/_ga-events';
 
@@ -17,7 +16,6 @@ const init = () => {
   if (clockEl) new Clock(clockEl);
 
   initStackToggle();
-  initAutoCycle();
 
   // Delegated click listener for GA4 data-track attributes.
   // No inline onclick needed — attribute drives which event fires.

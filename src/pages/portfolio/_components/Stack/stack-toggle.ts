@@ -2,7 +2,7 @@ import { trackStackExpand } from 'src/pages/portfolio/_ga-events';
 
 /**
  * Syncs a single parent's aria-expanded with its visual state.
- * Checks CSS pseudo-classes PLUS the .stack-active and .stack-open classes.
+ * Checks CSS pseudo-classes PLUS the .stack-open class.
  */
 function syncStackParent(parent: Element): void {
   const nameEl = parent.querySelector<HTMLElement>('.stack-category');
@@ -10,7 +10,6 @@ function syncStackParent(parent: Element): void {
   const expanded =
     parent.matches(':hover') ||
     parent.matches(':focus-within') ||
-    parent.classList.contains('stack-active') ||
     parent.classList.contains('stack-open');
   nameEl.setAttribute('aria-expanded', String(expanded));
 }
@@ -20,11 +19,8 @@ function getCategoryName(parent: Element): string {
   return parent.querySelector('.stack-category')?.textContent?.trim() ?? '';
 }
 
-/**
- * Syncs aria-expanded on all stack category items with their visual state.
- * Exported so auto-cycle can call it after class changes.
- */
-export function syncAllStackAria(): void {
+/** Syncs aria-expanded on all stack category items with their visual state. */
+function syncAllStackAria(): void {
   document.querySelectorAll<HTMLElement>('.stack-parent').forEach(syncStackParent);
 }
 
@@ -43,17 +39,14 @@ export function initStackToggle(): void {
   const isTouchDevice = !window.matchMedia('(hover: hover)').matches;
 
   for (const parent of parents) {
-    // --- Desktop: prevent mouse click from focusing the button ---
-    // Clicking a <button> inherently focuses it, which triggers :focus-within
-    // and makes the sublist persist. preventDefault() on pointerdown stops
-    // focus for mouse clicks while leaving keyboard Tab focus intact.
-    if (!isTouchDevice) {
-      parent.addEventListener('pointerdown', (e) => {
-        if ((e.target as HTMLElement).closest('.stack-category')) {
-          e.preventDefault();
-        }
-      });
-    }
+    // Prevent pointer (mouse/touch) from focusing the button — stops
+    // :focus-within from making the sublist persist after tap-to-close.
+    // Keyboard Tab still focuses normally (doesn't fire pointerdown).
+    parent.addEventListener('pointerdown', (e) => {
+      if ((e.target as HTMLElement).closest('.stack-category')) {
+        e.preventDefault();
+      }
+    });
 
     // --- Touch: tap to toggle .stack-open (mutual exclusion) ---
     if (isTouchDevice) {

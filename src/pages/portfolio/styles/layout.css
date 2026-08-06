@@ -106,7 +106,7 @@
     vertical-align: 0.05em;
   }
 
-  .stack-parent:is(:hover, :focus-within, .stack-active, .stack-open) .stack-category::after {
+  .stack-parent:is(:hover, :focus-within, .stack-open) .stack-category::after {
     transform: rotate(90deg);
     opacity: 0.7;
   }
@@ -128,7 +128,7 @@
     pointer-events: none;
   }
 
-  .stack-parent:is(:hover, .stack-active, .stack-open) .stack-sublist {
+  .stack-parent:is(:hover, .stack-open) .stack-sublist {
     pointer-events: auto;
   }
 
@@ -140,27 +140,27 @@
 
   /* Hover / focus reveal (devices with a pointer) */
   @media (hover: hover) {
-    .stack-parent:is(:hover, :focus-within, .stack-active) .stack-sublist {
+    .stack-parent:is(:hover, :focus-within) .stack-sublist {
       display: block;
     }
 
-    .stack-parent:is(:hover, :focus-within, .stack-active) .stack-category {
+    .stack-parent:is(:hover, :focus-within) .stack-category {
       color: var(--violet-bright);
     }
 
-    /* Dim other items only when user is hovering/focusing — auto-cycle alone doesn't dim */
-    .tech-list:has(.stack-parent:is(:hover, :focus-within)) .stack-parent:not(:hover):not(:focus-within):not(.stack-active) {
+    /* Dim other items only when user is hovering/focusing */
+    .tech-list:has(.stack-parent:is(:hover, :focus-within)) .stack-parent:not(:hover):not(:focus-within) {
       opacity: 0.4;
     }
   }
 
   /* Tap reveal (touch devices) */
   @media (hover: none) {
-    .stack-parent:is(:focus-within, .stack-active, .stack-open) .stack-sublist {
+    .stack-parent:is(:focus-within, .stack-open) .stack-sublist {
       display: block;
     }
 
-    .stack-parent:is(:focus-within, .stack-active, .stack-open) .stack-category {
+    .stack-parent:is(:focus-within, .stack-open) .stack-category {
       color: var(--violet-bright);
     }
 
@@ -168,7 +168,7 @@
       outline-offset: 2px;
     }
 
-    .tech-list:has(.stack-parent:is(:focus-within, .stack-open)) .stack-parent:not(:focus-within):not(.stack-open):not(.stack-active) {
+    .tech-list:has(.stack-parent:is(:focus-within, .stack-open)) .stack-parent:not(:focus-within):not(.stack-open) {
       opacity: 0.4;
     }
   }
