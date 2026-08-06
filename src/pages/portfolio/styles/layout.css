@@ -244,7 +244,7 @@
 
   /* ─── Links ─── */
   .links-block {
-    grid-column: 8 / -1;
+    grid-column: 9 / -1;
     grid-row: 4 / 6;
     justify-self: start;
     align-self: end;
