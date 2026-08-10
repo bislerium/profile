@@ -51,13 +51,15 @@ public/
   favicon.ico            # Root favicon (Googlebot fallback, duplicated from assets/icons/)
   assets/
     icons/              # 16 generated favicon/app-icon files
+    screenshots/        # 4 PWA screenshots (narrow/wide × light/dark), generated via npm run screenshots
     logo/square/        # Public logo (logo.svg for header, logo.png for JSON-LD/OG)
     og-image.png        # 1200×630 OG card image (8-bit colormap PNG, ~440 KB)
   fonts/
     switzer/            # 2 woff2 weights — 400, 600
     jetbrains-mono/     # 2 woff2 weights — 400, 600
 scripts/
-  generate-icons.py     # Reproducible icon generation from design/logo/square/logo-square.svg
+  generate-icons.py        # Reproducible icon generation from design/logo/square/logo-square.svg
+  generate-screenshots.js  # Playwright-based PWA screenshot capture (npm run screenshots)
 wrangler.toml           # Cloudflare Worker config (markdown-for-agents)
 ```
 
@@ -129,7 +131,7 @@ export const PAGE = {
 export const OG_IMAGE_ALT = `${PERSON.fullName} • ${PERSON.jobTitle} portfolio`;
 ```
 
-All derived strings are template literals built from `PERSON` and `STACK` fields. Changing a value in `PERSON` or `STACK` cascades through `<meta>`, OG, Twitter, JSON-LD, `llms.txt`, the PWA manifest, the clock widget, and the TextScramble animation automatically.
+All derived strings are template literals built from `PERSON` and `STACK` fields. Changing a value in `PERSON` or `STACK` cascades through `<meta>`, OG, Twitter, JSON-LD, `llms.txt`, the PWA manifest (including screenshots), the clock widget, and the TextScramble animation automatically.
 
 The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly — no manual sync needed.
 
@@ -186,6 +188,8 @@ Init in `src/pages/portfolio/_init.ts` is loaded via a `<script>` tag in `index.
 | `maskable-icon-{192,512}.png` | Android adaptive icons (80% safe zone) |
 | `mstile-150x150.png` | Windows 8/10 tile |
 
+PWA screenshots live in `public/assets/screenshots/` — narrow (Pixel 8, 824×1830) and wide (2560×1600), light and dark. Generated via `npm run screenshots` using Playwright against the dev server. The web manifest includes `display_override: ["standalone", "minimal-ui"]` for progressive display fallback, `orientation: "natural"`, and labeled screenshot entries with `form_factor`.
+
 3 additional SVG icons used as CSS mask-images for UI elements:
 
 | Files | Purpose |
@@ -218,7 +222,7 @@ Public copies are in `public/assets/logo/square/` as `logo.svg` and `logo.png`. 
 
 GitHub Actions deploys to GitHub Pages with Cloudflare CDN in front.
 
-`astro build` inlines all CSS and JS into a single HTML file (~29 KB). Total `dist/` size is ~920 KB (dominated by the OG image at ~440 KB and fonts at ~208 KB).
+`astro build` inlines all CSS and JS into a single HTML file (~29 KB). Total `dist/` size is ~1.4 MB (screenshots ~512 KB, OG image ~440 KB, fonts ~104 KB, icons ~92 KB).
 
 `.nojekyll` in `public/` prevents GitHub Pages from running Jekyll on the built output (which would ignore `_astro/` prefixed directories).
 
