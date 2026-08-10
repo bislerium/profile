@@ -33,14 +33,14 @@ export const GET: APIRoute = () => {
       },
       {
         src: '/assets/screenshots/screenshot-wide-light.png',
-        sizes: '2560x1600',
+        sizes: '2560x1440',
         type: 'image/png',
         form_factor: 'wide',
         label: 'Portfolio homepage on desktop — light theme',
       },
       {
         src: '/assets/screenshots/screenshot-wide-dark.png',
-        sizes: '2560x1600',
+        sizes: '2560x1440',
         type: 'image/png',
         form_factor: 'wide',
         label: 'Portfolio homepage on desktop — dark theme',

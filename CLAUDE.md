@@ -154,7 +154,7 @@ The Astro config `site` field in `astro.config.ts` imports `SITE.url` directly �
 | --- | --- | --- |
 | `layout.css` | `layout` | 12-column CSS Grid layout with named grid rows, subgrid footer, responsive padding |
 | `components.css` | `components` | Self-contained widgets (`.progress-bar`, `.status-dot`, `.status-available`) |
-| `motion.css` | `motion` | `@keyframes` (progressFill, progressFade, breathe, drawIn, waveFlow) and staggered entry animations, respects `prefers-reduced-motion` |
+| `motion.css` | `motion` | `@keyframes` + staggered entry animations, `prefers-reduced-motion: reduce` kills all motion (WCAG SC 2.3.3 compliant) |
 | `overrides.css` | `overrides` | Skip-link utility, container queries (`@container page`), media queries (768/480/360px), print styles, high-contrast mode |
 
 All `@font-face` rules live in `00-fonts.css` (imported in `layer(fonts)`) so they don't interfere with the cascade. The 7 layered files each get a cascade layer matching their name.
@@ -188,7 +188,7 @@ Init in `src/pages/portfolio/_init.ts` is loaded via a `<script>` tag in `index.
 | `maskable-icon-{192,512}.png` | Android adaptive icons (80% safe zone) |
 | `mstile-150x150.png` | Windows 8/10 tile |
 
-PWA screenshots live in `public/assets/screenshots/` — narrow (Pixel 8, 824×1830) and wide (2560×1600), light and dark. Generated via `npm run screenshots` using Playwright against the dev server. The web manifest includes `display_override: ["standalone", "minimal-ui"]` for progressive display fallback, `orientation: "natural"`, and labeled screenshot entries with `form_factor`.
+PWA screenshots live in `public/assets/screenshots/` — narrow (412×915 @2x → 824×1830, 20:9 Pixel 8/9) and wide (1280×720 @2x → 2560×1440, 16:9 desktop), light and dark. Generated via `npm run screenshots` using Playwright with `prefers-reduced-motion: reduce` for animation-free captures. The web manifest includes `display_override: ["standalone", "minimal-ui"]` for progressive display fallback, `orientation: "natural"`, and labeled screenshot entries with `form_factor`.
 
 3 additional SVG icons used as CSS mask-images for UI elements:
 

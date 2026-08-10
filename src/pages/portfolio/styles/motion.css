@@ -76,6 +76,12 @@
       stroke-dasharray: none;
       animation: none;
     }
+
+    /* Interactive transform transitions — WCAG SC 2.3.3 */
+    .link-arrow,
+    .stack-category::after {
+      transition: none;
+    }
   }
 
   @media (prefers-reduced-data: reduce) {

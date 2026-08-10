@@ -23,14 +23,18 @@ ${STACK.map(category => `- ${category.name}\n${category.items.map(s => `  - ${s}
 
 ## Connect
 
-- GitHub: ${LINKS.github}
-- LinkedIn: ${LINKS.linkedin}
-- CV: ${SITE.url}${LINKS.cv}
+- [GitHub](${LINKS.github}): ${PERSON.fullName}'s GitHub profile
+- [LinkedIn](${LINKS.linkedin}): ${PERSON.fullName}'s LinkedIn profile
+- [CV](${SITE.url}${LINKS.cv}): ${PERSON.fullName}'s resume
 
 ## Policies
 
 - No AI training on personal data without explicit consent.
 - Contact via LinkedIn for professional inquiries.
+
+## Optional
+
+- [Source Code](${LINKS.github}/profile): Site source on GitHub
 `;
   return new Response(body, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
