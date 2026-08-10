@@ -79,8 +79,9 @@ export const STACK = [
     items: [
       'OpenTelemetry',
       'Prometheus',
-      'Grafana (Loki, Tempo)',
+      'Grafana (Loki, Tempo, Alloy)',
       'Jaeger',
+      'HyperDX, SigNoz',
     ],
   },
 ] as const;

@@ -171,6 +171,7 @@
     grid-column: 1 / 8;
     grid-row: 3;
     align-self: center;
+    width: 100%;
     margin-block: 1dvh;
     color: var(--violet-bright);
   }
